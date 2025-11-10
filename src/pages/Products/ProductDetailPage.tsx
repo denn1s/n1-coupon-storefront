@@ -23,9 +23,7 @@ export default function ProductDetailPage() {
   // In a real app, you'd have a dedicated product detail endpoint
   const { data: productsData, isLoading, error } = useGetProducts({ first: 100 })
 
-  const product = productsData?.holdingProducts.nodes.find(
-    (p) => p.id === Number(productId)
-  )
+  const product = productsData?.holdingProducts.nodes.find((p) => p.id === Number(productId))
 
   // Handle buy button click
   const handleBuyNow = () => {
@@ -57,7 +55,7 @@ export default function ProductDetailPage() {
         <div className={styles.error}>
           <h2>Error loading product</h2>
           <p>{error.message}</p>
-          <Link to="/products" className="btn btn-primary">
+          <Link to="/" className="btn btn-primary">
             Back to Products
           </Link>
         </div>
@@ -72,7 +70,7 @@ export default function ProductDetailPage() {
         <div className={styles.error}>
           <h2>Product not found</h2>
           <p>The product you're looking for doesn't exist.</p>
-          <Link to="/products" className="btn btn-primary">
+          <Link to="/" className="btn btn-primary">
             Back to Products
           </Link>
         </div>
@@ -86,7 +84,7 @@ export default function ProductDetailPage() {
     <div className={styles.container}>
       {/* Breadcrumb */}
       <div className={styles.breadcrumb}>
-        <Link to="/products" className={styles.breadcrumbLink}>
+        <Link to="/" className={styles.breadcrumbLink}>
           Deals
         </Link>
         <span className={styles.breadcrumbSeparator}>/</span>
@@ -98,27 +96,15 @@ export default function ProductDetailPage() {
         {/* Image Gallery */}
         <div className={styles.imageSection}>
           <div className={styles.mainImage}>
-            <img
-              src={displayImage}
-              alt={product.name}
-              className={styles.image}
-            />
+            <img src={displayImage} alt={product.name} className={styles.image} />
           </div>
 
           {/* Thumbnail Gallery (if additional images exist) */}
           {product.images && product.images.length > 1 && (
             <div className={styles.thumbnails}>
               {product.images.map((image) => (
-                <button
-                  key={image.sequence}
-                  className={styles.thumbnail}
-                  onClick={() => setSelectedImage(image.url)}
-                >
-                  <img
-                    src={image.url}
-                    alt={`${product.name} - ${image.sequence}`}
-                    className={styles.thumbnailImage}
-                  />
+                <button key={image.sequence} className={styles.thumbnail} onClick={() => setSelectedImage(image.url)}>
+                  <img src={image.url} alt={`${product.name} - ${image.sequence}`} className={styles.thumbnailImage} />
                 </button>
               ))}
             </div>
@@ -214,7 +200,7 @@ export default function ProductDetailPage() {
             >
               {product.quantityAvailable > 0 ? 'Buy Now' : 'Deal Expired'}
             </button>
-            <Link to="/products" className={styles.backButton}>
+            <Link to="/" className={styles.backButton}>
               Back to Deals
             </Link>
           </div>
@@ -222,11 +208,7 @@ export default function ProductDetailPage() {
       </div>
 
       {/* Checkout Modal */}
-      <CheckoutModal
-        product={product}
-        isOpen={isCheckoutModalOpen}
-        onClose={handleCloseCheckout}
-      />
+      <CheckoutModal product={product} isOpen={isCheckoutModalOpen} onClose={handleCloseCheckout} />
     </div>
   )
 }
