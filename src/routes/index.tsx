@@ -16,10 +16,13 @@ export const Route = createFileRoute('/')({
   component: ProductsPage,
   // Prefetch products, categories, and stores data before rendering the page
   loader: async ({ context }) => {
-    await Promise.all([
+    const [products, categories, stores] = await Promise.all([
       context.queryClient.ensureQueryData(productsOptions({ first: 20 })),
       context.queryClient.ensureQueryData(categoriesOptions({ first: 50 })),
       context.queryClient.ensureQueryData(storesOptions({ first: 50 }))
     ])
+
+    // Return data explicitly so components can access via useLoaderData()
+    return { products, categories, stores }
   }
 })
