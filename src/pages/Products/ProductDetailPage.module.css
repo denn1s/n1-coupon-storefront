@@ -15,7 +15,7 @@
 }
 
 .error h2 {
-  @apply text-2xl font-bold text-error;
+  @apply text-2xl font-bold text-red-500;
 }
 
 /* Breadcrumb */
@@ -24,15 +24,15 @@
 }
 
 .breadcrumbLink {
-  @apply text-primary hover:underline;
+  @apply text-blue-600 hover:underline;
 }
 
 .breadcrumbSeparator {
-  @apply text-base-content/40;
+  @apply text-gray-400;
 }
 
 .breadcrumbCurrent {
-  @apply text-base-content font-medium truncate;
+  @apply text-gray-900 font-medium truncate;
 }
 
 /* Content Layout */
@@ -46,7 +46,7 @@
 }
 
 .mainImage {
-  @apply w-full aspect-square bg-base-200 rounded-lg overflow-hidden shadow-lg;
+  @apply w-full aspect-square bg-gray-200 rounded-lg overflow-hidden shadow-lg;
 }
 
 .image {
@@ -58,7 +58,7 @@
 }
 
 .thumbnail {
-  @apply flex-shrink-0 w-20 h-20 bg-base-200 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all;
+  @apply flex-shrink-0 w-20 h-20 bg-gray-200 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-blue-600 transition-all;
 }
 
 .thumbnailImage {
@@ -71,33 +71,33 @@
 }
 
 .title {
-  @apply text-4xl font-bold text-base-content;
+  @apply text-4xl font-bold text-gray-900;
 }
 
 /* Price Section */
 .priceSection {
-  @apply py-4 border-b border-base-300 flex flex-col gap-2;
+  @apply py-4 border-b border-gray-300 flex flex-col gap-2;
 }
 
 .priceLabel {
-  @apply text-sm font-semibold text-base-content/60 uppercase tracking-wide;
+  @apply text-sm font-semibold text-gray-600 uppercase tracking-wide;
 }
 
 .price {
-  @apply text-5xl font-bold text-primary;
+  @apply text-5xl font-bold text-blue-600;
 }
 
 /* Stock Section */
 .stockSection {
-  @apply pb-4 border-b border-base-300;
+  @apply pb-4 border-b border-gray-300;
 }
 
 .stockAvailable {
-  @apply flex items-center gap-2 text-success font-semibold;
+  @apply flex items-center gap-2 text-green-600 font-semibold;
 }
 
 .stockUnavailable {
-  @apply flex items-center gap-2 text-error font-semibold;
+  @apply flex items-center gap-2 text-red-500 font-semibold;
 }
 
 .stockIcon {
@@ -106,7 +106,7 @@
 
 /* Low Stock Warning */
 .lowStockWarning {
-  @apply flex items-center gap-2 p-3 bg-warning/20 text-warning-content rounded-lg font-medium;
+  @apply flex items-center gap-2 p-3 bg-yellow-100 text-yellow-800 rounded-lg font-medium;
 }
 
 .warningIcon {
@@ -115,15 +115,15 @@
 
 /* Description Section */
 .descriptionSection {
-  @apply pb-4 border-b border-base-300;
+  @apply pb-4 border-b border-gray-300;
 }
 
 .descriptionTitle {
-  @apply text-2xl font-semibold text-base-content mb-3;
+  @apply text-2xl font-semibold text-gray-900 mb-3;
 }
 
 .description {
-  @apply text-base text-base-content/80 leading-relaxed whitespace-pre-line;
+  @apply text-base text-gray-800 leading-relaxed whitespace-pre-line;
 }
 
 /* Actions */
@@ -132,15 +132,15 @@
 }
 
 .addToCartButton {
-  @apply btn btn-primary flex-1 text-lg;
+  @apply px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors flex-1 text-lg;
 }
 
 .addToCartButton:disabled {
-  @apply btn-disabled;
+  @apply bg-gray-400 cursor-not-allowed opacity-50;
 }
 
 .backButton {
-  @apply btn btn-outline flex-1;
+  @apply px-6 py-3 bg-transparent border-2 border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 active:bg-gray-100 transition-colors flex-1;
 }
 
 /* Responsive adjustments */

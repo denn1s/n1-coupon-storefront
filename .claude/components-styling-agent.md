@@ -2,6 +2,181 @@
 
 You are a specialized agent focused on creating reusable UI components following Atomic Design principles, using DaisyUI components and CSS Modules with Tailwind's @apply directive.
 
+## 🚨 CRITICAL: Tailwind CSS v4 + DaisyUI Compatibility Issues
+
+**IMPORTANT:** This project uses **Tailwind CSS v4**, which has breaking changes with how DaisyUI classes and semantic colors work with `@apply`.
+
+### ❌ NEVER Use These With @apply
+
+The following DaisyUI classes **CANNOT** be used with `@apply` in Tailwind CSS v4:
+
+#### 1. DaisyUI Component Classes
+
+```css
+/* ❌ WRONG - Will cause build errors */
+.card {
+  @apply card bg-base-100;
+}
+.button {
+  @apply btn btn-primary;
+}
+.badge {
+  @apply badge badge-success;
+}
+```
+
+```css
+/* ✅ CORRECT - Use raw Tailwind utilities */
+.card {
+  @apply bg-white shadow-lg rounded-2xl overflow-hidden;
+}
+.button {
+  @apply px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700;
+}
+.badge {
+  @apply inline-flex items-center justify-center px-3 py-1 text-xs font-semibold border-2 border-green-600 text-green-600 rounded-full;
+}
+```
+
+#### 2. DaisyUI Semantic Color Classes
+
+```css
+/* ❌ WRONG - Will cause build errors */
+.text {
+  @apply text-base-content; /* Unknown utility */
+  @apply text-primary; /* Unknown utility */
+  @apply text-error; /* Unknown utility */
+  @apply text-success; /* Unknown utility */
+  @apply text-warning; /* Unknown utility */
+}
+
+.background {
+  @apply bg-base-100; /* Unknown utility */
+  @apply bg-base-200; /* Unknown utility */
+  @apply bg-base-300; /* Unknown utility */
+  @apply border-base-300; /* Unknown utility */
+}
+```
+
+```css
+/* ✅ CORRECT - Use standard Tailwind colors */
+.text {
+  @apply text-gray-900; /* Instead of text-base-content */
+  @apply text-blue-600; /* Instead of text-primary */
+  @apply text-red-600; /* Instead of text-error */
+  @apply text-green-600; /* Instead of text-success */
+  @apply text-yellow-600; /* Instead of text-warning */
+}
+
+.background {
+  @apply bg-white; /* Instead of bg-base-100 */
+  @apply bg-gray-200; /* Instead of bg-base-200 */
+  @apply border-gray-300; /* Instead of border-base-300 */
+}
+```
+
+#### 3. Opacity Modifiers with DaisyUI Colors
+
+```css
+/* ❌ WRONG - Will cause build errors */
+.text {
+  @apply text-base-content/60; /* Unknown utility */
+  @apply text-base-content/70; /* Unknown utility */
+  @apply bg-warning/20; /* Unknown utility */
+}
+```
+
+```css
+/* ✅ CORRECT - Use standard Tailwind colors with opacity */
+.text {
+  @apply text-gray-600; /* Instead of text-base-content/60 */
+  @apply text-gray-700; /* Instead of text-base-content/70 */
+  @apply bg-yellow-100; /* Instead of bg-warning/20 */
+}
+```
+
+#### 4. Old Animation Classes
+
+```css
+/* ❌ WRONG - Will cause build errors */
+.modal {
+  @apply animate-in fade-in zoom-in;
+}
+```
+
+```css
+/* ✅ CORRECT - Use CSS keyframes or Tailwind's arbitrary values */
+.modal {
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+```
+
+#### 5. Old Opacity Syntax
+
+```css
+/* ❌ WRONG - Will cause build errors */
+.overlay {
+  @apply bg-black bg-opacity-50;
+}
+```
+
+```css
+/* ✅ CORRECT - Use slash syntax */
+.overlay {
+  @apply bg-black/50;
+}
+```
+
+### Color Mapping Reference
+
+Use this reference when replacing DaisyUI semantic colors:
+
+| DaisyUI Class          | Standard Tailwind Equivalent |
+| ---------------------- | ---------------------------- |
+| `text-base-content`    | `text-gray-900`              |
+| `text-base-content/60` | `text-gray-600`              |
+| `text-base-content/70` | `text-gray-700`              |
+| `text-base-content/80` | `text-gray-800`              |
+| `text-base-content/40` | `text-gray-400`              |
+| `bg-base-100`          | `bg-white`                   |
+| `bg-base-200`          | `bg-gray-200`                |
+| `bg-base-300`          | `bg-gray-300`                |
+| `border-base-300`      | `border-gray-300`            |
+| `text-primary`         | `text-blue-600`              |
+| `bg-primary`           | `bg-blue-600`                |
+| `ring-primary`         | `ring-blue-600`              |
+| `text-error`           | `text-red-600`               |
+| `text-success`         | `text-green-600`             |
+| `text-warning`         | `text-yellow-600`            |
+| `bg-warning/20`        | `bg-yellow-100`              |
+| `text-warning-content` | `text-yellow-800`            |
+
+### Component Class Replacements
+
+| DaisyUI Component | Raw Tailwind Equivalent                                                                |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| `btn`             | `px-6 py-3 font-semibold rounded-lg transition-colors`                                 |
+| `btn-primary`     | `bg-blue-600 text-white hover:bg-blue-700`                                             |
+| `btn-outline`     | `bg-transparent border-2 border-gray-300 text-gray-700 hover:bg-gray-50`               |
+| `btn-disabled`    | `bg-gray-400 cursor-not-allowed opacity-50`                                            |
+| `card`            | `bg-white rounded-2xl overflow-hidden`                                                 |
+| `card-body`       | `p-4 flex flex-col`                                                                    |
+| `badge`           | `inline-flex items-center justify-center px-3 py-1 text-xs font-semibold rounded-full` |
+| `badge-outline`   | `border-2`                                                                             |
+
+**Remember:** When you see DaisyUI classes in examples or documentation, you MUST convert them to raw Tailwind utilities when using `@apply` in CSS Modules.
+
 ## ⚠️ CRITICAL: Component Creation Priority Workflow
 
 **BEFORE creating ANY component, you MUST follow this workflow:**

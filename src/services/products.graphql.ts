@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient, queryOptions } from '@tanstack/react-query'
-import { graphqlQueryFn, graphqlMutationFn } from '@lib/api/graphqlFn'
+import { useQuery, queryOptions } from '@tanstack/react-query'
+import { graphqlQueryFn } from '@lib/api/graphqlFn'
 
 /**
  * Products GraphQL Service
@@ -53,11 +53,11 @@ export interface ProductDetailResponse {
  * Uses cursor-based pagination (GraphQL standard)
  */
 export interface ProductsQueryVariables {
-  first?: number      // Number of items to fetch (forward pagination)
-  after?: string      // Cursor for forward pagination
-  before?: string     // Cursor for backward pagination
-  last?: number       // Number of items to fetch (backward pagination)
-  search?: string     // Optional search filter
+  first?: number // Number of items to fetch (forward pagination)
+  after?: string // Cursor for forward pagination
+  before?: string // Cursor for backward pagination
+  last?: number // Number of items to fetch (backward pagination)
+  search?: string // Optional search filter
 }
 
 // ============================================================================
@@ -112,16 +112,9 @@ const PRODUCT_DETAIL_QUERY = `
 // ============================================================================
 
 const getProducts = (variables: ProductsQueryVariables = {}) =>
-  graphqlQueryFn<ProductsQueryVariables, HoldingProductsResponse>(
-    HOLDING_PRODUCTS_QUERY,
-    variables
-  )
+  graphqlQueryFn<ProductsQueryVariables, HoldingProductsResponse>(HOLDING_PRODUCTS_QUERY, variables)
 
-const getProduct = (id: string) =>
-  graphqlQueryFn<{ id: string }, ProductDetailResponse>(
-    PRODUCT_DETAIL_QUERY,
-    { id }
-  )
+const getProduct = (id: string) => graphqlQueryFn<{ id: string }, ProductDetailResponse>(PRODUCT_DETAIL_QUERY, { id })
 
 // ============================================================================
 // QUERY HOOKS (Public API)
@@ -141,7 +134,7 @@ const getProduct = (id: string) =>
 export const useGetProducts = (variables: ProductsQueryVariables = { first: 20 }) => {
   return useQuery({
     queryKey: ['products', 'list', variables],
-    queryFn: getProducts(variables),
+    queryFn: getProducts(variables)
   })
 }
 
@@ -156,7 +149,7 @@ export const useGetProducts = (variables: ProductsQueryVariables = { first: 20 }
 export const productsOptions = (variables: ProductsQueryVariables = { first: 20 }) =>
   queryOptions({
     queryKey: ['products', 'list', variables],
-    queryFn: getProducts(variables),
+    queryFn: getProducts(variables)
   })
 
 /**
@@ -170,7 +163,7 @@ export const useGetProduct = (id: string) => {
     queryKey: ['products', 'detail', id],
     queryFn: getProduct(id),
     enabled: !!id,
-    select: (data) => data.product, // Extract product from response
+    select: (data) => data.product // Extract product from response
   })
 }
 
@@ -185,7 +178,7 @@ export const useGetProduct = (id: string) => {
 export const productOptions = (id: string) =>
   queryOptions({
     queryKey: ['products', 'detail', id],
-    queryFn: getProduct(id),
+    queryFn: getProduct(id)
   })
 
 // ============================================================================
@@ -217,7 +210,7 @@ export const productOptions = (id: string) =>
  */
 export const useProductsPagination = (pageSize: number = 20) => {
   const [variables, setVariables] = React.useState<ProductsQueryVariables>({
-    first: pageSize,
+    first: pageSize
   })
 
   const query = useGetProducts(variables)
@@ -230,7 +223,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasNextPage && pageInfo.endCursor) {
       setVariables({
         first: pageSize,
-        after: pageInfo.endCursor,
+        after: pageInfo.endCursor
       })
     }
   }
@@ -239,7 +232,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasPreviousPage && pageInfo.startCursor) {
       setVariables({
         last: pageSize,
-        before: pageInfo.startCursor,
+        before: pageInfo.startCursor
       })
     }
   }
@@ -266,7 +259,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
 
     // Advanced
     pageInfo,
-    refetch: query.refetch,
+    refetch: query.refetch
   }
 }
 

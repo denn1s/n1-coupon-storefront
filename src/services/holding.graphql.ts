@@ -2,14 +2,11 @@ import { useQuery, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
 import {
   HoldingProduct,
-  HoldingBusinessCategory,
-  HoldingStore,
-  HoldingCollection,
   HoldingProductsResponse,
   HoldingBusinessCategoriesResponse,
   HoldingStoresResponse,
   HoldingCollectionsResponse,
-  PaginationVariables,
+  PaginationVariables
 } from '@lib/api/types'
 import { useState } from 'react'
 
@@ -119,28 +116,16 @@ const HOLDING_COLLECTIONS_QUERY = `
 // ============================================================================
 
 const getProducts = (variables: PaginationVariables = {}) =>
-  graphqlQueryFn<PaginationVariables, HoldingProductsResponse>(
-    HOLDING_PRODUCTS_QUERY,
-    variables
-  )
+  graphqlQueryFn<PaginationVariables, HoldingProductsResponse>(HOLDING_PRODUCTS_QUERY, variables)
 
 const getCategories = (variables: PaginationVariables = {}) =>
-  graphqlQueryFn<PaginationVariables, HoldingBusinessCategoriesResponse>(
-    HOLDING_BUSINESS_CATEGORIES_QUERY,
-    variables
-  )
+  graphqlQueryFn<PaginationVariables, HoldingBusinessCategoriesResponse>(HOLDING_BUSINESS_CATEGORIES_QUERY, variables)
 
 const getStores = (variables: PaginationVariables = {}) =>
-  graphqlQueryFn<PaginationVariables, HoldingStoresResponse>(
-    HOLDING_STORES_QUERY,
-    variables
-  )
+  graphqlQueryFn<PaginationVariables, HoldingStoresResponse>(HOLDING_STORES_QUERY, variables)
 
 const getCollections = (variables: PaginationVariables = {}) =>
-  graphqlQueryFn<PaginationVariables, HoldingCollectionsResponse>(
-    HOLDING_COLLECTIONS_QUERY,
-    variables
-  )
+  graphqlQueryFn<PaginationVariables, HoldingCollectionsResponse>(HOLDING_COLLECTIONS_QUERY, variables)
 
 // ============================================================================
 // PRODUCTS HOOKS
@@ -155,7 +140,7 @@ const getCollections = (variables: PaginationVariables = {}) =>
 export const useGetProducts = (variables: PaginationVariables = { first: 20 }) => {
   return useQuery({
     queryKey: ['holding', 'products', 'list', variables],
-    queryFn: getProducts(variables),
+    queryFn: getProducts(variables)
   })
 }
 
@@ -165,7 +150,7 @@ export const useGetProducts = (variables: PaginationVariables = { first: 20 }) =
 export const productsOptions = (variables: PaginationVariables = { first: 20 }) =>
   queryOptions({
     queryKey: ['holding', 'products', 'list', variables],
-    queryFn: getProducts(variables),
+    queryFn: getProducts(variables)
   })
 
 /**
@@ -188,7 +173,7 @@ export const productsOptions = (variables: PaginationVariables = { first: 20 }) 
  */
 export const useProductsPagination = (pageSize: number = 20) => {
   const [variables, setVariables] = useState<PaginationVariables>({
-    first: pageSize,
+    first: pageSize
   })
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
@@ -206,8 +191,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
       const matchesSearch =
-        product.name.toLowerCase().includes(searchLower) ||
-        product.description.toLowerCase().includes(searchLower)
+        product.name.toLowerCase().includes(searchLower) || product.description.toLowerCase().includes(searchLower)
       if (!matchesSearch) return false
     }
 
@@ -222,7 +206,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasNextPage && pageInfo.endCursor) {
       setVariables({
         first: pageSize,
-        after: pageInfo.endCursor,
+        after: pageInfo.endCursor
       })
     }
   }
@@ -231,7 +215,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasPreviousPage && pageInfo.startCursor) {
       setVariables({
         last: pageSize,
-        before: pageInfo.startCursor,
+        before: pageInfo.startCursor
       })
     }
   }
@@ -275,7 +259,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
 
     // Advanced
     pageInfo,
-    refetch: query.refetch,
+    refetch: query.refetch
   }
 }
 
@@ -293,7 +277,7 @@ export const useGetCategories = (variables: PaginationVariables = { first: 100 }
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
-    select: (data) => data.holdingBusinessCategories,
+    select: (data) => data.holdingBusinessCategories
   })
 }
 
@@ -303,7 +287,7 @@ export const useGetCategories = (variables: PaginationVariables = { first: 100 }
 export const categoriesOptions = (variables: PaginationVariables = { first: 100 }) =>
   queryOptions({
     queryKey: ['holding', 'categories', 'list', variables],
-    queryFn: getCategories(variables),
+    queryFn: getCategories(variables)
   })
 
 // ============================================================================
@@ -320,7 +304,7 @@ export const useGetStores = (variables: PaginationVariables = { first: 100 }) =>
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
-    select: (data) => data.holdingStores,
+    select: (data) => data.holdingStores
   })
 }
 
@@ -330,7 +314,7 @@ export const useGetStores = (variables: PaginationVariables = { first: 100 }) =>
 export const storesOptions = (variables: PaginationVariables = { first: 100 }) =>
   queryOptions({
     queryKey: ['holding', 'stores', 'list', variables],
-    queryFn: getStores(variables),
+    queryFn: getStores(variables)
   })
 
 // ============================================================================
@@ -347,7 +331,7 @@ export const useGetCollections = (variables: PaginationVariables = { first: 100 
   return useQuery({
     queryKey: ['holding', 'collections', 'list', variables],
     queryFn: getCollections(variables),
-    select: (data) => data.holdingCollections,
+    select: (data) => data.holdingCollections
   })
 }
 
@@ -357,7 +341,7 @@ export const useGetCollections = (variables: PaginationVariables = { first: 100 
 export const collectionsOptions = (variables: PaginationVariables = { first: 100 }) =>
   queryOptions({
     queryKey: ['holding', 'collections', 'list', variables],
-    queryFn: getCollections(variables),
+    queryFn: getCollections(variables)
   })
 
 // ============================================================================
@@ -371,9 +355,6 @@ export const collectionsOptions = (variables: PaginationVariables = { first: 100
  * @example
  * const product = useFindProduct(productId, allProducts)
  */
-export const useFindProduct = (
-  productId: number,
-  products: HoldingProduct[]
-): HoldingProduct | undefined => {
+export const useFindProduct = (productId: number, products: HoldingProduct[]): HoldingProduct | undefined => {
   return products.find((p) => p.id === productId)
 }

@@ -12,7 +12,7 @@
 }
 
 .error {
-  @apply text-error;
+  @apply text-red-600;
 }
 
 .error h2 {
@@ -20,7 +20,7 @@
 }
 
 .empty {
-  @apply text-base-content/60;
+  @apply text-gray-600;
 }
 
 .empty h2 {
@@ -33,11 +33,11 @@
 }
 
 .title {
-  @apply text-4xl font-bold text-base-content mb-2;
+  @apply text-4xl font-bold text-gray-900 mb-2;
 }
 
 .subtitle {
-  @apply text-lg text-base-content/70;
+  @apply text-lg text-gray-700;
 }
 
 /* Search and Filters */
@@ -60,7 +60,7 @@
 
 /* Product Card */
 .card {
-  @apply card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer;
+  @apply bg-white shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer rounded-2xl overflow-hidden;
 }
 
 .cardImage {
@@ -72,15 +72,15 @@
 }
 
 .cardBody {
-  @apply card-body p-4;
+  @apply p-4 flex flex-col;
 }
 
 .productName {
-  @apply card-title text-lg font-bold text-base-content mb-2 line-clamp-2;
+  @apply text-lg font-bold text-gray-900 mb-2 line-clamp-2;
 }
 
 .description {
-  @apply text-sm text-base-content/70 mb-4 line-clamp-3;
+  @apply text-sm text-gray-700 mb-4 line-clamp-3;
 }
 
 .cardFooter {
@@ -88,32 +88,32 @@
 }
 
 .price {
-  @apply text-2xl font-bold text-primary;
+  @apply text-2xl font-bold text-blue-600;
 }
 
 .stockAvailable {
-  @apply badge badge-success badge-outline;
+  @apply inline-flex items-center justify-center px-3 py-1 text-xs font-semibold border-2 border-green-600 text-green-600 rounded-full;
 }
 
 .stockUnavailable {
-  @apply badge badge-error badge-outline;
+  @apply inline-flex items-center justify-center px-3 py-1 text-xs font-semibold border-2 border-red-600 text-red-600 rounded-full;
 }
 
 /* Pagination */
 .pagination {
-  @apply flex items-center justify-between gap-4 mt-8 pt-6 border-t border-base-300;
+  @apply flex items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-300;
 }
 
 .paginationButton {
-  @apply btn btn-primary flex items-center gap-2;
+  @apply px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center gap-2;
 }
 
 .paginationButton:disabled {
-  @apply btn-disabled;
+  @apply bg-gray-400 cursor-not-allowed opacity-50;
 }
 
 .paginationInfo {
-  @apply text-base-content/70 font-medium;
+  @apply text-gray-700 font-medium;
 }
 
 .icon {

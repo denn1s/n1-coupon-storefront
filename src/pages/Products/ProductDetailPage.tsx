@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useGetProducts } from '@services/holding.graphql'
 import { Link, useParams } from '@tanstack/react-router'
-import { HoldingProduct } from '@lib/api/types'
 import CheckoutModal from '@components/organisms/CheckoutModal'
 import styles from './ProductDetailPage.module.css'
 

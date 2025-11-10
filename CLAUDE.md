@@ -9,6 +9,7 @@ This is the **N1 Coupon Storefront** - a modern coupon and deals marketplace pla
 ### Key Features
 
 #### Platform Features
+
 - 🎟️ Coupon marketplace for browsing and purchasing deals
 - 🛍️ Shopping cart and checkout experience
 - 💳 Payment processing integration
@@ -16,6 +17,7 @@ This is the **N1 Coupon Storefront** - a modern coupon and deals marketplace pla
 - 🔍 Search and filtering by category, location, and price
 
 #### Technical Features
+
 - 🔐 Auth0 authentication with role-based permissions
 - 🧭 File-based routing with TanStack Router
 - 🔄 Data fetching with TanStack Query (React Query)
@@ -98,6 +100,36 @@ bun run build-storybook  # or npm run build-storybook
 - Tests use **Vitest** with **jsdom** environment
 - Test files: `*.test.ts` or `*.test.tsx` in `src/**/*.test.{ts,tsx}`
 - Setup file: `src/setupTests.ts`
+
+## 🚨 CRITICAL: Tailwind CSS v4 Compatibility
+
+**This project uses Tailwind CSS v4**, which has **breaking changes** with DaisyUI classes and semantic colors when used with `@apply` in CSS Modules.
+
+### ❌ DO NOT Use These With @apply:
+
+1. **DaisyUI Component Classes**: `btn`, `card`, `badge`, `card-body`, `card-title`, etc.
+2. **DaisyUI Semantic Colors**: `text-primary`, `text-error`, `text-success`, `text-base-content`, `bg-base-100`, `bg-base-200`, `border-base-300`, etc.
+3. **Opacity Modifiers on DaisyUI Colors**: `text-base-content/60`, `bg-warning/20`, etc.
+4. **Old Animation Classes**: `animate-in`, `fade-in`, `zoom-in`, etc.
+5. **Old Opacity Syntax**: `bg-opacity-50` (use `bg-black/50` instead)
+
+### ✅ DO Use Standard Tailwind Utilities:
+
+Replace DaisyUI classes with raw Tailwind utilities:
+
+```css
+/* ❌ WRONG */
+.button {
+  @apply btn btn-primary;
+}
+
+/* ✅ CORRECT */
+.button {
+  @apply px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors;
+}
+```
+
+**See `.claude/components-styling-agent.md`** for complete color mapping reference and replacement patterns.
 
 ## Architecture Overview
 
@@ -235,6 +267,7 @@ export const usePurchaseCoupon = () => {
 This template now supports **GraphQL** alongside REST APIs using `graphql-request` + TanStack Query.
 
 #### GraphQL Query Pattern
+
 ```typescript
 // In services file (e.g., src/services/products.graphql.ts)
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
@@ -250,8 +283,7 @@ const PRODUCTS_QUERY = `
   }
 `
 
-const getProducts = (variables = {}) =>
-  graphqlQueryFn<ProductsVariables, ProductsResponse>(PRODUCTS_QUERY, variables)
+const getProducts = (variables = {}) => graphqlQueryFn<ProductsVariables, ProductsResponse>(PRODUCTS_QUERY, variables)
 
 export const useGetProducts = (variables = { first: 20 }) => {
   return useQuery({
@@ -262,6 +294,7 @@ export const useGetProducts = (variables = { first: 20 }) => {
 ```
 
 #### Easy Cursor-Based Pagination
+
 GraphQL services include pagination helpers for cursor-based pagination:
 
 ```typescript
@@ -274,6 +307,7 @@ const { data, goToNextPage, hasNextPage } = useProductsPagination(20)
 ```
 
 #### GraphQL Configuration
+
 - Endpoint: `${VITE_API_HOST}/graphql`
 - Custom headers: `X-App-Id: yummy` (mandatory), `Authorization: Bearer {token}` (optional)
 - See `.claude/graphql-agent.md` for complete patterns
