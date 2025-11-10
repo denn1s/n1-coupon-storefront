@@ -20,7 +20,7 @@ export default function ProductDetailPage() {
 
   // Since there's no single product endpoint, we fetch from the list
   // In a real app, you'd have a dedicated product detail endpoint
-  const { data: productsData, isLoading, error } = useGetProducts({ first: 100 })
+  const { data: productsData, isLoading, error } = useGetProducts({ first: 50 })
 
   const product = productsData?.holdingProducts.nodes.find((p) => p.id === Number(productId))
 

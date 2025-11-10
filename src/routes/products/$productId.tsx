@@ -18,6 +18,6 @@ export const Route = createFileRoute('/products/$productId')({
   component: ProductDetailPage,
   // Prefetch products data before rendering the page
   loader: ({ context }) => {
-    return context.queryClient.ensureQueryData(productsOptions({ first: 100 }))
-  },
+    return context.queryClient.ensureQueryData(productsOptions({ first: 50 }))
+  }
 })

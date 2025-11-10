@@ -18,8 +18,8 @@ export const Route = createFileRoute('/')({
   loader: async ({ context }) => {
     await Promise.all([
       context.queryClient.ensureQueryData(productsOptions({ first: 20 })),
-      context.queryClient.ensureQueryData(categoriesOptions({ first: 100 })),
-      context.queryClient.ensureQueryData(storesOptions({ first: 100 }))
+      context.queryClient.ensureQueryData(categoriesOptions({ first: 50 })),
+      context.queryClient.ensureQueryData(storesOptions({ first: 50 }))
     ])
   }
 })

@@ -273,7 +273,7 @@ export const useProductsPagination = (pageSize: number = 20) => {
  * @example
  * const { data, isLoading } = useGetCategories()
  */
-export const useGetCategories = (variables: PaginationVariables = { first: 100 }) => {
+export const useGetCategories = (variables: PaginationVariables = { first: 50 }) => {
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
@@ -284,7 +284,7 @@ export const useGetCategories = (variables: PaginationVariables = { first: 100 }
 /**
  * Query options for categories (useful for route prefetching)
  */
-export const categoriesOptions = (variables: PaginationVariables = { first: 100 }) =>
+export const categoriesOptions = (variables: PaginationVariables = { first: 50 }) =>
   queryOptions({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables)
@@ -300,7 +300,7 @@ export const categoriesOptions = (variables: PaginationVariables = { first: 100 
  * @example
  * const { data, isLoading } = useGetStores()
  */
-export const useGetStores = (variables: PaginationVariables = { first: 100 }) => {
+export const useGetStores = (variables: PaginationVariables = { first: 50 }) => {
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
@@ -311,7 +311,7 @@ export const useGetStores = (variables: PaginationVariables = { first: 100 }) =>
 /**
  * Query options for stores (useful for route prefetching)
  */
-export const storesOptions = (variables: PaginationVariables = { first: 100 }) =>
+export const storesOptions = (variables: PaginationVariables = { first: 50 }) =>
   queryOptions({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables)
@@ -327,7 +327,7 @@ export const storesOptions = (variables: PaginationVariables = { first: 100 }) =
  * @example
  * const { data, isLoading } = useGetCollections()
  */
-export const useGetCollections = (variables: PaginationVariables = { first: 100 }) => {
+export const useGetCollections = (variables: PaginationVariables = { first: 50 }) => {
   return useQuery({
     queryKey: ['holding', 'collections', 'list', variables],
     queryFn: getCollections(variables),
@@ -338,7 +338,7 @@ export const useGetCollections = (variables: PaginationVariables = { first: 100 
 /**
  * Query options for collections (useful for route prefetching)
  */
-export const collectionsOptions = (variables: PaginationVariables = { first: 100 }) =>
+export const collectionsOptions = (variables: PaginationVariables = { first: 50 }) =>
   queryOptions({
     queryKey: ['holding', 'collections', 'list', variables],
     queryFn: getCollections(variables)
