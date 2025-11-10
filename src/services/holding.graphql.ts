@@ -1,4 +1,4 @@
-import { useQuery, queryOptions } from '@tanstack/react-query'
+import { useQuery, useQueryClient, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
 import {
   HoldingProduct,
@@ -176,6 +176,7 @@ export const useProductsPagination = (
   pageSize: number = 20,
   queryOptions?: { initialData?: HoldingProductsResponse; staleTime?: number }
 ) => {
+  const queryClient = useQueryClient()
   const [variables, setVariables] = useState<PaginationVariables>({
     first: pageSize
   })
@@ -223,6 +224,22 @@ export const useProductsPagination = (
     }
   }
 
+  // Prefetch next page for instant navigation
+  const prefetchNextPage = () => {
+    if (pageInfo?.hasNextPage && pageInfo.endCursor) {
+      const nextVariables = {
+        first: pageSize,
+        after: pageInfo.endCursor
+      }
+      // Prefetch the next page data
+      queryClient.prefetchQuery({
+        queryKey: ['holding', 'products', 'list', nextVariables],
+        queryFn: getProducts(nextVariables),
+        staleTime: queryOptions?.staleTime ?? 5 * 60 * 1000
+      })
+    }
+  }
+
   const goToPreviousPage = () => {
     if (pageInfo?.hasPreviousPage && pageInfo.startCursor) {
       setVariables({
@@ -259,6 +276,7 @@ export const useProductsPagination = (
     goToNextPage,
     goToPreviousPage,
     resetPagination,
+    prefetchNextPage,
 
     // Search and filter state
     searchTerm,

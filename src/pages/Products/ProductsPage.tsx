@@ -3,6 +3,7 @@ import { useProductsPagination, useGetCategories, useGetStores } from '@services
 import { HoldingProduct } from '@lib/api/types'
 import SearchBox from '@components/atoms/SearchBox'
 import ProductCard from '@components/molecules/ProductCard'
+import ProductCardSkeleton from '@components/molecules/ProductCardSkeleton'
 import ProductFilters from '@components/molecules/ProductFilters'
 import CheckoutModal from '@components/organisms/CheckoutModal'
 import { Route } from '@routes/index'
@@ -35,13 +36,14 @@ export default function ProductsPage() {
     hasPreviousPage,
     goToNextPage,
     goToPreviousPage,
+    prefetchNextPage,
     searchTerm,
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
     selectedStore,
     setSelectedStore,
-    resetFilters,
+    resetFilters
   } = useProductsPagination(20, {
     initialData: loaderData?.products,
     staleTime: 5 * 60 * 1000
@@ -65,7 +67,10 @@ export default function ProductsPage() {
 
   const categories = categoriesData?.nodes ?? []
   const stores = storesData?.nodes ?? []
-  const isLoading = productsLoading || categoriesLoading || storesLoading
+
+  // Differentiate between initial load and pagination load
+  const isInitialLoad = productsLoading && !products.length
+  const isPaginationLoad = productsLoading && products.length > 0
 
   // Handle buy button click
   const handleBuyClick = (product: HoldingProduct) => {
@@ -78,8 +83,8 @@ export default function ProductsPage() {
     setSelectedProduct(null)
   }
 
-  // Loading state
-  if (isLoading && !products.length) {
+  // Initial loading state (first page load)
+  if (isInitialLoad) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
@@ -154,22 +159,22 @@ export default function ProductsPage() {
         <>
           {/* Products Grid */}
           <div className={styles.grid}>
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onBuyClick={handleBuyClick}
-              />
-            ))}
+            {isPaginationLoad ? (
+              // Show skeleton cards during pagination
+              <>
+                {Array.from({ length: 20 }).map((_, index) => (
+                  <ProductCardSkeleton key={`skeleton-${index}`} />
+                ))}
+              </>
+            ) : (
+              // Show actual products
+              products.map((product) => <ProductCard key={product.id} product={product} onBuyClick={handleBuyClick} />)
+            )}
           </div>
 
           {/* Pagination Controls */}
           <div className={styles.pagination}>
-            <button
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-              className={styles.paginationButton}
-            >
+            <button onClick={goToPreviousPage} disabled={!hasPreviousPage} className={styles.paginationButton}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -189,6 +194,7 @@ export default function ProductsPage() {
 
             <button
               onClick={goToNextPage}
+              onMouseEnter={prefetchNextPage}
               disabled={!hasNextPage}
               className={styles.paginationButton}
             >
@@ -210,11 +216,7 @@ export default function ProductsPage() {
 
       {/* Checkout Modal */}
       {selectedProduct && (
-        <CheckoutModal
-          product={selectedProduct}
-          isOpen={isCheckoutModalOpen}
-          onClose={handleCloseCheckout}
-        />
+        <CheckoutModal product={selectedProduct} isOpen={isCheckoutModalOpen} onClose={handleCloseCheckout} />
       )}
     </div>
   )

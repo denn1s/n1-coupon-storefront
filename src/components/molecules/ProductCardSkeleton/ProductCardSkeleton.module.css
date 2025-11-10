@@ -1,0 +1,52 @@
+@reference "tailwindcss";
+
+.card {
+  @apply bg-white rounded-lg shadow-md overflow-hidden;
+  @apply border border-gray-200;
+  @apply h-full flex flex-col;
+}
+
+.imageSkeleton {
+  @apply w-full h-48 bg-gray-200 animate-pulse;
+}
+
+.content {
+  @apply p-4 flex-1 flex flex-col gap-3;
+}
+
+.titleSkeleton {
+  @apply h-5 bg-gray-200 rounded animate-pulse;
+}
+
+.descriptionSkeleton {
+  @apply h-4 bg-gray-200 rounded animate-pulse;
+}
+
+.footer {
+  @apply flex items-center justify-between mt-auto;
+}
+
+.priceSkeleton {
+  @apply h-8 w-24 bg-gray-200 rounded animate-pulse;
+}
+
+.buttonSkeleton {
+  @apply h-10 w-28 bg-gray-200 rounded-lg animate-pulse;
+}
+
+/* Stagger animation delays for more natural feel */
+.titleSkeleton:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.descriptionSkeleton:nth-child(1) {
+  animation-delay: 0.2s;
+}
+
+.descriptionSkeleton:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.descriptionSkeleton:nth-child(3) {
+  animation-delay: 0.4s;
+}
