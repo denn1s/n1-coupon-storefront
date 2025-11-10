@@ -31,3 +31,4 @@ bun.lockb
 yarn.lock
 pnpm-lock.yaml
 pnpm-lock.yaml.env
+.env
