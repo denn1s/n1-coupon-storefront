@@ -4,13 +4,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Modern React Admin Template** - a production-ready starter template for building React admin dashboards and web applications. It features a robust authentication system, modern routing, efficient data fetching patterns, and a complete component architecture following atomic design principles.
+This is the **N1 Coupon Storefront** - a modern coupon and deals marketplace platform similar to Groupon. It features a complete e-commerce experience for browsing and purchasing coupon deals, built with a robust authentication system, modern routing, efficient data fetching patterns (including GraphQL), and a complete component architecture following atomic design principles.
 
 ### Key Features
+
+#### Platform Features
+- 🎟️ Coupon marketplace for browsing and purchasing deals
+- 🛍️ Shopping cart and checkout experience
+- 💳 Payment processing integration
+- 📱 Responsive design for mobile and desktop
+- 🔍 Search and filtering by category, location, and price
+
+#### Technical Features
 - 🔐 Auth0 authentication with role-based permissions
 - 🧭 File-based routing with TanStack Router
 - 🔄 Data fetching with TanStack Query (React Query)
-- 🌐 **GraphQL support** with cursor-based pagination
+- 🌐 **GraphQL support** with cursor-based pagination for product catalog
 - 🎨 UI components with DaisyUI
 - 💅 Styling with Tailwind CSS + CSS Modules
 - 📝 Form handling with TanStack Form + Zod validation
@@ -147,12 +156,15 @@ src/routes/
   about.tsx           # About page (/about)
   login.tsx           # Login page
   signup.tsx          # Signup page
-  items.tsx           # Items list (/items)
-  items/
-    $itemId.tsx       # Item detail (/items/:itemId)
+  coupons.tsx         # Coupons list (/coupons)
+  coupons/
+    $couponId.tsx     # Coupon detail (/coupons/:couponId)
+  cart.tsx            # Shopping cart
+  checkout.tsx        # Checkout page
+  orders.tsx          # User orders
   settings.tsx        # Settings parent route
   settings/
-    management-api-keys.tsx  # Settings sub-page
+    profile.tsx       # User profile settings
 ```
 
 **Key conventions:**
@@ -170,35 +182,35 @@ This template uses a **custom query function builder** pattern in `src/lib/api/q
 #### API Query Pattern
 
 ```typescript
-// In services file (e.g., src/services/items.ts)
+// In services file (e.g., src/services/coupons.ts)
 import { getFn, postFn, patchFn, deleteFn } from '@lib/api/queryFn'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 
 // Create query options
-export const itemsOptions = (params = {}) =>
+export const couponsOptions = (params = {}) =>
   queryOptions({
-    queryKey: ['items', 'list', params],
-    queryFn: getFn<ItemsResponse>('/items', params)
+    queryKey: ['coupons', 'list', params],
+    queryFn: getFn<CouponsResponse>('/coupons', params)
   })
 
 // Create custom hook
-export const useGetItems = (params = {}) => {
-  return useQuery(itemsOptions(params))
+export const useGetCoupons = (params = {}) => {
+  return useQuery(couponsOptions(params))
 }
 ```
 
 #### API Mutation Pattern
 
 ```typescript
-export const useUpdateItem = (id: string) => {
+export const usePurchaseCoupon = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: patchFn<UpdateItemRequest, Item>(`/items/${id}`),
+    mutationFn: postFn<PurchaseCouponRequest, Order>('/orders'),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['items', 'list'] })
-      queryClient.invalidateQueries({ queryKey: ['items', 'detail', id] })
-      addToast({ title: 'Success', variant: 'success' })
+      queryClient.invalidateQueries({ queryKey: ['orders', 'list'] })
+      queryClient.invalidateQueries({ queryKey: ['cart'] })
+      addToast({ title: 'Purchase successful!', variant: 'success' })
     }
   })
 }
@@ -206,10 +218,11 @@ export const useUpdateItem = (id: string) => {
 
 #### Query Key Structure
 
-- Simple list: `['items', 'list']`
-- With params: `['items', 'list', { page: 1, search: 'foo' }]`
-- Specific item: `['items', 'detail', itemId]`
-- Nested resources: `['items', itemId, 'subitems']`
+- Simple list: `['coupons', 'list']`
+- With params: `['coupons', 'list', { category: 'food', minDiscount: 20 }]`
+- Specific item: `['coupons', 'detail', couponId]`
+- User orders: `['orders', 'list', userId]`
+- Shopping cart: `['cart', userId]`
 
 #### API Configuration
 
@@ -279,7 +292,8 @@ const { data, goToNextPage, hasNextPage } = useProductsPagination(20)
 Resource-specific permission hooks in `src/lib/auth/useResourcePermissions.ts`:
 
 ```typescript
-const { canRead, canWrite, canDelete } = useItemsPermissions()
+const { canRead, canWrite, canDelete } = useCouponsPermissions()
+const { canRead: canViewOrders } = useOrdersPermissions()
 ```
 
 Use `useMultipleResourcePermissions()`, `useAnyPermission()`, `useAllPermissions()` for complex checks.
@@ -402,62 +416,66 @@ Access via `import.meta.env.VITE_*` or `getEnv()` helper from `@lib/helpers/env`
 
 ## Example Implementation Guide
 
-### Adding a New Resource
+### Adding a New Feature (Example: Merchant Reviews)
 
 1. **Define types** in `src/lib/api/types.ts`:
 
 ```typescript
-export interface MyResource {
+export interface Review {
   id: string
-  name: string
-  // ...
+  merchantId: string
+  userId: string
+  rating: number
+  comment: string
+  createdAt: string
 }
 ```
 
-2. **Create service** in `src/services/myResource.ts`:
+2. **Create service** in `src/services/reviews.ts`:
 
 ```typescript
 import { getFn, postFn, patchFn, deleteFn } from '@lib/api/queryFn'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 
-export const useGetMyResources = () => {
+export const useGetMerchantReviews = (merchantId: string) => {
   return useQuery({
-    queryKey: ['myResources'],
-    queryFn: getFn<MyResource[]>('/my-resources')
+    queryKey: ['reviews', 'merchant', merchantId],
+    queryFn: getFn<Review[]>(`/merchants/${merchantId}/reviews`)
   })
 }
 ```
 
-3. **Create route** `src/routes/my-resources.tsx`:
+3. **Create route** `src/routes/merchants/$merchantId/reviews.tsx`:
 
 ```typescript
 import { createFileRoute } from '@tanstack/react-router'
-import { MyResourcesPage } from '@pages/MyResources'
+import { MerchantReviewsPage } from '@pages/MerchantReviews'
 
-export const Route = createFileRoute('/my-resources')({
-  component: MyResourcesPage
+export const Route = createFileRoute('/merchants/$merchantId/reviews')({
+  component: MerchantReviewsPage
 })
 ```
 
-4. **Create page** `src/pages/MyResources/MyResourcesPage.tsx`:
+4. **Create page** `src/pages/MerchantReviews/MerchantReviewsPage.tsx`:
 
 ```typescript
-export default function MyResourcesPage() {
-  const { data, isLoading } = useGetMyResources()
+export default function MerchantReviewsPage() {
+  const { merchantId } = useParams()
+  const { data, isLoading } = useGetMerchantReviews(merchantId)
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold">My Resources</h1>
+      <h1 className="text-3xl font-bold">Merchant Reviews</h1>
       {/* ... */}
     </div>
   )
 }
 ```
 
-5. **Export page** in `src/pages/MyResources/index.ts`:
+5. **Export page** in `src/pages/MerchantReviews/index.ts`:
 
 ```typescript
-export { default as MyResourcesPage } from './MyResourcesPage'
+export { default as MerchantReviewsPage } from './MerchantReviewsPage'
 ```
 
 ## Important Development Patterns
@@ -509,7 +527,7 @@ All API interactions centralized in `src/services/`:
 
 ```bash
 git clone <repo-url>
-cd tanstack-template
+cd n1-coupon-storefront
 bun install  # or npm install
 ```
 
@@ -534,10 +552,10 @@ bun run dev  # or npm run dev
 
 5. **Start customizing**:
 
-- Review example `items` service and pages
-- Replace with your own resources
-- Update types and services
-- Build your features!
+- Review the coupon marketplace architecture
+- Explore GraphQL integration for product catalog
+- Build new features like merchant reviews, favorites, etc.
+- Customize the storefront for your brand!
 
 ## Project Structure
 

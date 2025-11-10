@@ -1,8 +1,8 @@
 {
-  "name": "tanstack-admin-template",
+  "name": "n1-coupon-storefront",
   "version": "1.0.0",
-  "description": "A modern React admin template with TanStack Router, TanStack Query, DaisyUI, and Tailwind CSS",
-  "author": "Your Name",
+  "description": "A modern coupon and deals storefront platform built with React, TanStack Router, TanStack Query, and GraphQL - similar to Groupon",
+  "author": "N1 Team",
   "license": "MIT",
   "keywords": [
     "react",
@@ -11,10 +11,14 @@
     "tanstack-router",
     "tanstack-query",
     "react-query",
+    "graphql",
     "daisyui",
     "tailwind",
-    "admin-template",
-    "starter-template"
+    "coupon",
+    "deals",
+    "storefront",
+    "e-commerce",
+    "marketplace"
   ],
   "type": "module",
   "scripts": {
