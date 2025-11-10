@@ -1,6 +1,6 @@
 import { createRootRouteWithContext, Outlet, useLocation } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import MainLayout from '@layouts/Main' 
+import MainLayout from '@layouts/Main'
 import PublicLayout from '@layouts/Public'
 
 import type { QueryClient } from '@tanstack/react-query'
@@ -12,7 +12,7 @@ export interface RouterContext {
 const RootComponent = () => {
   const location = useLocation()
   const pathname = location.pathname
-  const publicPaths = ['/', '/signup', '/login']
+  const publicPaths = ['/', '/signup', '/login', '/products']
   const isPublic = publicPaths.includes(pathname) || publicPaths.some((p) => p !== '/' && pathname.startsWith(`${p}/`))
 
   return (
@@ -51,5 +51,5 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         </button>
       </div>
     )
-  },
+  }
 })
