@@ -31,6 +31,7 @@ export default function ProductsPage() {
     data: products,
     totalCount,
     isLoading: productsLoading,
+    isFetching: productsFetching,
     error: productsError,
     hasNextPage,
     hasPreviousPage,
@@ -69,8 +70,10 @@ export default function ProductsPage() {
   const stores = storesData?.nodes ?? []
 
   // Differentiate between initial load and pagination load
-  const isInitialLoad = productsLoading && !products.length
-  const isPaginationLoad = productsLoading && products.length > 0
+  // isLoading = true only on first load (no cached data)
+  // isFetching = true on any fetch (including pagination)
+  const isInitialLoad = productsLoading
+  const isPaginationLoad = productsFetching && !productsLoading && products.length > 0
 
   // Handle buy button click
   const handleBuyClick = (product: HoldingProduct) => {

@@ -266,6 +266,7 @@ export const useProductsPagination = (
     allData: allProducts,
     totalCount,
     isLoading: query.isLoading,
+    isFetching: query.isFetching,
     error: query.error,
 
     // Pagination state
