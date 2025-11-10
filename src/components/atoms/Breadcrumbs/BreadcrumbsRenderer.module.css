@@ -1,0 +1,25 @@
+@reference 'tailwindcss';
+
+.breadcrumbs {
+  @apply text-gray-600;
+}
+
+.breadcrumbList {
+  @apply flex space-x-2;
+}
+
+.breadcrumbItem {
+  @apply flex items-center;
+}
+
+.link {
+  @apply text-blue-600 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-400 rounded;
+}
+
+.current {
+  @apply font-semibold text-gray-900;
+}
+
+.separator {
+  @apply mx-2 text-gray-400 select-none;
+}

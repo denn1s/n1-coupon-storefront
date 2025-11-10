@@ -1,0 +1,41 @@
+{
+  "recommendations": [
+    // TypeScript & JavaScript
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // React & TanStack
+    "dsznajder.es7-react-js-snippets",
+
+    // Tailwind CSS
+    "bradlc.vscode-tailwindcss",
+
+    // CSS Modules
+    "clinyong.vscode-css-modules",
+
+    // Git
+    "eamodio.gitlens",
+
+    // Testing
+    "vitest.explorer",
+
+    // Path IntelliSense
+    "christian-kohler.path-intellisense",
+
+    // Auto Rename Tag
+    "formulahendry.auto-rename-tag",
+
+    // EditorConfig
+    "editorconfig.editorconfig",
+
+    // Import Cost (helps identify heavy imports)
+    "wix.vscode-import-cost",
+
+    // Better Comments
+    "aaron-bond.better-comments",
+
+    // Error Lens (inline error display)
+    "usernamehw.errorlens"
+  ],
+  "unwantedRecommendations": []
+}

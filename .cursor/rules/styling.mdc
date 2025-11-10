@@ -1,0 +1,72 @@
+---
+description: "Styling conventions using Tailwind CSS and CSS Modules."
+globs: ["src/**/*.tsx", "src/**/*.css"]
+---
+
+## Styling Rules
+
+This project uses a combination of **Tailwind CSS** for utility-first styling and **CSS Modules** for component-specific styles.
+
+### General Guidelines
+- **Prioritize Tailwind CSS**: For most styling needs, use Tailwind's utility classes directly in your JSX. This is the preferred method for applying styles.
+- **Use CSS Modules for Complex Styles**: When you have complex, component-specific styles that are difficult to express with utility classes, use CSS Modules. This is especially useful for animations, pseudo-selectors, or when you need to encapsulate a component's styles completely.
+- **Naming Conventions for CSS Modules**: Class names in CSS Modules files (`.module.css`) should be written in `camelCase`.
+
+### When to Use Tailwind CSS vs. CSS Modules
+
+- **Use Tailwind CSS for**:
+  - Layout and positioning (flexbox, grid, padding, margin).
+  - Typography (font size, weight, color).
+  - Backgrounds, borders, and shadows.
+  - Responsive design.
+  - Basically, anything that can be achieved with a combination of utility classes.
+
+- **Use CSS Modules for**:
+  - Custom animations and transitions.
+  - Complex pseudo-class styling (e.g., `:nth-child`).
+  - Scoped styles that should not leak out of the component.
+  - When a component's style is too complex or long to be cleanly written with inline Tailwind classes.
+
+### Example Usage
+
+**Using Tailwind CSS:**
+```tsx
+// Simple button component using Tailwind CSS
+export const Button = ({ children }) => {
+  return (
+    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      {children}
+    </button>
+  );
+};
+```
+
+**Using CSS Modules:**
+```tsx
+// In MyComponent.module.css
+.wrapper {
+  composes: p-4 rounded-lg from global; /* You can compose Tailwind classes */
+  background-color: var(--custom-background-color);
+  animation: slide-in 0.5s ease-out;
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+```
+
+```tsx
+// In MyComponent.tsx
+import styles from './MyComponent.module.css';
+
+export const MyComponent = () => {
+  return <div className={styles.wrapper}>My Component</div>;
+};
+```

@@ -1,0 +1,157 @@
+@reference "tailwindcss";
+
+/* ==========================================================================
+   Settings Sidebar Styles
+   ========================================================================== */
+
+/* Main sidebar container with smooth transitions */
+.sidebarContainer {
+  @apply bg-white border-r border-gray-200 h-full shadow-sm transition-all duration-300 ease-in-out;
+  width: 280px;
+  min-width: 280px;
+  max-width: 280px;
+}
+
+/* Collapsed state - narrow width showing only icons */
+.sidebarContainer.collapsed {
+  width: 64px;
+  min-width: 64px;
+  max-width: 64px;
+}
+
+/* Header section with title and collapse button */
+.sidebarHeader {
+  @apply px-4 py-3 border-b border-gray-100 bg-gray-50/50 flex items-center justify-between;
+}
+
+/* Collapse/expand toggle button */
+.collapseButton {
+  @apply p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200;
+  @apply flex items-center justify-center;
+}
+
+/* Centered header when collapsed */
+.sidebarContainer.collapsed .sidebarHeader {
+  @apply px-2 justify-center;
+}
+
+/* Navigation items container */
+.sidebar {
+  @apply flex flex-col space-y-2 p-4;
+}
+
+/* Reduced padding when collapsed */
+.sidebarContainer.collapsed .sidebar {
+  @apply p-2;
+}
+
+/* Base styles for navigation links and buttons */
+.sidebarLink, .sidebarButton {
+  @apply w-full flex items-center py-3 px-4 text-sm font-medium rounded-xl transition-all duration-200 cursor-pointer;
+  @apply text-gray-600 hover:text-gray-900 hover:bg-gray-50;
+  @apply border border-transparent relative text-left;
+  min-height: 44px; /* Consistent height for touch targets */
+}
+
+/* Collapsed state - centered icons only */
+.sidebarLink.collapsed, .sidebarButton.collapsed {
+  @apply px-2 justify-center;
+  min-height: 44px;
+}
+
+/* Center icon perfectly when collapsed */
+.sidebarLink.collapsed > span:first-child, .sidebarButton.collapsed > span:first-child {
+  @apply justify-center flex-none gap-0;
+}
+
+/* Visual indicator for collapsed buttons with children */
+.sidebarButton.collapsed {
+  @apply relative;
+}
+
+.sidebarButton.collapsed::after {
+  content: '';
+  @apply absolute bottom-1 right-1 w-2 h-2 bg-blue-500 rounded-full;
+  opacity: 0.7;
+}
+
+/* Active state styling */
+.sidebarLink[data-active="true"], .sidebarButton[data-active="true"] {
+  @apply bg-blue-50 text-blue-700 border-blue-200 shadow-sm;
+}
+
+/* Active state left border indicator */
+.sidebarLink[data-active="true"]::before, .sidebarButton[data-active="true"]::before {
+  content: '';
+  @apply absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-blue-600 rounded-r-full;
+}
+
+/* Hover effects */
+.sidebarLink:hover, .sidebarButton:hover {
+  @apply bg-gray-50 transform scale-[1.02] shadow-sm;
+}
+
+.sidebarLink[data-active="true"]:hover, .sidebarButton[data-active="true"]:hover {
+  @apply bg-blue-100 transform scale-[1.02];
+}
+
+/* Button-specific styling */
+.sidebarButton {
+  @apply text-left;
+}
+
+/* Submenu container with animation */
+.submenu {
+  @apply mt-2 space-y-1 pl-4 border-l-2 border-gray-100 ml-4;
+  max-width: calc(280px - 2rem);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Submenu item styling */
+.submenu .sidebarLink {
+  @apply py-2 px-3 text-xs font-normal rounded-lg ml-0;
+  @apply text-gray-500 hover:text-gray-700 hover:bg-gray-50;
+  @apply border-l-0 text-left;
+  min-height: 36px;
+  max-width: 100%;
+}
+
+.submenu .sidebarLink[data-active="true"] {
+  @apply bg-blue-50 text-blue-600 border-blue-100 shadow-sm;
+}
+
+.submenu .sidebarLink[data-active="true"]::before {
+  @apply w-0.5 h-6 bg-blue-500;
+}
+
+.submenu .sidebarLink:hover {
+  @apply transform scale-[1.01];
+}
+
+/* Layout utilities */
+.sidebarLink > span:first-child, .sidebarButton > span:first-child {
+  @apply flex items-center gap-3 min-w-0 flex-1 text-left;
+}
+
+.sidebarLink span span:first-child, .sidebarButton span span:first-child {
+  @apply flex-shrink-0;
+}
+
+.sidebarLink span span:last-child, .sidebarButton span span:last-child {
+  @apply truncate text-left;
+}
+
+.sidebarButton > span:last-child {
+  @apply flex-shrink-0 ml-auto;
+}

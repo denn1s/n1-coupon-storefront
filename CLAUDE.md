@@ -1,0 +1,569 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+This is a **Modern React Admin Template** - a production-ready starter template for building React admin dashboards and web applications. It features a robust authentication system, modern routing, efficient data fetching patterns, and a complete component architecture following atomic design principles.
+
+### Key Features
+- 🔐 Auth0 authentication with role-based permissions
+- 🧭 File-based routing with TanStack Router
+- 🔄 Data fetching with TanStack Query (React Query)
+- 🌐 **GraphQL support** with cursor-based pagination
+- 🎨 UI components with DaisyUI
+- 💅 Styling with Tailwind CSS + CSS Modules
+- 📝 Form handling with TanStack Form + Zod validation
+- 🏪 State management with TanStack Store
+- 📦 Built with Vite for optimal developer experience
+- 🔧 TypeScript for type safety
+
+## 🤖 AI Agents & Development Workflow
+
+This project includes **specialized AI agents** to help maintain consistency and best practices. Before working on any feature, consult the appropriate agent:
+
+### Quick Agent Reference
+
+- **Creating components?** → Read `src/components/COMPONENTS.md` FIRST, then use `.claude/components-styling-agent.md`
+- **Building API services?** → Use `.claude/services-agent.md`
+- **Adding pages/routes?** → Use `.claude/pages-routes-agent.md`
+- **Writing tests?** → Use `.claude/testing-agent.md`
+- **Documenting components?** → Use `.claude/storybook-agent.md`
+
+### ⚠️ Critical: Component Creation Priority
+
+**ALWAYS follow this workflow when creating components:**
+
+1. **Check `src/components/COMPONENTS.md`** - Component already exists?
+2. **Search filesystem** - Similar component in `src/components/`?
+3. **Check DaisyUI** - Does DaisyUI provide this component?
+4. **Create new component** - Only if none exist:
+   - Write component with TypeScript props
+   - Create CSS Module with @apply
+   - Write tests (\*.test.tsx)
+   - Write Storybook story (\*.stories.tsx)
+   - **Update COMPONENTS.md** (required!)
+
+📚 **Full agent documentation**: See `.claude/claude-agents.md` for comprehensive guide
+
+## Development Commands
+
+**Package Manager**: This project supports both **bun** (preferred for speed) and **npm**. Use bun if available in your environment, otherwise use npm.
+
+### Essential Commands
+
+```bash
+# Install dependencies (use bun if available, npm otherwise)
+bun install    # or npm install
+
+# Development server (runs on http://localhost:3000)
+bun run dev    # or npm run dev
+
+# Build for production
+bun run build  # or npm run build
+
+# Build for development environment
+bun run build:dev  # or npm run build:dev
+
+# Run tests (single run)
+bun test       # or npm test
+
+# Run tests in watch mode
+bun test-watch # or npm test-watch
+
+# Lint code
+bun run lint   # or npm run lint
+
+# Preview production build
+bun run preview  # or npm run preview
+
+# Run Storybook (on port 6006)
+bun run storybook  # or npm run storybook
+
+# Build Storybook
+bun run build-storybook  # or npm run build-storybook
+```
+
+### Running Tests
+
+- Tests use **Vitest** with **jsdom** environment
+- Test files: `*.test.ts` or `*.test.tsx` in `src/**/*.test.{ts,tsx}`
+- Setup file: `src/setupTests.ts`
+
+## Architecture Overview
+
+### Core Technology Stack
+
+- **Build Tool**: Vite with React plugin
+- **Router**: TanStack Router (file-based routing)
+- **Data Fetching**: TanStack Query (React Query) with custom query builders
+- **GraphQL**: graphql-request for GraphQL operations
+- **Auth**: Token-based authentication with TanStack Store
+- **UI Framework**: DaisyUI component library
+- **Styling**: Tailwind CSS (primary) + CSS Modules (complex styles)
+- **Forms**: TanStack Form with Zod validation
+- **State Management**: TanStack Store for global state
+
+### Path Aliases
+
+Configured in `vite.config.ts` for clean imports:
+
+- `@components` → `src/components`
+- `@layouts` → `src/components/_layouts`
+- `@pages` → `src/pages`
+- `@routes` → `src/routes`
+- `@lib` → `src/lib`
+- `@auth` → `src/lib/auth`
+- `@helpers` → `src/lib/helpers`
+- `@types` → `src/lib/types`
+- `@stores` → `src/lib/stores`
+- `@services` → `src/services`
+- `@styles` → `src/styles`
+
+### Component Architecture (Atomic Design)
+
+Components follow Atomic Design methodology:
+
+- **`atoms/`**: Basic building blocks (Button, Checkbox, Dropdown, Spinner, etc.)
+- **`molecules/`**: Simple component compositions (TableHeader, TableFooter, FilePicker)
+- **`organisms/`**: Complex, reusable components (Table)
+- **`_layouts/`**: Layout components (Main, Public)
+
+Each component should:
+
+- Live in its own directory
+- Use PascalCase naming
+- Include `.tsx` file, optional `.module.css`, and `index.ts` for exports
+- Define typed props with `{ComponentName}Props` interface
+
+### Routing Pattern (TanStack Router)
+
+**File-based routing** in `src/routes/`:
+
+```
+src/routes/
+  __root.tsx          # Root layout
+  index.tsx           # Home page (/)
+  about.tsx           # About page (/about)
+  login.tsx           # Login page
+  signup.tsx          # Signup page
+  items.tsx           # Items list (/items)
+  items/
+    $itemId.tsx       # Item detail (/items/:itemId)
+  settings.tsx        # Settings parent route
+  settings/
+    management-api-keys.tsx  # Settings sub-page
+```
+
+**Key conventions:**
+
+- Export a `Route` created with `createFileRoute`
+- Use `<Link>` from `@tanstack/react-router` for navigation
+- Use `useNavigate()` for programmatic navigation
+- Dynamic routes: `$paramName.tsx` format
+- Route tree auto-generated in `routeTree.gen.ts` (don't edit manually)
+
+### Data Fetching Pattern (TanStack Query)
+
+This template uses a **custom query function builder** pattern in `src/lib/api/queryFn.ts`:
+
+#### API Query Pattern
+
+```typescript
+// In services file (e.g., src/services/items.ts)
+import { getFn, postFn, patchFn, deleteFn } from '@lib/api/queryFn'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+
+// Create query options
+export const itemsOptions = (params = {}) =>
+  queryOptions({
+    queryKey: ['items', 'list', params],
+    queryFn: getFn<ItemsResponse>('/items', params)
+  })
+
+// Create custom hook
+export const useGetItems = (params = {}) => {
+  return useQuery(itemsOptions(params))
+}
+```
+
+#### API Mutation Pattern
+
+```typescript
+export const useUpdateItem = (id: string) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: patchFn<UpdateItemRequest, Item>(`/items/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['items', 'list'] })
+      queryClient.invalidateQueries({ queryKey: ['items', 'detail', id] })
+      addToast({ title: 'Success', variant: 'success' })
+    }
+  })
+}
+```
+
+#### Query Key Structure
+
+- Simple list: `['items', 'list']`
+- With params: `['items', 'list', { page: 1, search: 'foo' }]`
+- Specific item: `['items', 'detail', itemId]`
+- Nested resources: `['items', itemId, 'subitems']`
+
+#### API Configuration
+
+- Base URL: `VITE_API_HOST` + `VITE_API_MOUNT` + route
+- Auth token automatically added from `authStore`
+- Custom `buildQueryFn` handles headers, params, errors, logging
+
+### GraphQL Integration (New!)
+
+This template now supports **GraphQL** alongside REST APIs using `graphql-request` + TanStack Query.
+
+#### GraphQL Query Pattern
+```typescript
+// In services file (e.g., src/services/products.graphql.ts)
+import { graphqlQueryFn } from '@lib/api/graphqlFn'
+import { queryOptions, useQuery } from '@tanstack/react-query'
+
+const PRODUCTS_QUERY = `
+  query HoldingProducts($first: Int, $after: String) {
+    holdingProducts(first: $first, after: $after) {
+      nodes { id name salePrice }
+      totalCount
+      pageInfo { hasNextPage endCursor }
+    }
+  }
+`
+
+const getProducts = (variables = {}) =>
+  graphqlQueryFn<ProductsVariables, ProductsResponse>(PRODUCTS_QUERY, variables)
+
+export const useGetProducts = (variables = { first: 20 }) => {
+  return useQuery({
+    queryKey: ['products', 'list', variables],
+    queryFn: getProducts(variables)
+  })
+}
+```
+
+#### Easy Cursor-Based Pagination
+GraphQL services include pagination helpers for cursor-based pagination:
+
+```typescript
+export const useProductsPagination = (pageSize = 20) => {
+  // Returns: data, totalCount, hasNextPage, hasPreviousPage, goToNextPage, goToPreviousPage
+}
+
+// In component
+const { data, goToNextPage, hasNextPage } = useProductsPagination(20)
+```
+
+#### GraphQL Configuration
+- Endpoint: `${VITE_API_HOST}/graphql`
+- Custom headers: `X-App-Id: yummy` (mandatory), `Authorization: Bearer {token}` (optional)
+- See `.claude/graphql-agent.md` for complete patterns
+
+### Authentication & Authorization
+
+**Custom Auth0 integration** with permission system:
+
+- **Auth Context**: `src/lib/auth/AuthContext.tsx` - Auth state management
+- **Auth Provider**: `src/lib/auth/AuthProvider.tsx` - Wraps Auth0 provider
+- **Auth Handler**: `src/lib/auth/AuthHandler.tsx` - Handles auth flow
+- **Auth Store**: `src/lib/stores/authStore.ts` - Zustand store for auth state
+
+#### Permission System
+
+Resource-specific permission hooks in `src/lib/auth/useResourcePermissions.ts`:
+
+```typescript
+const { canRead, canWrite, canDelete } = useItemsPermissions()
+```
+
+Use `useMultipleResourcePermissions()`, `useAnyPermission()`, `useAllPermissions()` for complex checks.
+
+### Form Patterns
+
+**TanStack Form** with Zod validation:
+
+```typescript
+import { useForm } from '@tanstack/react-form'
+import { zodValidator } from '@tanstack/zod-form-adapter'
+import { z } from 'zod'
+
+const formSchema = z.object({
+  name: z.string().min(1, 'Required'),
+  description: z.string()
+})
+
+const form = useForm({
+  defaultValues: { name: '', description: '' },
+  onSubmit: async ({ value }) => {
+    await createItem(value)
+  },
+  validatorAdapter: zodValidator()
+})
+```
+
+### Styling Conventions
+
+**Preferred Approach: CSS Modules with @apply**
+
+This project prefers CSS Modules with Tailwind's `@apply` directive over inline utility classes:
+
+```css
+/* Component.module.css */
+@reference "tailwindcss";
+
+.container {
+  @apply flex flex-col gap-4 p-6;
+}
+
+.header {
+  @apply flex justify-between items-center;
+}
+
+.title {
+  @apply text-2xl font-semibold text-gray-900;
+}
+
+.button {
+  @apply rounded-xl px-4 py-2 bg-blue-600 text-white hover:bg-blue-700;
+}
+```
+
+```tsx
+// Component.tsx
+import styles from './Component.module.css'
+
+export default function Component() {
+  return (
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>Title</h1>
+        <button className={styles.button}>Action</button>
+      </div>
+    </div>
+  )
+}
+```
+
+**Key Points:**
+
+- Use `.module.css` files for all component styles
+- Use `@reference "tailwindcss"` at the top of CSS files
+- Apply Tailwind utilities via `@apply` directive
+- Use `camelCase` for CSS class names
+- Keep styles co-located with components
+- Use inline Tailwind classes only for DaisyUI classes or one-off overrides
+
+**Example Structure:**
+
+```
+src/components/atoms/Card/
+├── Card.tsx
+├── Card.module.css
+└── index.ts
+```
+
+### Global State (Zustand)
+
+Located in `src/lib/stores/`:
+
+- `authStore.ts`: Authentication state (token, user, permissions)
+- `breadStore.ts`: Breadcrumb navigation state
+
+### Toast Notifications
+
+```typescript
+import { addToast } from '@lib/toasts'
+
+addToast({
+  title: 'Success',
+  description: 'Operation completed',
+  variant: 'success' // or 'error', 'warning', 'info'
+})
+```
+
+### Environment Variables
+
+All prefixed with `VITE_`:
+
+- `VITE_AUTH_REDIRECT_URI`: Auth0 redirect URI
+- `VITE_AUTH_DOMAIN`: Auth0 domain
+- `VITE_AUTH_CLIENT_ID`: Auth0 client ID
+- `VITE_AUTH_AUDIENCE`: Auth0 API audience
+- `VITE_API_HOST`: Backend API host
+- `VITE_API_MOUNT`: API mount path (e.g., `/api/v1`)
+
+Access via `import.meta.env.VITE_*` or `getEnv()` helper from `@lib/helpers/env`
+
+## Example Implementation Guide
+
+### Adding a New Resource
+
+1. **Define types** in `src/lib/api/types.ts`:
+
+```typescript
+export interface MyResource {
+  id: string
+  name: string
+  // ...
+}
+```
+
+2. **Create service** in `src/services/myResource.ts`:
+
+```typescript
+import { getFn, postFn, patchFn, deleteFn } from '@lib/api/queryFn'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+
+export const useGetMyResources = () => {
+  return useQuery({
+    queryKey: ['myResources'],
+    queryFn: getFn<MyResource[]>('/my-resources')
+  })
+}
+```
+
+3. **Create route** `src/routes/my-resources.tsx`:
+
+```typescript
+import { createFileRoute } from '@tanstack/react-router'
+import { MyResourcesPage } from '@pages/MyResources'
+
+export const Route = createFileRoute('/my-resources')({
+  component: MyResourcesPage
+})
+```
+
+4. **Create page** `src/pages/MyResources/MyResourcesPage.tsx`:
+
+```typescript
+export default function MyResourcesPage() {
+  const { data, isLoading } = useGetMyResources()
+
+  return (
+    <div className="p-6">
+      <h1 className="text-3xl font-bold">My Resources</h1>
+      {/* ... */}
+    </div>
+  )
+}
+```
+
+5. **Export page** in `src/pages/MyResources/index.ts`:
+
+```typescript
+export { default as MyResourcesPage } from './MyResourcesPage'
+```
+
+## Important Development Patterns
+
+### Services Layer
+
+All API interactions centralized in `src/services/`:
+
+- Each resource gets its own file
+- Export custom hooks for queries and mutations
+- Handle query invalidation in mutation `onSuccess`
+
+### Type Definitions
+
+- API types in `src/lib/api/types.ts`
+- Component prop types inline or separate `.d.ts`
+- Never use `any` - prefer `unknown` if type is truly unknown
+
+### Error Handling
+
+- React Query handles errors automatically
+- Use `isError` and `error` from query/mutation hooks
+- Display errors with toast notifications or error components
+- `throwOnError: false` configured globally
+
+### Testing
+
+- Use `@testing-library/react` for component tests
+- Use `@testing-library/user-event` for interactions
+- Storybook available for component development
+- Co-locate test files with components
+
+## Key Project Conventions
+
+1. **Always use path aliases** instead of relative imports
+2. **Follow Atomic Design** for component organization
+3. **Use custom API query builders** (`getFn`, `postFn`, etc.) for all API calls
+4. **Create service functions** for API interactions, don't call API directly from components
+5. **Use permission hooks** to control UI based on user permissions
+6. **Invalidate queries** after mutations to keep data fresh
+7. **Use DaisyUI components** for consistency
+8. **Show toasts** for user feedback on mutations
+9. **Handle loading and error states** using React Query states
+10. **Use TypeScript strictly** - enable type checking everywhere
+
+## Getting Started
+
+1. **Clone and install**:
+
+```bash
+git clone <repo-url>
+cd tanstack-template
+bun install  # or npm install
+```
+
+2. **Set up environment variables**:
+
+```bash
+cp .env.example .env.local
+# Edit .env.local with your values
+```
+
+3. **Configure Auth0**:
+
+- Create Auth0 application
+- Add environment variables
+- Configure callback URLs
+
+4. **Start development**:
+
+```bash
+bun run dev  # or npm run dev
+```
+
+5. **Start customizing**:
+
+- Review example `items` service and pages
+- Replace with your own resources
+- Update types and services
+- Build your features!
+
+## Project Structure
+
+```
+src/
+├── components/          # Atomic design components
+│   ├── atoms/          # Basic components
+│   ├── molecules/      # Composite components
+│   ├── organisms/      # Complex components
+│   └── _layouts/       # Layout components
+├── pages/              # Page components
+├── routes/             # TanStack Router files
+├── services/           # API service hooks
+├── lib/
+│   ├── api/           # API utilities and types
+│   ├── auth/          # Authentication
+│   ├── helpers/       # Helper functions
+│   ├── hooks/         # Custom hooks
+│   └── stores/        # Zustand stores
+└── styles/            # Global styles
+```
+
+## Additional Resources
+
+- [TanStack Router Docs](https://tanstack.com/router)
+- [TanStack Query Docs](https://tanstack.com/query)
+- [DaisyUI Docs](https://daisyui.com)
+- [Tailwind CSS Docs](https://tailwindcss.com)
+- [Auth0 React SDK](https://auth0.com/docs/quickstart/spa/react)

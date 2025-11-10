@@ -1,0 +1,146 @@
+@reference "tailwindcss";
+
+.container {
+  @apply p-6 max-w-7xl mx-auto;
+}
+
+/* Loading & Error States */
+.loading,
+.error {
+  @apply flex flex-col items-center justify-center min-h-[400px] gap-4;
+}
+
+.error {
+  @apply text-center;
+}
+
+.error h2 {
+  @apply text-2xl font-bold text-error;
+}
+
+/* Breadcrumb */
+.breadcrumb {
+  @apply flex items-center gap-2 mb-6 text-sm;
+}
+
+.breadcrumbLink {
+  @apply text-primary hover:underline;
+}
+
+.breadcrumbSeparator {
+  @apply text-base-content/40;
+}
+
+.breadcrumbCurrent {
+  @apply text-base-content font-medium truncate;
+}
+
+/* Content Layout */
+.content {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-8;
+}
+
+/* Image Section */
+.imageSection {
+  @apply flex flex-col gap-4;
+}
+
+.mainImage {
+  @apply w-full aspect-square bg-base-200 rounded-lg overflow-hidden shadow-lg;
+}
+
+.image {
+  @apply w-full h-full object-cover;
+}
+
+.thumbnails {
+  @apply flex gap-2 overflow-x-auto;
+}
+
+.thumbnail {
+  @apply flex-shrink-0 w-20 h-20 bg-base-200 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary transition-all;
+}
+
+.thumbnailImage {
+  @apply w-full h-full object-cover;
+}
+
+/* Info Section */
+.infoSection {
+  @apply flex flex-col gap-6;
+}
+
+.title {
+  @apply text-4xl font-bold text-base-content;
+}
+
+/* Price Section */
+.priceSection {
+  @apply py-4 border-b border-base-300;
+}
+
+.price {
+  @apply text-5xl font-bold text-primary;
+}
+
+/* Stock Section */
+.stockSection {
+  @apply pb-4 border-b border-base-300;
+}
+
+.stockAvailable {
+  @apply flex items-center gap-2 text-success font-semibold;
+}
+
+.stockUnavailable {
+  @apply flex items-center gap-2 text-error font-semibold;
+}
+
+.stockIcon {
+  @apply w-6 h-6;
+}
+
+/* Description Section */
+.descriptionSection {
+  @apply pb-4 border-b border-base-300;
+}
+
+.descriptionTitle {
+  @apply text-2xl font-semibold text-base-content mb-3;
+}
+
+.description {
+  @apply text-base text-base-content/80 leading-relaxed whitespace-pre-line;
+}
+
+/* Actions */
+.actions {
+  @apply flex flex-col sm:flex-row gap-4 mt-4;
+}
+
+.addToCartButton {
+  @apply btn btn-primary flex-1 text-lg;
+}
+
+.addToCartButton:disabled {
+  @apply btn-disabled;
+}
+
+.backButton {
+  @apply btn btn-outline flex-1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .content {
+    @apply grid-cols-1;
+  }
+
+  .title {
+    @apply text-3xl;
+  }
+
+  .price {
+    @apply text-4xl;
+  }
+}
