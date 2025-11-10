@@ -183,10 +183,13 @@ export const useProductsPagination = (
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [selectedStore, setSelectedStore] = useState<number | null>(null)
 
+  // Only use initialData if variables match the initial page (no pagination cursors)
+  const isInitialPage = !variables.after && !variables.before && variables.first === pageSize
+
   const query = useQuery({
     queryKey: ['holding', 'products', 'list', variables],
     queryFn: getProducts(variables),
-    initialData: queryOptions?.initialData,
+    initialData: isInitialPage ? queryOptions?.initialData : undefined,
     staleTime: queryOptions?.staleTime ?? 5 * 60 * 1000
   })
 
@@ -289,6 +292,8 @@ export const useGetCategories = (
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
+    // If initialData is provided, it's the full response, so we need to select from it
+    // TanStack Query will apply select to initialData automatically
     select: (data) => data.holdingBusinessCategories,
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000
@@ -322,6 +327,8 @@ export const useGetStores = (
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
+    // If initialData is provided, it's the full response, so we need to select from it
+    // TanStack Query will apply select to initialData automatically
     select: (data) => data.holdingStores,
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000

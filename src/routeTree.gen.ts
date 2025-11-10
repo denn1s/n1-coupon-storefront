@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ProductsRouteImport } from './routes/products'
 import { Route as MyCouponsRouteImport } from './routes/my-coupons'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
@@ -29,11 +28,6 @@ const SignupRoute = SignupRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProductsRoute = ProductsRouteImport.update({
-  id: '/products',
-  path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MyCouponsRoute = MyCouponsRouteImport.update({
@@ -67,9 +61,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
-  id: '/$productId',
-  path: '/$productId',
-  getParentRoute: () => ProductsRoute,
+  id: '/products/$productId',
+  path: '/products/$productId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ItemsItemIdRoute = ItemsItemIdRouteImport.update({
   id: '/$itemId',
@@ -84,7 +78,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
-  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -97,7 +90,6 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
-  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -111,7 +103,6 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
-  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -126,7 +117,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/my-coupons'
-    | '/products'
     | '/settings'
     | '/signup'
     | '/items/$itemId'
@@ -139,7 +129,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/my-coupons'
-    | '/products'
     | '/settings'
     | '/signup'
     | '/items/$itemId'
@@ -152,7 +141,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/my-coupons'
-    | '/products'
     | '/settings'
     | '/signup'
     | '/items/$itemId'
@@ -166,9 +154,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   MyCouponsRoute: typeof MyCouponsRoute
-  ProductsRoute: typeof ProductsRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,13 +173,6 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/products': {
-      id: '/products'
-      path: '/products'
-      fullPath: '/products'
-      preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/my-coupons': {
@@ -238,10 +219,10 @@ declare module '@tanstack/react-router' {
     }
     '/products/$productId': {
       id: '/products/$productId'
-      path: '/$productId'
+      path: '/products/$productId'
       fullPath: '/products/$productId'
       preLoaderRoute: typeof ProductsProductIdRouteImport
-      parentRoute: typeof ProductsRoute
+      parentRoute: typeof rootRouteImport
     }
     '/items/$itemId': {
       id: '/items/$itemId'
@@ -263,18 +244,6 @@ const ItemsRouteChildren: ItemsRouteChildren = {
 
 const ItemsRouteWithChildren = ItemsRoute._addFileChildren(ItemsRouteChildren)
 
-interface ProductsRouteChildren {
-  ProductsProductIdRoute: typeof ProductsProductIdRoute
-}
-
-const ProductsRouteChildren: ProductsRouteChildren = {
-  ProductsProductIdRoute: ProductsProductIdRoute,
-}
-
-const ProductsRouteWithChildren = ProductsRoute._addFileChildren(
-  ProductsRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -282,9 +251,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   MyCouponsRoute: MyCouponsRoute,
-  ProductsRoute: ProductsRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
+  ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -57,7 +57,7 @@
 
 .buyButton {
   @apply px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg;
-  @apply transition-all duration-200;
+  @apply transition-all duration-200 cursor-pointer;
   @apply hover:bg-blue-700 active:bg-blue-800;
   @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   @apply disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400;

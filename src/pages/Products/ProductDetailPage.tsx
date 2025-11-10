@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useGetProducts } from '@services/holding.graphql'
+import { Route } from '@routes/products/$productId'
 import { Link, useParams } from '@tanstack/react-router'
 import CheckoutModal from '@components/organisms/CheckoutModal'
+import type { ProductImage, HoldingProduct } from '@lib/api/types'
 import styles from './ProductDetailPage.module.css'
 
 /**
@@ -18,11 +19,9 @@ export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false)
 
-  // Since there's no single product endpoint, we fetch from the list
-  // In a real app, you'd have a dedicated product detail endpoint
-  const { data: productsData, isLoading, error } = useGetProducts({ first: 50 })
-
-  const product = productsData?.holdingProducts.nodes.find((p) => p.id === Number(productId))
+  // Use loader data (already fetched and cached by the route loader)
+  const productsData = Route.useLoaderData()
+  const product = productsData?.holdingProducts?.nodes?.find((p: HoldingProduct) => p.id === Number(productId))
 
   // Handle buy button click
   const handleBuyNow = () => {
@@ -33,33 +32,6 @@ export default function ProductDetailPage() {
 
   const handleCloseCheckout = () => {
     setIsCheckoutModalOpen(false)
-  }
-
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.loading}>
-          <span className="loading loading-spinner loading-lg"></span>
-          <p>Loading product...</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Error state
-  if (error) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.error}>
-          <h2>Error loading product</h2>
-          <p>{error.message}</p>
-          <Link to="/" className="btn btn-primary">
-            Back to Products
-          </Link>
-        </div>
-      </div>
-    )
   }
 
   // Not found state
@@ -101,7 +73,7 @@ export default function ProductDetailPage() {
           {/* Thumbnail Gallery (if additional images exist) */}
           {product.images && product.images.length > 1 && (
             <div className={styles.thumbnails}>
-              {product.images.map((image) => (
+              {product.images.map((image: ProductImage) => (
                 <button key={image.sequence} className={styles.thumbnail} onClick={() => setSelectedImage(image.url)}>
                   <img src={image.url} alt={`${product.name} - ${image.sequence}`} className={styles.thumbnailImage} />
                 </button>
