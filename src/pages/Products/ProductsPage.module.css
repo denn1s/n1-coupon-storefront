@@ -40,6 +40,19 @@
   @apply text-lg text-base-content/70;
 }
 
+/* Search and Filters */
+.controlsContainer {
+  @apply mb-8 grid grid-cols-1 lg:grid-cols-4 gap-6;
+}
+
+.searchContainer {
+  @apply lg:col-span-3;
+}
+
+.filtersContainer {
+  @apply lg:col-span-1;
+}
+
 /* Products Grid */
 .grid {
   @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8;

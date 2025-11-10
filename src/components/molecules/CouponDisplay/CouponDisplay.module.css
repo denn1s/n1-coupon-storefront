@@ -1,0 +1,108 @@
+@reference "tailwindcss";
+
+.container {
+  @apply bg-white rounded-lg shadow-xl max-w-md mx-auto;
+}
+
+.header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.closeButton {
+  @apply p-2 hover:bg-gray-100 rounded-full transition-colors duration-200;
+}
+
+.closeIcon {
+  @apply w-6 h-6 text-gray-600;
+}
+
+.content {
+  @apply p-6 flex flex-col gap-6;
+}
+
+/* Product Info */
+.productInfo {
+  @apply flex flex-col items-center text-center gap-3;
+}
+
+.productImage {
+  @apply w-24 h-24 object-cover rounded-lg shadow-md;
+}
+
+.productName {
+  @apply text-xl font-semibold text-gray-900;
+}
+
+.priceInfo {
+  @apply flex flex-col gap-1;
+}
+
+.priceLabel {
+  @apply text-sm text-gray-500 uppercase tracking-wide;
+}
+
+.price {
+  @apply text-2xl font-bold text-green-600;
+}
+
+/* QR Code Section */
+.qrSection {
+  @apply flex flex-col items-center gap-3 py-4 border-y border-gray-200;
+}
+
+.qrContainer {
+  @apply p-4 bg-white rounded-lg shadow-inner border-2 border-gray-300;
+}
+
+.qrCode {
+  @apply block;
+}
+
+.qrInstructions {
+  @apply text-sm text-gray-600 text-center max-w-xs;
+}
+
+.couponId {
+  @apply text-xs text-gray-500 font-mono;
+}
+
+/* Status Section */
+.statusSection {
+  @apply flex flex-col items-center gap-2;
+}
+
+.statusBadge {
+  @apply px-4 py-2 rounded-full text-sm font-semibold;
+}
+
+.statusActive {
+  @apply bg-green-100 text-green-800;
+}
+
+.statusRedeemed {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.statusExpired {
+  @apply bg-red-100 text-red-800;
+}
+
+.purchaseDate {
+  @apply text-sm text-gray-500;
+}
+
+/* Actions */
+.actions {
+  @apply flex gap-3;
+}
+
+.downloadButton {
+  @apply flex-1 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg;
+  @apply hover:bg-blue-700 active:bg-blue-800;
+  @apply transition-colors duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
