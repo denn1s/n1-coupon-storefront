@@ -1,0 +1,126 @@
+@reference "tailwindcss";
+
+.overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-50;
+  @apply flex items-center justify-center p-4;
+  @apply backdrop-blur-sm;
+}
+
+.modal {
+  @apply bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto;
+  @apply animate-in fade-in zoom-in duration-200;
+}
+
+.header {
+  @apply flex items-center justify-between p-6 border-b border-gray-200;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.closeButton {
+  @apply p-2 hover:bg-gray-100 rounded-full transition-colors duration-200;
+}
+
+.closeIcon {
+  @apply w-6 h-6 text-gray-600;
+}
+
+.content {
+  @apply p-6 flex flex-col gap-6;
+}
+
+/* Product Summary */
+.productSummary {
+  @apply flex items-center gap-4 p-4 bg-gray-50 rounded-lg;
+}
+
+.productImage {
+  @apply w-20 h-20 object-cover rounded-lg shadow-sm;
+}
+
+.productDetails {
+  @apply flex-1;
+}
+
+.productName {
+  @apply font-semibold text-gray-900 mb-1;
+}
+
+.productPrice {
+  @apply text-2xl font-bold text-green-600;
+}
+
+/* Form */
+.form {
+  @apply flex flex-col gap-4;
+}
+
+.formGroup {
+  @apply flex flex-col gap-2;
+}
+
+.formRow {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.label {
+  @apply text-sm font-semibold text-gray-700;
+}
+
+.input {
+  @apply px-4 py-2 border border-gray-300 rounded-lg;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  @apply disabled:bg-gray-100 disabled:cursor-not-allowed;
+  @apply transition-all duration-200;
+}
+
+.disclaimer {
+  @apply flex items-start gap-2 p-3 bg-blue-50 text-blue-800 rounded-lg text-sm;
+}
+
+.disclaimerIcon {
+  @apply w-5 h-5 flex-shrink-0 mt-0.5;
+}
+
+.submitButton {
+  @apply w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg;
+  @apply hover:bg-blue-700 active:bg-blue-800;
+  @apply transition-colors duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+  @apply disabled:bg-gray-400 disabled:cursor-not-allowed;
+  @apply flex items-center justify-center gap-2;
+}
+
+/* Success State */
+.successContent {
+  @apply p-6 flex flex-col gap-6;
+}
+
+.successHeader {
+  @apply flex flex-col items-center text-center gap-3;
+}
+
+.successIcon {
+  @apply w-16 h-16 bg-green-100 rounded-full flex items-center justify-center;
+}
+
+.successIcon svg {
+  @apply w-10 h-10 text-green-600;
+}
+
+.successTitle {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.successMessage {
+  @apply text-gray-600;
+}
+
+.doneButton {
+  @apply w-full px-6 py-3 bg-gray-900 text-white font-semibold rounded-lg;
+  @apply hover:bg-gray-800 active:bg-gray-700;
+  @apply transition-colors duration-200;
+  @apply focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+}

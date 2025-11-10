@@ -76,7 +76,11 @@
 
 /* Price Section */
 .priceSection {
-  @apply py-4 border-b border-base-300;
+  @apply py-4 border-b border-base-300 flex flex-col gap-2;
+}
+
+.priceLabel {
+  @apply text-sm font-semibold text-base-content/60 uppercase tracking-wide;
 }
 
 .price {
@@ -98,6 +102,15 @@
 
 .stockIcon {
   @apply w-6 h-6;
+}
+
+/* Low Stock Warning */
+.lowStockWarning {
+  @apply flex items-center gap-2 p-3 bg-warning/20 text-warning-content rounded-lg font-medium;
+}
+
+.warningIcon {
+  @apply w-5 h-5 flex-shrink-0;
 }
 
 /* Description Section */

@@ -448,6 +448,135 @@ When creating a new component:
 
 ---
 
+## Molecules (Composite Components)
+
+### ProductCard
+
+**Location:** `src/components/molecules/ProductCard/ProductCard.tsx`
+**Purpose:** Display product/deal card with image, name, price, and buy button
+**When to use:** Product listing pages, deal grids
+**Props:**
+
+- `product: HoldingProduct` - Product data
+- `onBuyClick?: (product: HoldingProduct) => void` - Buy button handler
+
+**Storybook:** ✅ Available
+**Tests:** ✅ Available
+
+**Example:**
+
+```tsx
+import ProductCard from '@components/molecules/ProductCard'
+
+<ProductCard
+  product={product}
+  onBuyClick={(product) => handlePurchase(product)}
+/>
+```
+
+---
+
+### ProductFilters
+
+**Location:** `src/components/molecules/ProductFilters/ProductFilters.tsx`
+**Purpose:** Filter products by category and store
+**When to use:** Product listing pages with filter functionality
+**Props:**
+
+- `categories: HoldingBusinessCategory[]` - Available categories
+- `stores: HoldingStore[]` - Available stores
+- `selectedCategory: number | null` - Selected category ID
+- `selectedStore: number | null` - Selected store ID
+- `onCategoryChange: (id: number | null) => void` - Category change handler
+- `onStoreChange: (id: number | null) => void` - Store change handler
+- `onReset: () => void` - Reset filters handler
+- `isLoading?: boolean` - Loading state
+
+**Storybook:** ✅ Available
+**Tests:** ✅ Available
+
+**Example:**
+
+```tsx
+import ProductFilters from '@components/molecules/ProductFilters'
+
+<ProductFilters
+  categories={categories}
+  stores={stores}
+  selectedCategory={selectedCategory}
+  selectedStore={selectedStore}
+  onCategoryChange={setSelectedCategory}
+  onStoreChange={setSelectedStore}
+  onReset={resetFilters}
+/>
+```
+
+---
+
+### CouponDisplay
+
+**Location:** `src/components/molecules/CouponDisplay/CouponDisplay.tsx`
+**Purpose:** Display purchased coupon with QR code
+**When to use:** After purchase, in coupon list, coupon detail modal
+**Props:**
+
+- `coupon: Coupon` - Coupon data
+- `onClose?: () => void` - Close handler
+
+**Features:**
+
+- QR code generation using qrcode library
+- Coupon status display (active, redeemed, expired)
+- Download QR code functionality
+- Product information display
+
+**Example:**
+
+```tsx
+import CouponDisplay from '@components/molecules/CouponDisplay'
+
+<CouponDisplay
+  coupon={purchasedCoupon}
+  onClose={() => setShowCoupon(false)}
+/>
+```
+
+---
+
+## Organisms (Complex Components)
+
+### CheckoutModal
+
+**Location:** `src/components/organisms/CheckoutModal/CheckoutModal.tsx`
+**Purpose:** Handle checkout flow and display coupon after purchase
+**When to use:** Product purchase flow
+**Props:**
+
+- `product: HoldingProduct` - Product to purchase
+- `isOpen: boolean` - Modal open state
+- `onClose: () => void` - Close handler
+
+**Features:**
+
+- Dummy payment form (no real processing)
+- Two-step flow: checkout → success with coupon
+- Uses CouponDisplay component for success state
+- QR code generation for purchased coupon
+
+**Example:**
+
+```tsx
+import CheckoutModal from '@components/organisms/CheckoutModal'
+
+<CheckoutModal
+  product={selectedProduct}
+  isOpen={isModalOpen}
+  onClose={() => setIsModalOpen(false)}
+/>
+```
+
+---
+
 ## Need Help?
 
 - Read: `CLAUDE.md` for component patterns
