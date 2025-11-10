@@ -1,22 +1,25 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router'
-import PublicLayout from '@layouts/Public'
-import { LandingPage } from '@pages/Landing'
-import { useAuth } from '@auth/useAuth'
+import { createFileRoute } from '@tanstack/react-router'
+import { ProductsPage } from '@pages/Products'
+import { productsOptions, categoriesOptions, storesOptions } from '@services/holding.graphql'
 
+/**
+ * Home Route (Products/Deals/Coupons Page)
+ *
+ * Features:
+ * - Data prefetching with loader (data loads before page renders)
+ * - Prefetches products, categories, and stores for filters
+ * - Uses TanStack Router's defaultPreload: 'intent' (prefetch on hover)
+ * - Seamless integration with TanStack Query caching
+ * - Public route (no authentication required)
+ */
 export const Route = createFileRoute('/')({
-  component: RouteComponent,
-})
-
-function RouteComponent() {
-  const { isAuthenticated, isLoading } = useAuth()
-
-  if (!isLoading && isAuthenticated) {
-    return <Navigate to="/items" replace />
+  component: ProductsPage,
+  // Prefetch products, categories, and stores data before rendering the page
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(productsOptions({ first: 20 })),
+      context.queryClient.ensureQueryData(categoriesOptions({ first: 100 })),
+      context.queryClient.ensureQueryData(storesOptions({ first: 100 }))
+    ])
   }
-
-  return (
-    <PublicLayout>
-      <LandingPage />
-    </PublicLayout>
-  )
-}
+})

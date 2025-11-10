@@ -1,24 +1,11 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { ProductsPage } from '@pages/Products'
-import { productsOptions, categoriesOptions, storesOptions } from '@services/holding.graphql'
+import { createFileRoute, Navigate } from '@tanstack/react-router'
 
 /**
- * Products List Route (Deals/Coupons Page)
+ * Products List Route (Redirect to Home)
  *
- * Features:
- * - Data prefetching with loader (data loads before page renders)
- * - Prefetches products, categories, and stores for filters
- * - Uses TanStack Router's defaultPreload: 'intent' (prefetch on hover)
- * - Seamless integration with TanStack Query caching
+ * This route redirects to the home page for backward compatibility.
+ * The products list is now displayed on the home page (/).
  */
 export const Route = createFileRoute('/products')({
-  component: ProductsPage,
-  // Prefetch products, categories, and stores data before rendering the page
-  loader: async ({ context }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(productsOptions({ first: 20 })),
-      context.queryClient.ensureQueryData(categoriesOptions({ first: 100 })),
-      context.queryClient.ensureQueryData(storesOptions({ first: 100 })),
-    ])
-  },
+  component: () => <Navigate to="/" replace />
 })
