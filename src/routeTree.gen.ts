@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ProductsRouteImport } from './routes/products'
+import { Route as MyCouponsRouteImport } from './routes/my-coupons'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ItemsRouteImport } from './routes/items'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 import { Route as ItemsItemIdRouteImport } from './routes/items/$itemId'
 
 const SignupRoute = SignupRouteImport.update({
@@ -26,6 +29,16 @@ const SignupRoute = SignupRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport
+} as any)
+const ProductsRoute = ProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => rootRouteImport
+} as any)
+const MyCouponsRoute = MyCouponsRouteImport.update({
+  id: '/my-coupons',
+  path: '/my-coupons',
   getParentRoute: () => rootRouteImport
 } as any)
 const LogoutRoute = LogoutRouteImport.update({
@@ -53,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport
 } as any)
+const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
+  id: '/$productId',
+  path: '/$productId',
+  getParentRoute: () => ProductsRoute
+} as any)
 const ItemsItemIdRoute = ItemsItemIdRouteImport.update({
   id: '/$itemId',
   path: '/$itemId',
@@ -65,9 +83,12 @@ export interface FileRoutesByFullPath {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/my-coupons': typeof MyCouponsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
+  '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -75,9 +96,12 @@ export interface FileRoutesByTo {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/my-coupons': typeof MyCouponsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
+  '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,16 +110,53 @@ export interface FileRoutesById {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/my-coupons': typeof MyCouponsRoute
+  '/products': typeof ProductsRouteWithChildren
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
+  '/products/$productId': typeof ProductsProductIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/items' | '/login' | '/logout' | '/settings' | '/signup' | '/items/$itemId'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/items'
+    | '/login'
+    | '/logout'
+    | '/my-coupons'
+    | '/products'
+    | '/settings'
+    | '/signup'
+    | '/items/$itemId'
+    | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/items' | '/login' | '/logout' | '/settings' | '/signup' | '/items/$itemId'
-  id: '__root__' | '/' | '/about' | '/items' | '/login' | '/logout' | '/settings' | '/signup' | '/items/$itemId'
+  to:
+    | '/'
+    | '/about'
+    | '/items'
+    | '/login'
+    | '/logout'
+    | '/my-coupons'
+    | '/products'
+    | '/settings'
+    | '/signup'
+    | '/items/$itemId'
+    | '/products/$productId'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/items'
+    | '/login'
+    | '/logout'
+    | '/my-coupons'
+    | '/products'
+    | '/settings'
+    | '/signup'
+    | '/items/$itemId'
+    | '/products/$productId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,6 +165,8 @@ export interface RootRouteChildren {
   ItemsRoute: typeof ItemsRouteWithChildren
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
+  MyCouponsRoute: typeof MyCouponsRoute
+  ProductsRoute: typeof ProductsRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
 }
@@ -122,6 +185,20 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/products': {
+      id: '/products'
+      path: '/products'
+      fullPath: '/products'
+      preLoaderRoute: typeof ProductsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/my-coupons': {
+      id: '/my-coupons'
+      path: '/my-coupons'
+      fullPath: '/my-coupons'
+      preLoaderRoute: typeof MyCouponsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logout': {
@@ -159,6 +236,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/products/$productId': {
+      id: '/products/$productId'
+      path: '/$productId'
+      fullPath: '/products/$productId'
+      preLoaderRoute: typeof ProductsProductIdRouteImport
+      parentRoute: typeof ProductsRoute
+    }
     '/items/$itemId': {
       id: '/items/$itemId'
       path: '/$itemId'
@@ -179,12 +263,24 @@ const ItemsRouteChildren: ItemsRouteChildren = {
 
 const ItemsRouteWithChildren = ItemsRoute._addFileChildren(ItemsRouteChildren)
 
+interface ProductsRouteChildren {
+  ProductsProductIdRoute: typeof ProductsProductIdRoute
+}
+
+const ProductsRouteChildren: ProductsRouteChildren = {
+  ProductsProductIdRoute: ProductsProductIdRoute
+}
+
+const ProductsRouteWithChildren = ProductsRoute._addFileChildren(ProductsRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ItemsRoute: ItemsRouteWithChildren,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
+  MyCouponsRoute: MyCouponsRoute,
+  ProductsRoute: ProductsRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute
 }
