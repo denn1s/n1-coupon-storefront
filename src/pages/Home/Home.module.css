@@ -1,0 +1,101 @@
+@reference "tailwindcss";
+
+.container {
+  @apply p-4 space-y-8;
+}
+
+.welcomeSection {
+  @apply space-y-2;
+}
+
+.title {
+  @apply text-2xl font-bold mb-2;
+}
+
+.subtitle {
+  @apply opacity-70;
+}
+
+.card {
+  @apply card bg-base-100 shadow-xl;
+}
+
+.cardBody {
+  @apply card-body;
+}
+
+.cardTitle {
+  @apply card-title;
+}
+
+.quickLinksGrid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4;
+}
+
+.link {
+  @apply block;
+}
+
+.linkButton {
+  @apply btn btn-outline btn-primary w-full;
+}
+
+.description {
+  @apply opacity-70 mb-4;
+}
+
+.buttonsContainer {
+  @apply flex flex-wrap gap-4 items-center;
+}
+
+.btn {
+  @apply btn;
+}
+
+.btnPrimary {
+  @apply btn-primary;
+}
+
+.btnSecondary {
+  @apply btn-secondary;
+}
+
+.btnAccent {
+  @apply btn-accent;
+}
+
+.btnInfo {
+  @apply btn-info;
+}
+
+.btnSuccess {
+  @apply btn-success;
+}
+
+.btnWarning {
+  @apply btn-warning;
+}
+
+.btnError {
+  @apply btn-error;
+}
+
+.btnGhost {
+  @apply btn-ghost;
+}
+
+.btnLink {
+  @apply btn-link;
+}
+
+.btnOutline {
+  @apply btn-outline btn-primary;
+}
+
+.btnSm {
+  @apply btn btn-sm;
+}
+
+.btnLg {
+  @apply btn btn-lg;
+}

@@ -1,0 +1,82 @@
+---
+description: "Rules for adding and managing routes with TanStack Router."
+globs: ["src/routes/**/*.tsx"]
+---
+
+## Routing Rules (TanStack Router)
+
+This project uses **TanStack Router** for type-safe routing. All routes are defined in the `src/routes` directory.
+
+### Creating New Routes
+
+1.  **File-Based Routing**: TanStack Router uses a file-based routing system. To create a new route, you create a `.tsx` file in the `src/routes` directory. The file's name and location determine the route's path.
+    - `src/routes/about.tsx` -> `/about`
+    - `src/routes/campaigns/index.tsx` -> `/campaigns`
+    - `src/routes/campaigns/$campaignId.tsx` -> `/campaigns/:campaignId`
+
+2.  **Route Component**: Each route file must export a `Route` component created with `createFileRoute`. This component is responsible for rendering the UI for that route.
+
+    ```tsx
+    import { createFileRoute } from '@tanstack/react-router';
+
+    export const Route = createFileRoute('/about')({
+      component: AboutComponent,
+    });
+
+    function AboutComponent() {
+      return <div>About Page</div>;
+    }
+    ```
+
+3.  **Layouts**: To create a layout that wraps multiple routes, create a route file with the same name as a directory. For example, to create a layout for all routes under `/campaigns`, you would create `src/routes/campaigns.tsx`. This route can then use the `<Outlet />` component to render child routes.
+
+### Route Tree Generation
+- The project is configured to automatically generate the `routeTree.gen.ts` file. After creating or modifying route files, this file will be updated by the development server. You should not edit `routeTree.gen.ts` manually.
+
+### Navigation
+- **Use the `<Link>` component**: For internal navigation, always use the `<Link>` component from `@tanstack/react-router`. This ensures that navigation is type-safe and client-side.
+  ```tsx
+  import { Link } from '@tanstack/react-router';
+
+  <Link to="/about">About</Link>
+  ```
+- **Programmatic Navigation**: To navigate programmatically, use the `useNavigate` hook.
+  ```tsx
+  import { useNavigate } from '@tanstack/react-router';
+
+  const navigate = useNavigate();
+  navigate({ to: '/campaigns' });
+  ```
+
+### Example: Adding a New Page
+
+1.  **Create the route file**: `src/routes/new-page.tsx`
+2.  **Define the route component**:
+    ```tsx
+    // In src/routes/new-page.tsx
+    import { createFileRoute } from '@tanstack/react-router';
+
+    export const Route = createFileRoute('/new-page')({
+      component: NewPageComponent,
+    });
+
+    function NewPageComponent() {
+      // Your page component logic and JSX
+      return (
+        <div>
+          <h1>New Page</h1>
+        </div>
+      );
+    }
+    ```
+3.  **Add a link to the new page** (e.g., in the main navigation):
+    ```tsx
+    // In your navigation component
+    import { Link } from '@tanstack/react-router';
+
+    <nav>
+      <Link to="/">Home</Link>
+      <Link to="/about">About</Link>
+      <Link to="/new-page">New Page</Link>
+    </nav>
+    ```

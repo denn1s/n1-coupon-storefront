@@ -1,0 +1,71 @@
+---
+description: "Rules for data fetching using TanStack Query."
+globs: ["src/lib/hooks/**/*.ts", "src/services/**/*.ts", "src/pages/**/hooks/**/*.ts", "src/pages/**/hooks/**/*.tsx"]
+---
+
+## Data Fetching Rules (TanStack Query)
+
+This project uses **TanStack Query (React Query)** for data fetching, caching, and state synchronization. Follow these guidelines to ensure consistency and maintainability.
+
+### Query Keys
+- **Structure**: Query keys should be structured as an array. The first element should be a string that identifies the domain or entity being queried. Subsequent elements can be used for parameters or identifiers.
+- **Example**:
+  - To fetch all campaigns: `['campaigns']`
+  - To fetch a specific campaign by ID: `['campaigns', campaignId]`
+  - To fetch campaigns with filters: `['campaigns', { status: 'active', page: 1 }]`
+
+### Custom Hooks
+- **Create Custom Hooks**: For each query, create a custom hook that encapsulates the `useQuery` logic. This makes the query reusable and easier to manage.
+- **Naming**: Name the custom hook using the `use` prefix followed by the entity name and the action (e.g., `useGetCampaigns`, `useGetCampaignById`).
+- **File Location**: Custom hooks for data fetching should be placed in a relevant `hooks` directory, often close to the components or pages that use them. For globally used hooks, consider a centralized location like `src/lib/hooks`.
+
+### Example: Fetching Data with a Custom Hook
+
+1.  **Define the query function**:
+    ```ts
+    // In a service file, e.g., src/services/campaigns.ts
+    import { api } from 'path/to/your/api/client';
+
+    export const getCampaigns = async () => {
+      const response = await api.get('/campaigns');
+      return response.data;
+    };
+    ```
+
+2.  **Create the custom hook**:
+    ```ts
+    // In a hooks file, e.g., src/pages/Campaigns/hooks/useGetCampaigns.ts
+    import { useQuery } from '@tanstack/react-query';
+    import { getCampaigns } from 'path/to/your/services/campaigns';
+
+    export const useGetCampaigns = () => {
+      return useQuery({
+        queryKey: ['campaigns'],
+        queryFn: getCampaigns,
+      });
+    };
+    ```
+
+### Mutations
+- **Use `useMutation`**: For creating, updating, or deleting data, use the `useMutation` hook.
+- **Invalidate Queries**: After a mutation is successful, invalidate the relevant queries to ensure the UI is updated with the latest data. Use the `queryClient.invalidateQueries` method.
+
+### Example: Creating a Mutation
+
+```ts
+// In a custom hook for the mutation
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createCampaign } from 'path/to/your/services/campaigns';
+
+export const useCreateCampaign = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createCampaign,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
+    },
+  });
+};
+```

@@ -1,0 +1,39 @@
+@reference "tailwindcss";
+
+.checkbox {
+  @apply relative w-5 h-5 rounded border-2 border-gray-400 bg-white cursor-pointer
+    transition-colors duration-150 ease-in-out;
+  @apply flex items-center justify-center;
+
+  svg {
+    @apply absolute;
+    left: 1px;
+    top: 1px;
+  }
+}
+
+.checkbox[data-headlessui-state~='checked'] {
+  @apply bg-blue-600 border-blue-600;
+}
+
+.disabledCheckbox {
+  @apply bg-gray-200 border-gray-300 cursor-not-allowed;
+}
+
+.checkmark {
+  @apply absolute top-1 left-1 w-3.5 h-3.5 stroke-white;
+  transition: opacity 150ms ease-in-out;
+}
+
+.checkmarkHidden {
+  @apply opacity-0;
+}
+
+.label {
+  @apply ml-2 text-gray-900 cursor-pointer select-none;
+}
+
+.disabled {
+  @apply cursor-not-allowed opacity-50;
+}
+

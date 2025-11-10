@@ -1,0 +1,119 @@
+@reference "tailwindcss";
+
+.container {
+  @apply p-6 max-w-7xl mx-auto;
+}
+
+/* Loading & Error States */
+.loading,
+.error,
+.empty {
+  @apply flex flex-col items-center justify-center min-h-[400px] gap-4;
+}
+
+.error {
+  @apply text-error;
+}
+
+.error h2 {
+  @apply text-2xl font-bold;
+}
+
+.empty {
+  @apply text-base-content/60;
+}
+
+.empty h2 {
+  @apply text-2xl font-semibold;
+}
+
+/* Header */
+.header {
+  @apply mb-8;
+}
+
+.title {
+  @apply text-4xl font-bold text-base-content mb-2;
+}
+
+.subtitle {
+  @apply text-lg text-base-content/70;
+}
+
+/* Products Grid */
+.grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8;
+}
+
+/* Product Card */
+.card {
+  @apply card bg-base-100 shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer;
+}
+
+.cardImage {
+  @apply relative w-full h-64 overflow-hidden;
+}
+
+.image {
+  @apply w-full h-full object-cover;
+}
+
+.cardBody {
+  @apply card-body p-4;
+}
+
+.productName {
+  @apply card-title text-lg font-bold text-base-content mb-2 line-clamp-2;
+}
+
+.description {
+  @apply text-sm text-base-content/70 mb-4 line-clamp-3;
+}
+
+.cardFooter {
+  @apply flex justify-between items-center mt-auto;
+}
+
+.price {
+  @apply text-2xl font-bold text-primary;
+}
+
+.stockAvailable {
+  @apply badge badge-success badge-outline;
+}
+
+.stockUnavailable {
+  @apply badge badge-error badge-outline;
+}
+
+/* Pagination */
+.pagination {
+  @apply flex items-center justify-between gap-4 mt-8 pt-6 border-t border-base-300;
+}
+
+.paginationButton {
+  @apply btn btn-primary flex items-center gap-2;
+}
+
+.paginationButton:disabled {
+  @apply btn-disabled;
+}
+
+.paginationInfo {
+  @apply text-base-content/70 font-medium;
+}
+
+.icon {
+  @apply w-5 h-5;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .pagination {
+    @apply flex-col gap-2;
+  }
+
+  .paginationButton {
+    @apply w-full;
+  }
+}

@@ -1,0 +1,57 @@
+---
+description: "Rules for creating and structuring React components."
+globs: ["src/components/**/*.tsx"]
+---
+
+## React Component Rules
+
+### General Principles
+- **Structure**: Follow the Atomic Design methodology. Components should be organized into `atoms`, `molecules`, and `organisms`.
+  - `atoms`: The smallest possible components, such as buttons, inputs, or labels. They cannot be broken down further.
+  - `molecules`: Groups of atoms bonded together that function as a unit. For example, a search form molecule might contain an input atom, a button atom, and a label atom.
+  - `organisms`: Complex UI components composed of groups of molecules and/or atoms and/or other organisms.
+- **File Naming**: Component files should be named in PascalCase (e.g., `MyComponent.tsx`).
+- **File Structure**: Each component should reside in its own directory. The directory should contain the component file (`MyComponent.tsx`), a style module (`MyComponent.module.css`), and an index file (`index.ts`) for easy exporting.
+  - Example:
+    ```
+    /MyComponent
+      - MyComponent.tsx
+      - MyComponent.module.css
+      - index.ts
+    ```
+- **Props**: Use TypeScript interfaces for component props. Prop interfaces should be clearly defined and exported. Name the props interface with the component name followed by `Props` (e.g., `MyComponentProps`).
+- **State Management**: For local component state, use the `useState` hook. For global state, use the existing Zustand stores (`src/lib/stores`).
+- **Functional Components**: Always use functional components with hooks. Avoid class components.
+- **Exports**: Use named exports for components and interfaces. The `index.ts` file in the component's directory should export all necessary parts of the component.
+
+### Example: Creating a new Atom Component
+
+1.  **Create the directory and files**:
+    - `src/components/atoms/NewComponent/`
+    - `src/components/atoms/NewComponent/NewComponent.tsx`
+    - `src/components/atoms/NewComponent/NewComponent.module.css`
+    - `src/components/atoms/NewComponent/index.ts`
+
+2.  **`NewComponent.tsx`**:
+    ```tsx
+    import React from 'react';
+    import styles from './NewComponent.module.css';
+
+    interface NewComponentProps {
+      // Define your props here
+    }
+
+    export const NewComponent: React.FC<NewComponentProps> = (props) => {
+      // Component logic
+      return (
+        <div className={styles.wrapper}>
+          {/* Component JSX */}
+        </div>
+      );
+    };
+    ```
+
+3.  **`index.ts`**:
+    ```ts
+    export * from './NewComponent';
+    ```
