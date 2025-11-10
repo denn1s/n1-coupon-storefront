@@ -105,3 +105,131 @@ export interface ApiError {
 export interface ValidationError extends ApiError {
   errors: Record<string, string[]>
 }
+
+// ============================================================================
+// GraphQL Pagination Types
+// ============================================================================
+
+/**
+ * GraphQL cursor-based pagination info
+ */
+export interface PageInfo {
+  hasNextPage: boolean
+  hasPreviousPage: boolean
+  startCursor: string | null
+  endCursor: string | null
+}
+
+/**
+ * Generic GraphQL connection response
+ */
+export interface GraphQLConnection<T> {
+  nodes: T[]
+  totalCount: number
+  pageInfo: PageInfo
+}
+
+// ============================================================================
+// Holding (Groupon-like) Types
+// ============================================================================
+
+/**
+ * Product image
+ */
+export interface ProductImage {
+  sequence: number
+  url: string
+}
+
+/**
+ * Holding Product (Coupon/Deal)
+ */
+export interface HoldingProduct {
+  id: number
+  name: string
+  description: string
+  salePrice: number
+  productImageUrl: string
+  quantityAvailable: number
+  images: ProductImage[]
+}
+
+/**
+ * Holding Business Category
+ */
+export interface HoldingBusinessCategory {
+  id: number
+  name: string
+  description: string
+  bannerImageUrl: string | null
+  smallBannerImageUrl: string | null
+  storeCount: number
+}
+
+/**
+ * Holding Store
+ */
+export interface HoldingStore {
+  id: number
+  name: string
+  description: string
+  storeImageUrl: string
+}
+
+/**
+ * Holding Collection
+ */
+export interface HoldingCollection {
+  id: number
+  name: string
+  description: string
+  bannerImageUrl: string | null
+  smallBannerImageUrl: string | null
+  productCount: number
+}
+
+// ============================================================================
+// GraphQL Response Types
+// ============================================================================
+
+export interface HoldingProductsResponse {
+  holdingProducts: GraphQLConnection<HoldingProduct>
+}
+
+export interface HoldingBusinessCategoriesResponse {
+  holdingBusinessCategories: GraphQLConnection<HoldingBusinessCategory>
+}
+
+export interface HoldingStoresResponse {
+  holdingStores: GraphQLConnection<HoldingStore>
+}
+
+export interface HoldingCollectionsResponse {
+  holdingCollections: GraphQLConnection<HoldingCollection>
+}
+
+// ============================================================================
+// GraphQL Variables Types
+// ============================================================================
+
+export interface PaginationVariables {
+  first?: number
+  after?: string
+  last?: number
+  before?: string
+}
+
+// ============================================================================
+// Coupon/Purchase Types (for future use)
+// ============================================================================
+
+export interface Coupon {
+  id: string
+  productId: number
+  productName: string
+  productImage: string
+  purchaseDate: string
+  qrCode: string
+  price: number
+  status: 'active' | 'redeemed' | 'expired'
+}

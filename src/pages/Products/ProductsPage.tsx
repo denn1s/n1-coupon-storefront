@@ -1,59 +1,82 @@
-import { useProductsPagination } from '@services/products.graphql'
-import { Link } from '@tanstack/react-router'
+import { useState } from 'react'
+import { useProductsPagination, useGetCategories, useGetStores } from '@services/holding.graphql'
+import { HoldingProduct } from '@lib/api/types'
+import SearchBox from '@components/atoms/SearchBox'
+import ProductCard from '@components/molecules/ProductCard'
+import ProductFilters from '@components/molecules/ProductFilters'
+import CheckoutModal from '@components/organisms/CheckoutModal'
 import styles from './ProductsPage.module.css'
 
 /**
- * Products List Page
+ * Products List Page (Groupon-like Coupons/Deals)
  *
- * Demonstrates:
- * - Simple component relying on TanStack Query
- * - Easy-to-use cursor pagination with useProductsPagination hook
- * - Automatic loading and error states
- * - Clean, minimal component logic
+ * Features:
+ * - Search functionality
+ * - Category and store filters
+ * - Cursor-based pagination
+ * - Product cards with buy functionality
+ * - Checkout modal with QR code coupon
+ * - Responsive grid layout
  */
 export default function ProductsPage() {
+  const [selectedProduct, setSelectedProduct] = useState<HoldingProduct | null>(null)
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false)
+
   const {
     data: products,
     totalCount,
-    isLoading,
-    error,
+    isLoading: productsLoading,
+    error: productsError,
     hasNextPage,
     hasPreviousPage,
     goToNextPage,
     goToPreviousPage,
+    searchTerm,
+    setSearchTerm,
+    selectedCategory,
+    setSelectedCategory,
+    selectedStore,
+    setSelectedStore,
+    resetFilters,
   } = useProductsPagination(20) // 20 products per page
 
+  const { data: categoriesData, isLoading: categoriesLoading } = useGetCategories()
+  const { data: storesData, isLoading: storesLoading } = useGetStores()
+
+  const categories = categoriesData?.nodes ?? []
+  const stores = storesData?.nodes ?? []
+  const isLoading = productsLoading || categoriesLoading || storesLoading
+
+  // Handle buy button click
+  const handleBuyClick = (product: HoldingProduct) => {
+    setSelectedProduct(product)
+    setIsCheckoutModalOpen(true)
+  }
+
+  const handleCloseCheckout = () => {
+    setIsCheckoutModalOpen(false)
+    setSelectedProduct(null)
+  }
+
   // Loading state
-  if (isLoading) {
+  if (isLoading && !products.length) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
           <span className="loading loading-spinner loading-lg"></span>
-          <p>Loading products...</p>
+          <p>Loading deals...</p>
         </div>
       </div>
     )
   }
 
   // Error state
-  if (error) {
+  if (productsError) {
     return (
       <div className={styles.container}>
         <div className={styles.error}>
-          <h2>Error loading products</h2>
-          <p>{error.message}</p>
-        </div>
-      </div>
-    )
-  }
-
-  // Empty state
-  if (!products || products.length === 0) {
-    return (
-      <div className={styles.container}>
-        <div className={styles.empty}>
-          <h2>No products found</h2>
-          <p>Check back later for new products!</p>
+          <h2>Error loading deals</h2>
+          <p>{productsError.message}</p>
         </div>
       </div>
     )
@@ -63,104 +86,116 @@ export default function ProductsPage() {
     <div className={styles.container}>
       {/* Header */}
       <div className={styles.header}>
-        <h1 className={styles.title}>Products</h1>
+        <h1 className={styles.title}>Today's Deals</h1>
         <p className={styles.subtitle}>
-          {totalCount} {totalCount === 1 ? 'product' : 'products'} available
+          {totalCount} amazing {totalCount === 1 ? 'deal' : 'deals'} available
         </p>
       </div>
 
-      {/* Products Grid */}
-      <div className={styles.grid}>
-        {products.map((product) => (
-          <Link
-            key={product.id}
-            to="/products/$productId"
-            params={{ productId: product.id }}
-            className={styles.card}
-          >
-            {/* Product Image */}
-            <figure className={styles.cardImage}>
-              <img
-                src={product.productImageUrl ?? '/placeholder.png'}
-                alt={product.name}
-                className={styles.image}
+      {/* Search and Filters */}
+      <div className={styles.controlsContainer}>
+        {/* Search Box */}
+        <div className={styles.searchContainer}>
+          <SearchBox
+            value={searchTerm}
+            onChange={setSearchTerm}
+            onClear={() => setSearchTerm('')}
+            placeholder="Search deals..."
+          />
+        </div>
+
+        {/* Filters */}
+        <div className={styles.filtersContainer}>
+          <ProductFilters
+            categories={categories}
+            stores={stores}
+            selectedCategory={selectedCategory}
+            selectedStore={selectedStore}
+            onCategoryChange={setSelectedCategory}
+            onStoreChange={setSelectedStore}
+            onReset={resetFilters}
+            isLoading={categoriesLoading || storesLoading}
+          />
+        </div>
+      </div>
+
+      {/* Empty state */}
+      {products.length === 0 ? (
+        <div className={styles.empty}>
+          <h2>No deals found</h2>
+          <p>Try adjusting your search or filters</p>
+          {(searchTerm || selectedCategory || selectedStore) && (
+            <button onClick={resetFilters} className="btn btn-primary mt-4">
+              Clear Filters
+            </button>
+          )}
+        </div>
+      ) : (
+        <>
+          {/* Products Grid */}
+          <div className={styles.grid}>
+            {products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onBuyClick={handleBuyClick}
               />
-            </figure>
+            ))}
+          </div>
 
-            {/* Product Info */}
-            <div className={styles.cardBody}>
-              <h2 className={styles.productName}>{product.name}</h2>
+          {/* Pagination Controls */}
+          <div className={styles.pagination}>
+            <button
+              onClick={goToPreviousPage}
+              disabled={!hasPreviousPage}
+              className={styles.paginationButton}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className={styles.icon}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+              </svg>
+              Previous
+            </button>
 
-              {product.description && (
-                <p className={styles.description}>
-                  {product.description.length > 100
-                    ? `${product.description.slice(0, 100)}...`
-                    : product.description}
-                </p>
-              )}
+            <span className={styles.paginationInfo}>
+              Showing {products.length} of {totalCount} deals
+            </span>
 
-              {/* Price and Stock */}
-              <div className={styles.cardFooter}>
-                <span className={styles.price}>${product.salePrice.toFixed(2)}</span>
-                <span
-                  className={
-                    product.quantityAvailable > 0
-                      ? styles.stockAvailable
-                      : styles.stockUnavailable
-                  }
-                >
-                  {product.quantityAvailable > 0
-                    ? `${product.quantityAvailable} in stock`
-                    : 'Out of stock'}
-                </span>
-              </div>
-            </div>
-          </Link>
-        ))}
-      </div>
+            <button
+              onClick={goToNextPage}
+              disabled={!hasNextPage}
+              className={styles.paginationButton}
+            >
+              Next
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className={styles.icon}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+              </svg>
+            </button>
+          </div>
+        </>
+      )}
 
-      {/* Pagination Controls */}
-      <div className={styles.pagination}>
-        <button
-          onClick={goToPreviousPage}
-          disabled={!hasPreviousPage}
-          className={styles.paginationButton}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className={styles.icon}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-          </svg>
-          Previous
-        </button>
-
-        <span className={styles.paginationInfo}>
-          Showing {products.length} products
-        </span>
-
-        <button
-          onClick={goToNextPage}
-          disabled={!hasNextPage}
-          className={styles.paginationButton}
-        >
-          Next
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            className={styles.icon}
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </button>
-      </div>
+      {/* Checkout Modal */}
+      {selectedProduct && (
+        <CheckoutModal
+          product={selectedProduct}
+          isOpen={isCheckoutModalOpen}
+          onClose={handleCloseCheckout}
+        />
+      )}
     </div>
   )
 }

@@ -20,7 +20,7 @@ export function getGraphQLClient(): GraphQLClient {
     // Initialize with mandatory headers
     graphqlClient = new GraphQLClient(graphqlEndpoint, {
       headers: {
-        'X-App-Id': 'yummy', // Mandatory custom header
+        'X-App-Id': 'plazamalta', // Mandatory custom header
         'Content-Type': 'application/json',
       },
     })
