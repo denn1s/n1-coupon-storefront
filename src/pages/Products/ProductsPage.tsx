@@ -5,6 +5,7 @@ import SearchBox from '@components/atoms/SearchBox'
 import ProductCard from '@components/molecules/ProductCard'
 import ProductFilters from '@components/molecules/ProductFilters'
 import CheckoutModal from '@components/organisms/CheckoutModal'
+import { Route } from '@routes/index'
 import styles from './ProductsPage.module.css'
 
 /**
@@ -19,6 +20,9 @@ import styles from './ProductsPage.module.css'
  * - Responsive grid layout
  */
 export default function ProductsPage() {
+  // Get loader data to avoid duplicate requests
+  const loaderData = Route.useLoaderData()
+
   const [selectedProduct, setSelectedProduct] = useState<HoldingProduct | null>(null)
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false)
 
@@ -38,10 +42,26 @@ export default function ProductsPage() {
     selectedStore,
     setSelectedStore,
     resetFilters,
-  } = useProductsPagination(20) // 20 products per page
+  } = useProductsPagination(20, {
+    initialData: loaderData?.products,
+    staleTime: 5 * 60 * 1000
+  })
 
-  const { data: categoriesData, isLoading: categoriesLoading } = useGetCategories()
-  const { data: storesData, isLoading: storesLoading } = useGetStores()
+  const { data: categoriesData, isLoading: categoriesLoading } = useGetCategories(
+    { first: 50 },
+    {
+      initialData: loaderData?.categories,
+      staleTime: 5 * 60 * 1000
+    }
+  )
+
+  const { data: storesData, isLoading: storesLoading } = useGetStores(
+    { first: 50 },
+    {
+      initialData: loaderData?.stores,
+      staleTime: 5 * 60 * 1000
+    }
+  )
 
   const categories = categoriesData?.nodes ?? []
   const stores = storesData?.nodes ?? []

@@ -150,7 +150,8 @@ export const useGetProducts = (variables: PaginationVariables = { first: 20 }) =
 export const productsOptions = (variables: PaginationVariables = { first: 20 }) =>
   queryOptions({
     queryKey: ['holding', 'products', 'list', variables],
-    queryFn: getProducts(variables)
+    queryFn: getProducts(variables),
+    staleTime: 5 * 60 * 1000 // 5 minutes cache
   })
 
 /**
@@ -169,9 +170,12 @@ export const productsOptions = (variables: PaginationVariables = { first: 20 }) 
  *   setSelectedCategory,
  *   selectedStore,
  *   setSelectedStore
- * } = useProductsPagination(20)
+ * } = useProductsPagination(20, { initialData: loaderData?.products, staleTime: 5 * 60 * 1000 })
  */
-export const useProductsPagination = (pageSize: number = 20) => {
+export const useProductsPagination = (
+  pageSize: number = 20,
+  queryOptions?: { initialData?: HoldingProductsResponse; staleTime?: number }
+) => {
   const [variables, setVariables] = useState<PaginationVariables>({
     first: pageSize
   })
@@ -179,7 +183,12 @@ export const useProductsPagination = (pageSize: number = 20) => {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [selectedStore, setSelectedStore] = useState<number | null>(null)
 
-  const query = useGetProducts(variables)
+  const query = useQuery({
+    queryKey: ['holding', 'products', 'list', variables],
+    queryFn: getProducts(variables),
+    initialData: queryOptions?.initialData,
+    staleTime: queryOptions?.staleTime ?? 5 * 60 * 1000
+  })
 
   const pageInfo = query.data?.holdingProducts.pageInfo
   const allProducts = query.data?.holdingProducts.nodes ?? []
@@ -271,13 +280,18 @@ export const useProductsPagination = (pageSize: number = 20) => {
  * Fetch business categories
  *
  * @example
- * const { data, isLoading } = useGetCategories()
+ * const { data, isLoading } = useGetCategories({ first: 50 }, { initialData: loaderData?.categories })
  */
-export const useGetCategories = (variables: PaginationVariables = { first: 50 }) => {
+export const useGetCategories = (
+  variables: PaginationVariables = { first: 50 },
+  options?: { initialData?: HoldingBusinessCategoriesResponse; staleTime?: number }
+) => {
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
-    select: (data) => data.holdingBusinessCategories
+    select: (data) => data.holdingBusinessCategories,
+    initialData: options?.initialData,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
 }
 
@@ -287,7 +301,8 @@ export const useGetCategories = (variables: PaginationVariables = { first: 50 })
 export const categoriesOptions = (variables: PaginationVariables = { first: 50 }) =>
   queryOptions({
     queryKey: ['holding', 'categories', 'list', variables],
-    queryFn: getCategories(variables)
+    queryFn: getCategories(variables),
+    staleTime: 5 * 60 * 1000 // 5 minutes cache
   })
 
 // ============================================================================
@@ -298,13 +313,18 @@ export const categoriesOptions = (variables: PaginationVariables = { first: 50 }
  * Fetch stores
  *
  * @example
- * const { data, isLoading } = useGetStores()
+ * const { data, isLoading } = useGetStores({ first: 50 }, { initialData: loaderData?.stores })
  */
-export const useGetStores = (variables: PaginationVariables = { first: 50 }) => {
+export const useGetStores = (
+  variables: PaginationVariables = { first: 50 },
+  options?: { initialData?: HoldingStoresResponse; staleTime?: number }
+) => {
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
-    select: (data) => data.holdingStores
+    select: (data) => data.holdingStores,
+    initialData: options?.initialData,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
 }
 
@@ -314,7 +334,8 @@ export const useGetStores = (variables: PaginationVariables = { first: 50 }) => 
 export const storesOptions = (variables: PaginationVariables = { first: 50 }) =>
   queryOptions({
     queryKey: ['holding', 'stores', 'list', variables],
-    queryFn: getStores(variables)
+    queryFn: getStores(variables),
+    staleTime: 5 * 60 * 1000 // 5 minutes cache
   })
 
 // ============================================================================

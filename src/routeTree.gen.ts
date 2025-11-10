@@ -24,57 +24,57 @@ import { Route as ItemsItemIdRouteImport } from './routes/items/$itemId'
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
   path: '/signup',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
   id: '/products',
   path: '/products',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const MyCouponsRoute = MyCouponsRouteImport.update({
   id: '/my-coupons',
   path: '/my-coupons',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ItemsRoute = ItemsRouteImport.update({
   id: '/items',
   path: '/items',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/$productId',
   path: '/$productId',
-  getParentRoute: () => ProductsRoute
+  getParentRoute: () => ProductsRoute,
 } as any)
 const ItemsItemIdRoute = ItemsItemIdRouteImport.update({
   id: '/$itemId',
   path: '/$itemId',
-  getParentRoute: () => ItemsRoute
+  getParentRoute: () => ItemsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -258,7 +258,7 @@ interface ItemsRouteChildren {
 }
 
 const ItemsRouteChildren: ItemsRouteChildren = {
-  ItemsItemIdRoute: ItemsItemIdRoute
+  ItemsItemIdRoute: ItemsItemIdRoute,
 }
 
 const ItemsRouteWithChildren = ItemsRoute._addFileChildren(ItemsRouteChildren)
@@ -268,10 +268,12 @@ interface ProductsRouteChildren {
 }
 
 const ProductsRouteChildren: ProductsRouteChildren = {
-  ProductsProductIdRoute: ProductsProductIdRoute
+  ProductsProductIdRoute: ProductsProductIdRoute,
 }
 
-const ProductsRouteWithChildren = ProductsRoute._addFileChildren(ProductsRouteChildren)
+const ProductsRouteWithChildren = ProductsRoute._addFileChildren(
+  ProductsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -282,6 +284,8 @@ const rootRouteChildren: RootRouteChildren = {
   MyCouponsRoute: MyCouponsRoute,
   ProductsRoute: ProductsRouteWithChildren,
   SettingsRoute: SettingsRoute,
-  SignupRoute: SignupRoute
+  SignupRoute: SignupRoute,
 }
-export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
