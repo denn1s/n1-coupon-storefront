@@ -1,22 +1,29 @@
-# Modern React Admin Template
+# N1 Coupon Storefront
 
-A production-ready starter template for building React admin dashboards and web applications with modern technologies and best practices.
+A modern coupon and deals marketplace platform built with React and cutting-edge technologies. Similar to Groupon, this application provides a complete storefront for browsing, purchasing, and managing coupon deals.
 
 ## ✨ Features
 
+### Core Platform Features
+- **🎟️ Coupon Marketplace** - Browse and purchase deals from various merchants
+- **🛍️ Shopping Cart** - Full e-commerce checkout experience
+- **💳 Payment Integration** - Secure payment processing
+- **📱 Responsive Design** - Optimized for mobile and desktop
+- **🔍 Search & Filter** - Find deals by category, location, and price
+
+### Technical Features
 - **🔐 Auth0 Authentication** - Complete auth system with role-based permissions
 - **🧭 File-based Routing** - TanStack Router for type-safe, file-based routing
 - **🔄 Data Fetching** - TanStack Query (React Query) with custom query builders
+- **🌐 GraphQL Integration** - Efficient data fetching with cursor-based pagination
 - **🎨 UI Components** - DaisyUI component library for beautiful interfaces
 - **💅 Modern Styling** - Tailwind CSS + CSS Modules for flexible styling
 - **📝 Form Management** - TanStack Form with Zod validation
-- **🏪 State Management** - Zustand for lightweight global state
+- **🏪 State Management** - TanStack Store for lightweight global state
 - **📦 Vite Build Tool** - Lightning-fast HMR and optimized builds
 - **🔧 TypeScript** - Full type safety across the application
 - **🧪 Testing Setup** - Vitest + Testing Library ready to go
 - **📚 Storybook** - Component development and documentation
-- **🎯 Path Aliases** - Clean imports with @ aliases
-- **🏗️ Atomic Design** - Organized component architecture
 
 ## 🚀 Quick Start
 
@@ -30,7 +37,7 @@ A production-ready starter template for building React admin dashboards and web 
 ```bash
 # Clone the repository
 git clone <your-repo-url>
-cd tanstack-template
+cd n1-coupon-storefront
 
 # Install dependencies (use bun if available, npm otherwise)
 bun install  # or npm install
@@ -129,68 +136,73 @@ src/
 #### 1. Define Types (`src/lib/api/types.ts`)
 
 ```typescript
-export interface Product {
+export interface Coupon {
   id: string
-  name: string
-  price: number
+  title: string
   description: string
+  originalPrice: number
+  salePrice: number
+  discount: number
+  merchantName: string
+  category: string
+  expiresAt: string
 }
 
-export interface ProductsResponse extends PaginatedResponse<Product> {}
+export interface CouponsResponse extends PaginatedResponse<Coupon> {}
 ```
 
-#### 2. Create Service (`src/services/products.ts`)
+#### 2. Create Service (`src/services/coupons.ts`)
 
 ```typescript
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { getFn, postFn, patchFn, deleteFn } from '@lib/api/queryFn'
 
-export const useGetProducts = (params = {}) => {
+export const useGetCoupons = (params = {}) => {
   return useQuery({
-    queryKey: ['products', 'list', params],
-    queryFn: getFn<ProductsResponse>('/products', params)
+    queryKey: ['coupons', 'list', params],
+    queryFn: getFn<CouponsResponse>('/coupons', params)
   })
 }
 
-export const useCreateProduct = () => {
+export const usePurchaseCoupon = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: postFn<CreateProductRequest, Product>('/products'),
+    mutationFn: postFn<PurchaseCouponRequest, Order>('/orders'),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products', 'list'] })
+      queryClient.invalidateQueries({ queryKey: ['orders', 'list'] })
     }
   })
 }
 ```
 
-#### 3. Create Route (`src/routes/products.tsx`)
+#### 3. Create Route (`src/routes/coupons.tsx`)
 
 ```typescript
 import { createFileRoute } from '@tanstack/react-router'
-import { ProductsPage } from '@pages/Products'
+import { CouponsPage } from '@pages/Coupons'
 
-export const Route = createFileRoute('/products')({
-  component: ProductsPage
+export const Route = createFileRoute('/coupons')({
+  component: CouponsPage
 })
 ```
 
-#### 4. Create Page (`src/pages/Products/ProductsPage.tsx`)
+#### 4. Create Page (`src/pages/Coupons/CouponsPage.tsx`)
 
 ```typescript
-import { useGetProducts } from '@services/products'
+import { useGetCoupons } from '@services/coupons'
 
-export default function ProductsPage() {
-  const { data, isLoading } = useGetProducts()
+export default function CouponsPage() {
+  const { data, isLoading } = useGetCoupons()
 
   if (isLoading) return <div>Loading...</div>
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Products</h1>
+      <h1 className="text-3xl font-bold mb-6">Available Deals</h1>
       <div className="grid grid-cols-3 gap-4">
-        {data?.items.map(product => (
-          <ProductCard key={product.id} product={product} />
+        {data?.items.map(coupon => (
+          <CouponCard key={coupon.id} coupon={coupon} />
         ))}
       </div>
     </div>
@@ -320,17 +332,17 @@ import { usePermissions } from '@auth/usePermissions'
 
 function MyComponent() {
   const { user, isAuthenticated, login, logout } = useAuth()
-  const { canRead, canWrite } = usePermissions('products')
+  const { canRead, canWrite } = usePermissions('coupons')
 
   return (
     <div>
       {isAuthenticated ? (
         <>
           <p>Welcome, {user.name}</p>
-          {canWrite && <Button>Create Product</Button>}
+          {canWrite && <Button>Purchase Coupon</Button>}
         </>
       ) : (
-        <Button onClick={login}>Login</Button>
+        <Button onClick={login}>Login to Purchase</Button>
       )}
     </div>
   )
