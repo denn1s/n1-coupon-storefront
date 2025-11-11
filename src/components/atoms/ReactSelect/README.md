@@ -87,31 +87,31 @@ const options: SelectOption[] = [
 
 ### Props Principales
 
-| Prop | Tipo | Default | Descripción |
-|------|------|---------|-------------|
-| `label` | `string` | - | Etiqueta del campo |
-| `description` | `string` | - | Texto de ayuda |
-| `errorMessage` | `string` | - | Mensaje de error |
-| `isRequired` | `boolean` | `false` | Campo obligatorio |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Tamaño del selector |
-| `variant` | `'flat' \| 'bordered' \| 'faded' \| 'underlined'` | `'flat'` | Variante visual |
-| `color` | `'default' \| 'primary' \| 'secondary' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Color del tema |
-| `isInvalid` | `boolean` | `false` | Estado de error |
+| Prop           | Tipo                                                                          | Default     | Descripción         |
+| -------------- | ----------------------------------------------------------------------------- | ----------- | ------------------- |
+| `label`        | `string`                                                                      | -           | Etiqueta del campo  |
+| `description`  | `string`                                                                      | -           | Texto de ayuda      |
+| `errorMessage` | `string`                                                                      | -           | Mensaje de error    |
+| `isRequired`   | `boolean`                                                                     | `false`     | Campo obligatorio   |
+| `size`         | `'sm' \| 'md' \| 'lg'`                                                        | `'md'`      | Tamaño del selector |
+| `variant`      | `'flat' \| 'bordered' \| 'faded' \| 'underlined'`                             | `'flat'`    | Variante visual     |
+| `color`        | `'default' \| 'primary' \| 'secondary' \| 'success' \| 'warning' \| 'danger'` | `'default'` | Color del tema      |
+| `isInvalid`    | `boolean`                                                                     | `false`     | Estado de error     |
 
 ### Props de react-select
 
-| Prop | Tipo | Default | Descripción |
-|------|------|---------|-------------|
-| `options` | `SelectOption[]` | `[]` | Opciones disponibles |
-| `value` | `SelectOption \| SelectOption[] \| null` | - | Valor seleccionado |
-| `onChange` | `function` | - | Callback de cambio |
-| `placeholder` | `string` | `'Select...'` | Texto del placeholder |
-| `isDisabled` | `boolean` | `false` | Campo deshabilitado |
-| `isLoading` | `boolean` | `false` | Estado de carga |
-| `isMulti` | `boolean` | `false` | Selección múltiple |
-| `isClearable` | `boolean` | `false` | Botón de limpiar |
-| `isSearchable` | `boolean` | `true` | Búsqueda habilitada |
-| `closeMenuOnSelect` | `boolean` | `true` | Cerrar menú al seleccionar |
+| Prop                | Tipo                                     | Default       | Descripción                |
+| ------------------- | ---------------------------------------- | ------------- | -------------------------- |
+| `options`           | `SelectOption[]`                         | `[]`          | Opciones disponibles       |
+| `value`             | `SelectOption \| SelectOption[] \| null` | -             | Valor seleccionado         |
+| `onChange`          | `function`                               | -             | Callback de cambio         |
+| `placeholder`       | `string`                                 | `'Select...'` | Texto del placeholder      |
+| `isDisabled`        | `boolean`                                | `false`       | Campo deshabilitado        |
+| `isLoading`         | `boolean`                                | `false`       | Estado de carga            |
+| `isMulti`           | `boolean`                                | `false`       | Selección múltiple         |
+| `isClearable`       | `boolean`                                | `false`       | Botón de limpiar           |
+| `isSearchable`      | `boolean`                                | `true`        | Búsqueda habilitada        |
+| `closeMenuOnSelect` | `boolean`                                | `true`        | Cerrar menú al seleccionar |
 
 ## Tipos
 
@@ -142,7 +142,7 @@ Los selectores de campaña ya están actualizados:
   isClearable
 />
 
-// MultiCampaignSelector  
+// MultiCampaignSelector
 <ReactSelect
   label="Campaigns"
   placeholder="Select campaigns"
@@ -158,13 +158,9 @@ Los selectores de campaña ya están actualizados:
 ## Migración desde otros UI libraries
 
 ### Antes (Generic Select):
+
 ```tsx
-<Select
-  label="Country"
-  selectedKeys={selectedKeys}
-  onSelectionChange={handleSelectionChange}
-  selectionMode="multiple"
->
+<Select label="Country" selectedKeys={selectedKeys} onSelectionChange={handleSelectionChange} selectionMode="multiple">
   {countries.map((country) => (
     <SelectItem key={country.id}>{country.name}</SelectItem>
   ))}
@@ -172,14 +168,9 @@ Los selectores de campaña ya están actualizados:
 ```
 
 ### Después (ReactSelect):
+
 ```tsx
-<ReactSelect
-  label="Country"
-  options={countryOptions}
-  value={selectedOptions}
-  onChange={handleChange}
-  isMulti
-/>
+<ReactSelect label="Country" options={countryOptions} value={selectedOptions} onChange={handleChange} isMulti />
 ```
 
 ## Ventajas
@@ -190,4 +181,3 @@ Los selectores de campaña ya están actualizados:
 4. **Flexibilidad**: Componentes personalizables y extensibles
 5. **Accesibilidad**: Navegación completa por teclado y lectores de pantalla
 6. **Consistencia**: Estilos unificados con el sistema de diseño
-

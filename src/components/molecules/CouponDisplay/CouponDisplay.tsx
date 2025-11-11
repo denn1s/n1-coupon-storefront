@@ -34,8 +34,8 @@ const CouponDisplay = ({ coupon, onClose }: CouponDisplayProps) => {
           margin: 2,
           color: {
             dark: '#000000',
-            light: '#FFFFFF',
-          },
+            light: '#FFFFFF'
+          }
         },
         (error) => {
           if (error) console.error('QR Code generation error:', error)
@@ -47,7 +47,7 @@ const CouponDisplay = ({ coupon, onClose }: CouponDisplayProps) => {
   const statusColors = {
     active: styles.statusActive,
     redeemed: styles.statusRedeemed,
-    expired: styles.statusExpired,
+    expired: styles.statusExpired
   }
 
   return (
@@ -75,11 +75,7 @@ const CouponDisplay = ({ coupon, onClose }: CouponDisplayProps) => {
       <div className={styles.content}>
         {/* Product Info */}
         <div className={styles.productInfo}>
-          <img
-            src={coupon.productImage}
-            alt={coupon.productName}
-            className={styles.productImage}
-          />
+          <img src={coupon.productImage} alt={coupon.productName} className={styles.productImage} />
           <h3 className={styles.productName}>{coupon.productName}</h3>
           <div className={styles.priceInfo}>
             <span className={styles.priceLabel}>Amount Paid</span>
@@ -92,9 +88,7 @@ const CouponDisplay = ({ coupon, onClose }: CouponDisplayProps) => {
           <div className={styles.qrContainer}>
             <canvas ref={canvasRef} className={styles.qrCode} />
           </div>
-          <p className={styles.qrInstructions}>
-            Show this QR code at the store to redeem your coupon
-          </p>
+          <p className={styles.qrInstructions}>Show this QR code at the store to redeem your coupon</p>
           <p className={styles.couponId}>Coupon ID: {coupon.id}</p>
         </div>
 
@@ -105,9 +99,7 @@ const CouponDisplay = ({ coupon, onClose }: CouponDisplayProps) => {
             {coupon.status === 'redeemed' && '✓ Redeemed'}
             {coupon.status === 'expired' && '✕ Expired'}
           </span>
-          <p className={styles.purchaseDate}>
-            Purchased on {new Date(coupon.purchaseDate).toLocaleDateString()}
-          </p>
+          <p className={styles.purchaseDate}>Purchased on {new Date(coupon.purchaseDate).toLocaleDateString()}</p>
         </div>
 
         {/* Actions */}

@@ -6,15 +6,15 @@ import usePermissions from './usePermissions'
  */
 export const useResourcePermissions = (resource: string) => {
   const { hasPermission } = usePermissions()
-  
+
   const readPermission = `read:${resource}`
   const writePermission = `write:${resource}`
-  
+
   return {
     canRead: hasPermission(readPermission),
     canWrite: hasPermission(writePermission),
     readPermission,
-    writePermission,
+    writePermission
   }
 }
 
@@ -39,25 +39,31 @@ export const useUsersPermissions = () => useResourcePermissions('users')
  */
 export const useMultipleResourcePermissions = (resources: string[]) => {
   const { hasPermission } = usePermissions()
-  
-  return resources.reduce((acc, resource) => {
-    const readPermission = `read:${resource}`
-    const writePermission = `write:${resource}`
-    
-    acc[resource] = {
-      canRead: hasPermission(readPermission),
-      canWrite: hasPermission(writePermission),
-      readPermission,
-      writePermission,
-    }
-    
-    return acc
-  }, {} as Record<string, {
-    canRead: boolean
-    canWrite: boolean
-    readPermission: string
-    writePermission: string
-  }>)
+
+  return resources.reduce(
+    (acc, resource) => {
+      const readPermission = `read:${resource}`
+      const writePermission = `write:${resource}`
+
+      acc[resource] = {
+        canRead: hasPermission(readPermission),
+        canWrite: hasPermission(writePermission),
+        readPermission,
+        writePermission
+      }
+
+      return acc
+    },
+    {} as Record<
+      string,
+      {
+        canRead: boolean
+        canWrite: boolean
+        readPermission: string
+        writePermission: string
+      }
+    >
+  )
 }
 
 /**

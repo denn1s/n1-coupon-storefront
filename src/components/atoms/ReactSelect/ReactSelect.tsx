@@ -1,9 +1,4 @@
-import Select, { 
-  StylesConfig, 
-  GroupBase, 
-  OnChangeValue,
-  ActionMeta
-} from 'react-select'
+import Select, { StylesConfig, GroupBase, OnChangeValue, ActionMeta } from 'react-select'
 
 export interface SelectOption {
   value: string | number
@@ -24,7 +19,7 @@ export interface ReactSelectProps {
   isInvalid?: boolean
   enableVerticalScroll?: boolean
   maxHeight?: string
-  
+
   // React-select props
   options: SelectOption[]
   value?: SelectOption | SelectOption[] | null
@@ -65,34 +60,34 @@ const getCustomStyles = (
       fontSize: size === 'sm' ? '14px' : size === 'lg' ? '16px' : '14px',
       borderWidth: variant === 'bordered' ? '2px' : '1px',
       borderRadius: '12px', // HeroUI default radius
-      borderColor: isInvalid 
+      borderColor: isInvalid
         ? '#f31260' // danger color
-        : state.isFocused 
-          ? color === 'primary' ? '#006FEE' : '#006FEE' // primary color
-          : variant === 'bordered' ? '#d4d4d8' : '#e4e4e7', // default gray
+        : state.isFocused
+          ? color === 'primary'
+            ? '#006FEE'
+            : '#006FEE' // primary color
+          : variant === 'bordered'
+            ? '#d4d4d8'
+            : '#e4e4e7', // default gray
       backgroundColor: variant === 'flat' ? '#f4f4f5' : '#ffffff',
-      boxShadow: state.isFocused 
-        ? `0 0 0 2px ${color === 'primary' ? '#006FEE20' : '#006FEE20'}` 
-        : 'none',
+      boxShadow: state.isFocused ? `0 0 0 2px ${color === 'primary' ? '#006FEE20' : '#006FEE20'}` : 'none',
       '&:hover': {
-        borderColor: isInvalid 
-          ? '#f31260'
-          : color === 'primary' ? '#006FEE' : '#006FEE'
+        borderColor: isInvalid ? '#f31260' : color === 'primary' ? '#006FEE' : '#006FEE'
       },
       transition: 'all 150ms ease',
       cursor: 'pointer'
     }
     return baseStyles
   },
-  
+
   valueContainer: (provided) => ({
     ...provided,
     padding: size === 'sm' ? '2px 8px' : size === 'lg' ? '8px 12px' : '4px 12px',
-    overflowY: enableVerticalScroll ? 'auto' as const : 'visible' as const,
+    overflowY: enableVerticalScroll ? ('auto' as const) : ('visible' as const),
     maxHeight: enableVerticalScroll ? `calc(${maxHeight} - 16px)` : 'none',
-    flexWrap: enableVerticalScroll ? 'wrap' as const : 'wrap' as const
+    flexWrap: enableVerticalScroll ? ('wrap' as const) : ('wrap' as const)
   }),
-  
+
   input: (provided) => ({
     ...provided,
     margin: 0,
@@ -101,33 +96,33 @@ const getCustomStyles = (
     color: '#11181c', // foreground color
     caretColor: '#11181c' // cursor color
   }),
-  
+
   placeholder: (provided) => ({
     ...provided,
     color: '#71717a', // muted foreground
     fontSize: size === 'sm' ? '14px' : size === 'lg' ? '16px' : '14px'
   }),
-  
+
   singleValue: (provided) => ({
     ...provided,
     color: '#11181c', // foreground color
     fontSize: size === 'sm' ? '14px' : size === 'lg' ? '16px' : '14px'
   }),
-  
+
   multiValue: (provided) => ({
     ...provided,
     backgroundColor: '#e4e4e7', // neutral-200
     borderRadius: '6px',
     fontSize: size === 'sm' ? '12px' : '14px'
   }),
-  
+
   multiValueLabel: (provided) => ({
     ...provided,
     color: '#3f3f46', // neutral-700
     fontSize: size === 'sm' ? '12px' : '14px',
     fontWeight: '500'
   }),
-  
+
   multiValueRemove: (provided) => ({
     ...provided,
     color: '#71717a',
@@ -137,12 +132,12 @@ const getCustomStyles = (
       color: '#ffffff'
     }
   }),
-  
+
   indicatorSeparator: (provided) => ({
     ...provided,
     backgroundColor: '#d4d4d8' // neutral-300
   }),
-  
+
   dropdownIndicator: (provided, state) => ({
     ...provided,
     color: state.isFocused ? '#006FEE' : '#71717a',
@@ -152,7 +147,7 @@ const getCustomStyles = (
     transition: 'all 150ms ease',
     transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : 'none'
   }),
-  
+
   clearIndicator: (provided) => ({
     ...provided,
     color: '#71717a',
@@ -160,7 +155,7 @@ const getCustomStyles = (
       color: '#dc2626'
     }
   }),
-  
+
   menu: (provided) => ({
     ...provided,
     borderRadius: '12px',
@@ -169,13 +164,13 @@ const getCustomStyles = (
     // Very high z-index to ensure dropdown appears above modals and other overlays
     zIndex: 9999999
   }),
-  
+
   menuList: (provided) => ({
     ...provided,
     padding: '4px',
     borderRadius: '12px'
   }),
-  
+
   option: (provided, state) => ({
     ...provided,
     borderRadius: '8px',
@@ -197,14 +192,14 @@ const getCustomStyles = (
       backgroundColor: state.isSelected ? '#0054d1' : '#e2e8f0' // slate-200
     }
   }),
-  
+
   noOptionsMessage: (provided) => ({
     ...provided,
     color: '#71717a',
     fontSize: size === 'sm' ? '14px' : size === 'lg' ? '16px' : '14px',
     padding: size === 'sm' ? '6px 8px' : size === 'lg' ? '12px 12px' : '8px 12px'
   }),
-  
+
   loadingMessage: (provided) => ({
     ...provided,
     color: '#71717a',
@@ -227,24 +222,32 @@ export const ReactSelect = ({
   maxHeight = '200px',
   ...selectProps
 }: ReactSelectProps) => {
-  const customStyles = getCustomStyles(size, variant, color, isInvalid || !!errorMessage, enableVerticalScroll, maxHeight)
+  const customStyles = getCustomStyles(
+    size,
+    variant,
+    color,
+    isInvalid || !!errorMessage,
+    enableVerticalScroll,
+    maxHeight
+  )
 
   // Helper function for class names
-  const classNames = (...classes: (string | undefined)[]) => 
-    classes.filter(Boolean).join(' ')
+  const classNames = (...classes: (string | undefined)[]) => classes.filter(Boolean).join(' ')
 
   return (
     <div className={classNames('flex flex-col gap-1', className)}>
       {label && (
-        <label className={classNames(
-          'text-sm font-medium select-none',
-          isInvalid || errorMessage ? 'text-red-600' : 'text-gray-900'
-        )}>
+        <label
+          className={classNames(
+            'text-sm font-medium select-none',
+            isInvalid || errorMessage ? 'text-red-600' : 'text-gray-900'
+          )}
+        >
           {label}
           {isRequired && <span className="text-red-600 ml-1">*</span>}
         </label>
       )}
-      
+
       <Select<SelectOption, boolean, GroupBase<SelectOption>>
         {...selectProps}
         styles={customStyles}
@@ -253,25 +256,16 @@ export const ReactSelect = ({
         placeholder={selectProps.placeholder || 'Select...'}
         menuPlacement={selectProps.menuPlacement || 'auto'}
         menuPosition={selectProps.menuPosition || 'fixed'}
-        noOptionsMessage={selectProps.noOptionsMessage || 
-          (({ inputValue }) => 
-            inputValue ? `No options found for "${inputValue}"` : 'No options available'
-          )
+        noOptionsMessage={
+          selectProps.noOptionsMessage ||
+          (({ inputValue }) => (inputValue ? `No options found for "${inputValue}"` : 'No options available'))
         }
         loadingMessage={selectProps.loadingMessage || (() => 'Loading...')}
       />
-      
-      {description && !errorMessage && (
-        <div className="text-xs text-gray-500 mt-1">
-          {description}
-        </div>
-      )}
-      
-      {errorMessage && (
-        <div className="text-xs text-red-600 mt-1">
-          {errorMessage}
-        </div>
-      )}
+
+      {description && !errorMessage && <div className="text-xs text-gray-500 mt-1">{description}</div>}
+
+      {errorMessage && <div className="text-xs text-red-600 mt-1">{errorMessage}</div>}
     </div>
   )
 }

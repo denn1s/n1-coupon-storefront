@@ -34,11 +34,7 @@ export default function Login() {
       const response = await login({ email, password })
 
       // Store the auth state
-      setAuthState(
-        response.access_token,
-        response.refresh_token,
-        response.user
-      )
+      setAuthState(response.access_token, response.refresh_token, response.user)
 
       // Redirect to home page
       navigate({ to: '/' })
@@ -96,11 +92,7 @@ export default function Login() {
             )}
 
             <div className="form-control mt-6">
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={isLoading}
-              >
+              <button type="submit" className="btn btn-primary" disabled={isLoading}>
                 {isLoading && <span className="loading loading-spinner loading-sm"></span>}
                 {isLoading ? 'Logging in...' : 'Login'}
               </button>

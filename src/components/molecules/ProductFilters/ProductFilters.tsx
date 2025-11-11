@@ -37,7 +37,7 @@ const ProductFilters = ({
   onCategoryChange,
   onStoreChange,
   onReset,
-  isLoading = false,
+  isLoading = false
 }: ProductFiltersProps) => {
   const hasActiveFilters = selectedCategory !== null || selectedStore !== null
 
@@ -57,9 +57,7 @@ const ProductFilters = ({
         <label className={styles.filterLabel}>Category</label>
         <select
           value={selectedCategory ?? ''}
-          onChange={(e) =>
-            onCategoryChange(e.target.value ? Number(e.target.value) : null)
-          }
+          onChange={(e) => onCategoryChange(e.target.value ? Number(e.target.value) : null)}
           className={styles.select}
           disabled={isLoading}
         >
@@ -77,9 +75,7 @@ const ProductFilters = ({
         <label className={styles.filterLabel}>Store</label>
         <select
           value={selectedStore ?? ''}
-          onChange={(e) =>
-            onStoreChange(e.target.value ? Number(e.target.value) : null)
-          }
+          onChange={(e) => onStoreChange(e.target.value ? Number(e.target.value) : null)}
           className={styles.select}
           disabled={isLoading}
         >

@@ -11,7 +11,7 @@ const mockCategories: HoldingBusinessCategory[] = [
     description: 'Food category',
     bannerImageUrl: null,
     smallBannerImageUrl: null,
-    storeCount: 5,
+    storeCount: 5
   },
   {
     id: 2,
@@ -19,8 +19,8 @@ const mockCategories: HoldingBusinessCategory[] = [
     description: 'Entertainment category',
     bannerImageUrl: null,
     smallBannerImageUrl: null,
-    storeCount: 3,
-  },
+    storeCount: 3
+  }
 ]
 
 const mockStores: HoldingStore[] = [
@@ -28,14 +28,14 @@ const mockStores: HoldingStore[] = [
     id: 1,
     name: 'Pizza Place',
     description: 'Best pizza in town',
-    storeImageUrl: 'https://example.com/pizza.jpg',
+    storeImageUrl: 'https://example.com/pizza.jpg'
   },
   {
     id: 2,
     name: 'Coffee Shop',
     description: 'Great coffee',
-    storeImageUrl: 'https://example.com/coffee.jpg',
-  },
+    storeImageUrl: 'https://example.com/coffee.jpg'
+  }
 ]
 
 describe('ProductFilters', () => {
@@ -46,7 +46,7 @@ describe('ProductFilters', () => {
     selectedStore: null,
     onCategoryChange: vi.fn(),
     onStoreChange: vi.fn(),
-    onReset: vi.fn(),
+    onReset: vi.fn()
   }
 
   it('renders filter sections', () => {
@@ -133,13 +133,7 @@ describe('ProductFilters', () => {
     const onCategoryChange = vi.fn()
     const user = userEvent.setup()
 
-    render(
-      <ProductFilters
-        {...defaultProps}
-        selectedCategory={1}
-        onCategoryChange={onCategoryChange}
-      />
-    )
+    render(<ProductFilters {...defaultProps} selectedCategory={1} onCategoryChange={onCategoryChange} />)
 
     const removeButtons = screen.getAllByLabelText('Remove category filter')
     await user.click(removeButtons[0])
@@ -151,9 +145,7 @@ describe('ProductFilters', () => {
     const onStoreChange = vi.fn()
     const user = userEvent.setup()
 
-    render(
-      <ProductFilters {...defaultProps} selectedStore={2} onStoreChange={onStoreChange} />
-    )
+    render(<ProductFilters {...defaultProps} selectedStore={2} onStoreChange={onStoreChange} />)
 
     const removeButtons = screen.getAllByLabelText('Remove store filter')
     await user.click(removeButtons[0])
@@ -175,13 +167,7 @@ describe('ProductFilters', () => {
     const onCategoryChange = vi.fn()
     const user = userEvent.setup()
 
-    render(
-      <ProductFilters
-        {...defaultProps}
-        selectedCategory={1}
-        onCategoryChange={onCategoryChange}
-      />
-    )
+    render(<ProductFilters {...defaultProps} selectedCategory={1} onCategoryChange={onCategoryChange} />)
 
     const categorySelect = screen.getByLabelText('Category')
     await user.selectOptions(categorySelect, '')

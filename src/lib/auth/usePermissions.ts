@@ -37,7 +37,7 @@ const usePermissions = () => {
       return false
     }
 
-    return requiredPermissions.some(permission => permissions.includes(permission))
+    return requiredPermissions.some((permission) => permissions.includes(permission))
   }
 
   /**
@@ -50,7 +50,7 @@ const usePermissions = () => {
       return false
     }
 
-    return requiredPermissions.every(permission => permissions.includes(permission))
+    return requiredPermissions.every((permission) => permissions.includes(permission))
   }
 
   /**
@@ -72,7 +72,7 @@ const usePermissions = () => {
     getUserPermissions,
     permissions,
     isAuthenticated,
-    isLoading,
+    isLoading
   }
 }
 

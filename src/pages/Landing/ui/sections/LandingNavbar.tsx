@@ -9,17 +9,40 @@ export const LandingNavbar = () => {
           <span className="font-semibold tracking-tight">Loyalty Core</span>
         </div>
         <nav className="hidden gap-6 md:flex">
-          <a href="#features" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">Features</a>
-          <a href="#use-cases" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">Use Cases</a>
-          <a href="#pricing" className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors">Pricing</a>
+          <a
+            href="#features"
+            className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors"
+          >
+            Features
+          </a>
+          <a
+            href="#use-cases"
+            className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors"
+          >
+            Use Cases
+          </a>
+          <a
+            href="#pricing"
+            className="text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 transition-colors"
+          >
+            Pricing
+          </a>
         </nav>
         <div className="flex items-center gap-3">
-          <Link to="/login" className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 dark:text-neutral-200 dark:ring-neutral-700 dark:hover:bg-neutral-900 transition-colors">Log in</Link>
-          <Link to="/signup" className="rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-black dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 transition-colors">Sign up</Link>
+          <Link
+            to="/login"
+            className="rounded-md px-3 py-2 text-sm font-medium text-neutral-700 ring-1 ring-inset ring-neutral-300 hover:bg-neutral-50 dark:text-neutral-200 dark:ring-neutral-700 dark:hover:bg-neutral-900 transition-colors"
+          >
+            Log in
+          </Link>
+          <Link
+            to="/signup"
+            className="rounded-md bg-neutral-900 px-3 py-2 text-sm font-medium text-white hover:bg-black dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 transition-colors"
+          >
+            Sign up
+          </Link>
         </div>
       </div>
     </header>
   )
 }
-
-

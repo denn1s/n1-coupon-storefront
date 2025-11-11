@@ -53,7 +53,7 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
       purchaseDate: new Date().toISOString(),
       qrCode: `COUPON-${product.id}-${Date.now()}`, // In real app, this would be a unique code from backend
       price: product.salePrice,
-      status: 'active',
+      status: 'active'
     }
 
     setPurchasedCoupon(coupon)
@@ -88,11 +88,7 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
             <div className={styles.content}>
               {/* Product Summary */}
               <div className={styles.productSummary}>
-                <img
-                  src={product.productImageUrl}
-                  alt={product.name}
-                  className={styles.productImage}
-                />
+                <img src={product.productImageUrl} alt={product.name} className={styles.productImage} />
                 <div className={styles.productDetails}>
                   <h3 className={styles.productName}>{product.name}</h3>
                   <p className={styles.productPrice}>${product.salePrice.toFixed(2)}</p>
@@ -214,9 +210,7 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
                   </svg>
                 </div>
                 <h2 className={styles.successTitle}>Purchase Successful!</h2>
-                <p className={styles.successMessage}>
-                  Your coupon is ready. Show the QR code at the store to redeem.
-                </p>
+                <p className={styles.successMessage}>Your coupon is ready. Show the QR code at the store to redeem.</p>
               </div>
 
               {purchasedCoupon && <CouponDisplay coupon={purchasedCoupon} />}

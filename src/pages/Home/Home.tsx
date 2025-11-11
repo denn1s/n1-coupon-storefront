@@ -9,11 +9,7 @@ export default function Index() {
     <div className={styles.container}>
       <div className={styles.welcomeSection}>
         <h3 className={styles.title}>Welcome Home!</h3>
-        {isAuthenticated && user && (
-          <p className={styles.subtitle}>
-            Hello, {user.name ?? user.email ?? 'User'}!
-          </p>
-        )}
+        {isAuthenticated && user && <p className={styles.subtitle}>Hello, {user.name ?? user.email ?? 'User'}!</p>}
         {!isAuthenticated && <p className={styles.subtitle}>Please log in to access more features.</p>}
       </div>
 
@@ -23,19 +19,13 @@ export default function Index() {
           <h2 className={styles.cardTitle}>Quick Links</h2>
           <div className={styles.quickLinksGrid}>
             <Link to="/items" className={styles.link}>
-              <button className={styles.linkButton}>
-                View Items
-              </button>
+              <button className={styles.linkButton}>View Items</button>
             </Link>
             <Link to="/settings" className={styles.link}>
-              <button className={styles.linkButton}>
-                Settings
-              </button>
+              <button className={styles.linkButton}>Settings</button>
             </Link>
             <Link to="/about" className={styles.link}>
-              <button className={styles.linkButton}>
-                About
-              </button>
+              <button className={styles.linkButton}>About</button>
             </Link>
           </div>
         </div>

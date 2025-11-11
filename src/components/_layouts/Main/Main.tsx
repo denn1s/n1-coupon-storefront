@@ -1,11 +1,6 @@
 import { useState, Fragment, useRef, useEffect } from 'react'
 import { Link, Outlet } from '@tanstack/react-router'
-import {
-  HiOutlineMenu,
-  HiOutlineCog,
-  HiOutlineHome,
-  HiOutlineCollection
-} from 'react-icons/hi'
+import { HiOutlineMenu, HiOutlineCog, HiOutlineHome, HiOutlineCollection } from 'react-icons/hi'
 import { AiOutlineAppstore } from 'react-icons/ai'
 import { Dialog, DialogBackdrop, DialogPanel, Transition } from '@headlessui/react'
 import clsx from 'clsx'
@@ -193,9 +188,7 @@ export default function MainLayout() {
               >
                 <div className="px-4 py-2 border-b border-gray-100">
                   <p className="text-sm font-medium text-gray-900 truncate">{userName ?? 'User'}</p>
-                  {userEmail && (
-                    <p className="text-xs text-gray-500 truncate mt-1">{userEmail}</p>
-                  )}
+                  {userEmail && <p className="text-xs text-gray-500 truncate mt-1">{userEmail}</p>}
                 </div>
                 <button
                   type="button"

@@ -11,7 +11,7 @@ export const useCurrentUserEmail = (): string | null => {
 
   return useMemo(() => {
     if (!accessToken) return null
-    
+
     try {
       const decodedToken = decodeJWT(accessToken)
       return extractUserEmail(decodedToken)

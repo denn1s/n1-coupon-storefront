@@ -21,8 +21,8 @@ export function getGraphQLClient(): GraphQLClient {
     graphqlClient = new GraphQLClient(graphqlEndpoint, {
       headers: {
         'X-App-Id': 'plazamalta', // Mandatory custom header
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     })
   }
 
@@ -85,7 +85,7 @@ export function graphqlQueryFn<TVariables = undefined, TData = unknown>(
       const data = await client.request<TData>({
         document: query,
         variables: variables as Record<string, unknown>,
-        signal: context?.signal,
+        signal: context?.signal
       })
 
       if (import.meta.env.DEV) {
@@ -98,9 +98,7 @@ export function graphqlQueryFn<TVariables = undefined, TData = unknown>(
 
       // Enhance error with additional context
       if (error instanceof Error) {
-        const enhancedError = new Error(
-          `GraphQL Error: ${error.message}`
-        )
+        const enhancedError = new Error(`GraphQL Error: ${error.message}`)
         /* eslint-disable @typescript-eslint/no-explicit-any */
         ;(enhancedError as any).originalError = error
         ;(enhancedError as any).query = query
@@ -163,7 +161,7 @@ export function graphqlMutationFn<TVariables = undefined, TData = unknown>(
     try {
       const data = await client.request<TData>({
         document: mutation,
-        variables: variables as Record<string, unknown>,
+        variables: variables as Record<string, unknown>
       })
 
       if (import.meta.env.DEV) {
@@ -176,9 +174,7 @@ export function graphqlMutationFn<TVariables = undefined, TData = unknown>(
 
       // Enhance error with additional context
       if (error instanceof Error) {
-        const enhancedError = new Error(
-          `GraphQL Mutation Error: ${error.message}`
-        )
+        const enhancedError = new Error(`GraphQL Mutation Error: ${error.message}`)
         /* eslint-disable @typescript-eslint/no-explicit-any */
         ;(enhancedError as any).originalError = error
         ;(enhancedError as any).mutation = mutation

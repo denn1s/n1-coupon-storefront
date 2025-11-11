@@ -11,19 +11,19 @@ interface PermissionGuardProps {
 
 /**
  * Component that conditionally renders children based on user permissions
- * 
+ *
  * @param children - Content to render if permission check passes
  * @param permission - Single permission to check for
  * @param permissions - Array of permissions to check for
  * @param requireAll - If true, user must have ALL permissions. If false, user needs ANY permission
  * @param fallback - Content to render if permission check fails
  */
-const PermissionGuard = ({ 
-  children, 
-  permission, 
-  permissions, 
-  requireAll = false, 
-  fallback = null 
+const PermissionGuard = ({
+  children,
+  permission,
+  permissions,
+  requireAll = false,
+  fallback = null
 }: PermissionGuardProps) => {
   const { hasPermission, hasAnyPermission, hasAllPermissions } = usePermissions()
 
@@ -32,9 +32,7 @@ const PermissionGuard = ({
   if (permission) {
     hasAccess = hasPermission(permission)
   } else if (permissions && permissions.length > 0) {
-    hasAccess = requireAll 
-      ? hasAllPermissions(permissions)
-      : hasAnyPermission(permissions)
+    hasAccess = requireAll ? hasAllPermissions(permissions) : hasAnyPermission(permissions)
   } else {
     // If no permissions specified, allow access
     hasAccess = true

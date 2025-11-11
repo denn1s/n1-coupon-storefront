@@ -8,5 +8,10 @@
  * @returns True if the error has a numeric status property
  */
 export function isHttpError(error: unknown): error is { status: number } {
-  return typeof error === 'object' && error !== null && 'status' in error && typeof (error as { status?: unknown }).status === 'number'
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'status' in error &&
+    typeof (error as { status?: unknown }).status === 'number'
+  )
 }

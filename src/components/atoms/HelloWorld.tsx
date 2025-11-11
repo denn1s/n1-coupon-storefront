@@ -9,4 +9,3 @@ const HelloWorld = ({ message }: HelloWorldProps) => {
 }
 
 export default HelloWorld
-

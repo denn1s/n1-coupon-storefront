@@ -42,4 +42,3 @@ describe('SearchBox component', () => {
     expect(screen.queryByRole('button', { name: /clear search/i })).not.toBeInTheDocument()
   })
 })
-

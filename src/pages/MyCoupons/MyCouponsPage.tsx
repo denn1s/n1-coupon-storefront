@@ -30,8 +30,8 @@ export default function MyCouponsPage() {
       productImage: 'https://cdn.h4b.dev/images/store85/products/product19087/Image1.jpg?20220401011344',
       purchaseDate: '2025-11-10T10:30:00Z',
       qrCode: 'COUPON-19087-1699617000',
-      price: 3.50,
-      status: 'active',
+      price: 3.5,
+      status: 'active'
     },
     {
       id: 'CPO-002',
@@ -40,9 +40,9 @@ export default function MyCouponsPage() {
       productImage: 'https://cdn.h4b.dev/images/store85/products/product19088/Image1.jpg?20220401011419',
       purchaseDate: '2025-11-08T14:20:00Z',
       qrCode: 'COUPON-19088-1699444800',
-      price: 5.00,
-      status: 'redeemed',
-    },
+      price: 5.0,
+      status: 'redeemed'
+    }
   ]
 
   const filteredCoupons = mockCoupons.filter((coupon) =>
@@ -76,7 +76,8 @@ export default function MyCouponsPage() {
         <div>
           <p className={styles.noticeTitle}>Backend Integration Pending</p>
           <p className={styles.noticeText}>
-            This page shows sample data. Your actual purchased coupons will appear here once the API endpoint is available.
+            This page shows sample data. Your actual purchased coupons will appear here once the API endpoint is
+            available.
           </p>
         </div>
       </div>
@@ -140,17 +141,11 @@ export default function MyCouponsPage() {
         <div className={styles.couponsList}>
           {filteredCoupons.map((coupon) => (
             <div key={coupon.id} className={styles.couponCard}>
-              <img
-                src={coupon.productImage}
-                alt={coupon.productName}
-                className={styles.couponImage}
-              />
+              <img src={coupon.productImage} alt={coupon.productName} className={styles.couponImage} />
               <div className={styles.couponInfo}>
                 <h3 className={styles.couponName}>{coupon.productName}</h3>
                 <p className={styles.couponPrice}>${coupon.price.toFixed(2)}</p>
-                <p className={styles.couponDate}>
-                  Purchased {new Date(coupon.purchaseDate).toLocaleDateString()}
-                </p>
+                <p className={styles.couponDate}>Purchased {new Date(coupon.purchaseDate).toLocaleDateString()}</p>
                 <span
                   className={`${styles.couponStatus} ${styles[`couponStatus${coupon.status.charAt(0).toUpperCase() + coupon.status.slice(1)}`]}`}
                 >

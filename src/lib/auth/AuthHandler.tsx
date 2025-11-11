@@ -34,9 +34,7 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
 
   // Define public paths that don't require authentication
   const PUBLIC_PATHS = ['/', '/signup', '/login']
-  const isPublicPath = PUBLIC_PATHS.some(
-    (p) => path === p || path.startsWith(p + '/')
-  )
+  const isPublicPath = PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + '/'))
 
   // Auto-refresh token if expired
   useEffect(() => {

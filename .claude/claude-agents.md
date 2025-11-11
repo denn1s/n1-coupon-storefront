@@ -588,6 +588,49 @@ As the project evolves, keep agents synchronized:
 
 ---
 
+## 💅 Code Style Standards
+
+All agents and development in this project follow these consistent code style conventions:
+
+### Semicolons
+
+**Never use semicolons** in JavaScript/TypeScript code:
+
+```typescript
+// ❌ WRONG
+import React from 'react'
+const value = 'hello'
+
+// ✅ CORRECT
+import React from 'react'
+const value = 'hello'
+```
+
+### Quotes
+
+- **Single quotes** for JavaScript/TypeScript strings
+- **Double quotes** for JSX attributes and HTML
+
+```typescript
+// ❌ WRONG
+import styles from "./Component.module.css"
+const message = "Hello world"
+return <div className='container'>Hello</div>
+
+// ✅ CORRECT
+import styles from './Component.module.css'
+const message = 'Hello world'
+return <div className="container">Hello</div>
+```
+
+### Enforcement
+
+- **ESLint**: Configured with `semi: ['error', 'never']` and `jsx-quotes: ['error', 'prefer-double']`
+- **Prettier**: Configured with `"semi": false`, `"singleQuote": true`, `"jsxSingleQuote": false`
+- **Auto-fix**: Run `npm run fix` to automatically format all files
+
+---
+
 ## 📚 Additional Resources
 
 - **Main Guide**: `CLAUDE.md` - Comprehensive project documentation
