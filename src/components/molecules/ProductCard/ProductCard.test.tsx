@@ -34,22 +34,13 @@ const mockLowStockProduct: HoldingProduct = {
   quantityAvailable: 5
 }
 
-// Helper to wrap component with router
 const renderWithRouter = (ui: React.ReactElement) => {
-  const rootRoute = createRootRoute()
-  const indexRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: () => ui
+  const router = createRouter({
+    routeTree: createRootRoute({
+      component: () => ui
+    }),
+    history: createMemoryHistory()
   })
-  const productRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/products/$productId',
-    component: () => <div>Product Detail</div>
-  })
-
-  const routeTree = rootRoute.addChildren([indexRoute, productRoute])
-  const router = createRouter({ routeTree, history: createMemoryHistory() })
 
   return render(<RouterProvider router={router} />)
 }

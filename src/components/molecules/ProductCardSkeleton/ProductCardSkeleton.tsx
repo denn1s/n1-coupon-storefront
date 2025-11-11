@@ -10,23 +10,23 @@ const ProductCardSkeleton = () => {
   return (
     <div className={styles.card}>
       {/* Image skeleton */}
-      <div className={styles.imageSkeleton} />
+      <div className={`${styles.imageSkeleton} animate-pulse`} />
 
       {/* Content skeleton */}
       <div className={styles.content}>
         {/* Title skeleton - 2 lines */}
-        <div className={styles.titleSkeleton} />
-        <div className={styles.titleSkeleton} style={{ width: '60%' }} />
+        <div className={`${styles.titleSkeleton} animate-pulse`} />
+        <div className={`${styles.titleSkeleton} animate-pulse`} style={{ width: '60%' }} />
 
         {/* Description skeleton - 3 lines */}
-        <div className={styles.descriptionSkeleton} />
-        <div className={styles.descriptionSkeleton} />
-        <div className={styles.descriptionSkeleton} style={{ width: '40%' }} />
+        <div className={`${styles.descriptionSkeleton} animate-pulse`} />
+        <div className={`${styles.descriptionSkeleton} animate-pulse`} />
+        <div className={`${styles.descriptionSkeleton} animate-pulse`} style={{ width: '40%' }} />
 
         {/* Footer skeleton */}
         <div className={styles.footer}>
-          <div className={styles.priceSkeleton} />
-          <div className={styles.buttonSkeleton} />
+          <div className={`${styles.priceSkeleton} animate-pulse`} />
+          <div className={`${styles.buttonSkeleton} animate-pulse`} />
         </div>
       </div>
     </div>

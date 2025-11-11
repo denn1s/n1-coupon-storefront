@@ -54,8 +54,11 @@ const ProductFilters = ({
 
       {/* Category Filter */}
       <div className={styles.filterSection}>
-        <label className={styles.filterLabel}>Category</label>
+        <label htmlFor="category-select" className={styles.filterLabel}>
+          Category
+        </label>
         <select
+          id="category-select"
           value={selectedCategory ?? ''}
           onChange={(e) => onCategoryChange(e.target.value ? Number(e.target.value) : null)}
           className={styles.select}
@@ -72,8 +75,11 @@ const ProductFilters = ({
 
       {/* Store Filter */}
       <div className={styles.filterSection}>
-        <label className={styles.filterLabel}>Store</label>
+        <label htmlFor="store-select" className={styles.filterLabel}>
+          Store
+        </label>
         <select
+          id="store-select"
           value={selectedStore ?? ''}
           onChange={(e) => onStoreChange(e.target.value ? Number(e.target.value) : null)}
           className={styles.select}

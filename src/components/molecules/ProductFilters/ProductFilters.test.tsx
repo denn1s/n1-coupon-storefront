@@ -126,7 +126,7 @@ describe('ProductFilters', () => {
 
     expect(screen.getByText('Active Filters:')).toBeInTheDocument()
     expect(screen.getByText('Food')).toBeInTheDocument()
-    expect(screen.getByText('Coffee Shop')).toBeInTheDocument()
+    expect(screen.getByText('Coffee Shop', { selector: 'span' })).toBeInTheDocument()
   })
 
   it('calls onCategoryChange with null when category filter tag is removed', async () => {
