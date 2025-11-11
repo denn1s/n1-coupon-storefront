@@ -10,9 +10,9 @@ interface AccessDeniedProps {
 /**
  * Component to display when user doesn't have permissions to access a section
  */
-const AccessDenied = ({ 
+const AccessDenied = ({
   title = 'Access Denied',
-  message = 'You don\'t have the necessary permissions to access this section.',
+  message = "You don't have the necessary permissions to access this section.",
   showIcon = true,
   className = ''
 }: AccessDeniedProps) => {
@@ -24,15 +24,11 @@ const AccessDenied = ({
             <HiLockClosed className="h-8 w-8 text-red-600" />
           </div>
         )}
-        
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">
-          {title}
-        </h2>
-        
-        <p className="text-gray-600 mb-6 leading-relaxed">
-          {message}
-        </p>
-        
+
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">{title}</h2>
+
+        <p className="text-gray-600 mb-6 leading-relaxed">{message}</p>
+
         <div className="flex items-center justify-center text-sm text-gray-500 bg-gray-50 rounded-lg p-4">
           <HiExclamation className="h-5 w-5 mr-2 text-yellow-500" />
           <span>Contact your administrator if you believe this is an error.</span>

@@ -31,4 +31,4 @@ const CopyableId: React.FC<CopyableIdProps> = ({ id }) => {
   )
 }
 
-export default CopyableId 
+export default CopyableId

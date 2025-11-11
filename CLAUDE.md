@@ -416,6 +416,52 @@ src/components/atoms/Card/
 └── index.ts
 ```
 
+### JavaScript/TypeScript Code Style
+
+This project follows specific code style conventions for all JavaScript and TypeScript files:
+
+#### Semicolons
+
+**Never use semicolons** in JavaScript/TypeScript code:
+
+```typescript
+// ❌ WRONG
+import React from 'react'
+import styles from './Component.module.css'
+const value = 'hello'
+
+// ✅ CORRECT
+import React from 'react'
+import styles from './Component.module.css'
+const value = 'hello'
+```
+
+#### Quotes
+
+- **Single quotes** for JavaScript/TypeScript strings
+- **Double quotes** for JSX attributes and HTML
+
+```typescript
+// ❌ WRONG
+import styles from "./Component.module.css"
+const message = "Hello world"
+return <div className='container'>Hello</div>
+
+// ✅ CORRECT
+import styles from './Component.module.css'
+const message = 'Hello world'
+return <div className="container">Hello</div>
+```
+
+#### Enforcement & Auto-formatting
+
+These rules are automatically enforced by:
+
+- **ESLint** (`eslint.config.js`): `semi: ['error', 'never']`, `jsx-quotes: ['error', 'prefer-double']`
+- **Prettier** (`.prettierrc`): `"semi": false`, `"singleQuote": true`, `"jsxSingleQuote": false`
+
+To automatically fix all files: `npm run fix` (runs ESLint fix + Prettier format)
+
 ### Global State (Zustand)
 
 Located in `src/lib/stores/`:
@@ -554,6 +600,8 @@ All API interactions centralized in `src/services/`:
 8. **Show toasts** for user feedback on mutations
 9. **Handle loading and error states** using React Query states
 10. **Use TypeScript strictly** - enable type checking everywhere
+11. **No semicolons** - Never use semicolons in JavaScript/TypeScript
+12. **Single quotes in JS, double quotes in JSX** - Follow quote conventions consistently
 
 ## Getting Started
 

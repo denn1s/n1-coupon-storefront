@@ -81,9 +81,7 @@ export default function ItemDetailPage() {
         <div className="card max-w-2xl mx-auto bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title text-error">Error Loading Item</h2>
-            <p className="mb-4">
-              {error instanceof Error ? error.message : 'An unknown error occurred'}
-            </p>
+            <p className="mb-4">{error instanceof Error ? error.message : 'An unknown error occurred'}</p>
             <button className="btn btn-primary" onClick={() => navigate({ to: '/items' })}>
               Back to Items
             </button>
@@ -114,28 +112,17 @@ export default function ItemDetailPage() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <button
-            className="btn btn-ghost btn-sm mb-2"
-            onClick={() => navigate({ to: '/items' })}
-          >
+          <button className="btn btn-ghost btn-sm mb-2" onClick={() => navigate({ to: '/items' })}>
             ← Back to Items
           </button>
           <h1 className="text-3xl font-bold">{item.name}</h1>
         </div>
         <div className="flex gap-2">
-          <button
-            className="btn btn-outline btn-primary"
-            onClick={handleUpdate}
-            disabled={isUpdating}
-          >
+          <button className="btn btn-outline btn-primary" onClick={handleUpdate} disabled={isUpdating}>
             {isUpdating && <span className="loading loading-spinner loading-xs"></span>}
             Update
           </button>
-          <button
-            className="btn btn-error"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <button className="btn btn-error" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting && <span className="loading loading-spinner loading-xs"></span>}
             Delete
           </button>
@@ -176,8 +163,7 @@ export default function ItemDetailPage() {
         <div className="card-body">
           <h2 className="card-title">Related Data</h2>
           <p className="opacity-70">
-            This section could display related resources, nested data, or actions related to
-            this item.
+            This section could display related resources, nested data, or actions related to this item.
           </p>
         </div>
       </div>

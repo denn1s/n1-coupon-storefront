@@ -1,13 +1,11 @@
 import React from 'react'
-import {
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 import type { QueryClient } from '@tanstack/react-query'
 
 type QueryProviderProps = {
-  queryClient: QueryClient, 
+  queryClient: QueryClient
   children: React.ReactNode
 }
 
@@ -19,4 +17,3 @@ export default function QueryProvider({ queryClient, children }: QueryProviderPr
     </QueryClientProvider>
   )
 }
-

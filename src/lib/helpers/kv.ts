@@ -15,10 +15,4 @@ export const objectToKvItems = (obj: Record<string, string> | undefined | null):
  * - Filters out entries with empty key or value (trimmed).
  */
 export const kvItemsToObject = (items: KVItem[]): Record<string, string> =>
-  Object.fromEntries(
-    items
-      .filter((it) => it.key.trim() && it.value.trim())
-      .map((it) => [it.key, it.value])
-  )
-
-
+  Object.fromEntries(items.filter((it) => it.key.trim() && it.value.trim()).map((it) => [it.key, it.value]))

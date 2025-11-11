@@ -456,7 +456,7 @@ END
 2. **Services**: Use custom query builders
 
    ```typescript
-   ;(getFn, postFn, patchFn, deleteFn)
+   getFn, postFn, patchFn, deleteFn
    ```
 
 3. **Routes**: TanStack Router file-based
@@ -518,21 +518,25 @@ and follow the component creation priority workflow in
 ### Core Principles
 
 1. **Consistency Over Cleverness**
+
    - Follow established patterns
    - Don't reinvent the wheel
    - Check existing code first
 
 2. **Documentation is Code**
+
    - Every component needs tests
    - Every component needs stories
    - Every component needs COMPONENTS.md entry
 
 3. **TypeScript First**
+
    - No `any` types
    - Export all interfaces
    - Comprehensive prop typing
 
 4. **User-Centric**
+
    - Test like a user would use it
    - Accessible by default
    - Error states matter
@@ -585,6 +589,49 @@ As the project evolves, keep agents synchronized:
 ❌ Use inline Tailwind classes (use CSS Modules)
 ❌ Ignore TypeScript errors
 ❌ Create components without updating COMPONENTS.md
+
+---
+
+## 💅 Code Style Standards
+
+All agents and development in this project follow these consistent code style conventions:
+
+### Semicolons
+
+**Never use semicolons** in JavaScript/TypeScript code:
+
+```typescript
+// ❌ WRONG
+import React from 'react'
+const value = 'hello'
+
+// ✅ CORRECT
+import React from 'react'
+const value = 'hello'
+```
+
+### Quotes
+
+- **Single quotes** for JavaScript/TypeScript strings
+- **Double quotes** for JSX attributes and HTML
+
+```typescript
+// ❌ WRONG
+import styles from "./Component.module.css"
+const message = "Hello world"
+return <div className='container'>Hello</div>
+
+// ✅ CORRECT
+import styles from './Component.module.css'
+const message = 'Hello world'
+return <div className="container">Hello</div>
+```
+
+### Enforcement
+
+- **ESLint**: Configured with `semi: ['error', 'never']` and `jsx-quotes: ['error', 'prefer-double']`
+- **Prettier**: Configured with `"semi": false`, `"singleQuote": true`, `"jsxSingleQuote": false`
+- **Auto-fix**: Run `npm run fix` to automatically format all files
 
 ---
 

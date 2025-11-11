@@ -10,13 +10,7 @@ export interface SearchBoxProps {
   className?: string
 }
 
-export default function SearchBox({
-  value,
-  onChange,
-  onClear,
-  placeholder = 'Search...',
-  className,
-}: SearchBoxProps) {
+export default function SearchBox({ value, onChange, onClear, placeholder = 'Search...', className }: SearchBoxProps) {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange(e.target.value)
   }
@@ -33,16 +27,10 @@ export default function SearchBox({
         aria-label="Search input"
       />
       {onClear && value && (
-        <button
-          type="button"
-          aria-label="Clear search"
-          onClick={onClear}
-          className={styles.clearButton}
-        >
+        <button type="button" aria-label="Clear search" onClick={onClear} className={styles.clearButton}>
           <FaTimes aria-hidden="true" />
         </button>
       )}
     </div>
   )
 }
-

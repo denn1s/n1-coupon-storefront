@@ -15,23 +15,23 @@ const mockProduct: HoldingProduct = {
   images: [
     {
       sequence: 1,
-      url: 'https://example.com/image.jpg',
-    },
-  ],
+      url: 'https://example.com/image.jpg'
+    }
+  ]
 }
 
 const mockOutOfStockProduct: HoldingProduct = {
   ...mockProduct,
   id: 2,
   name: 'Out of Stock Product',
-  quantityAvailable: 0,
+  quantityAvailable: 0
 }
 
 const mockLowStockProduct: HoldingProduct = {
   ...mockProduct,
   id: 3,
   name: 'Low Stock Product',
-  quantityAvailable: 5,
+  quantityAvailable: 5
 }
 
 // Helper to wrap component with router
@@ -40,12 +40,12 @@ const renderWithRouter = (ui: React.ReactElement) => {
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',
-    component: () => ui,
+    component: () => ui
   })
   const productRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/products/$productId',
-    component: () => <div>Product Detail</div>,
+    component: () => <div>Product Detail</div>
   })
 
   const routeTree = rootRoute.addChildren([indexRoute, productRoute])
@@ -108,7 +108,8 @@ describe('ProductCard', () => {
   it('truncates long descriptions', () => {
     const longDescriptionProduct: HoldingProduct = {
       ...mockProduct,
-      description: 'This is a very long description that should be truncated after 80 characters to maintain consistent card heights and improve readability',
+      description:
+        'This is a very long description that should be truncated after 80 characters to maintain consistent card heights and improve readability'
     }
 
     renderWithRouter(<ProductCard product={longDescriptionProduct} />)
@@ -121,7 +122,7 @@ describe('ProductCard', () => {
   it('formats price with two decimal places', () => {
     const productWithWholePrice: HoldingProduct = {
       ...mockProduct,
-      salePrice: 50,
+      salePrice: 50
     }
 
     renderWithRouter(<ProductCard product={productWithWholePrice} />)

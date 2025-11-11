@@ -52,7 +52,7 @@ const useAuthActions = () => {
   return {
     loginWithRedirect,
     logout: logoutFn,
-    getAccessTokenSilently,
+    getAccessTokenSilently
   }
 }
 

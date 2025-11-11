@@ -11,49 +11,27 @@ export interface CheckboxProps {
   className?: string
 }
 
-const Checkbox: FC<CheckboxProps> = ({
-  checked,
-  onChange,
-  disabled = false,
-  label,
-  className,
-}) => {
+const Checkbox: FC<CheckboxProps> = ({ checked, onChange, disabled = false, label, className }) => {
   return (
     <Field className={clsx('flex items-center', className)}>
       <HCheckbox
         checked={checked}
         onChange={onChange}
         disabled={disabled}
-        className={clsx(
-          styles.checkbox,
-          disabled && styles.disabledCheckbox
-        )}
+        className={clsx(styles.checkbox, disabled && styles.disabledCheckbox)}
       >
         <svg
-          className={clsx(
-            styles.checkmark,
-            !checked && styles.checkmarkHidden
-          )}
+          className={clsx(styles.checkmark, !checked && styles.checkmarkHidden)}
           viewBox="0 0 14 14"
           fill="none"
           aria-hidden="true"
         >
-          <path
-            d="M3 8L6 11L11 3.5"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          <path d="M3 8L6 11L11 3.5" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </HCheckbox>
-      {label && (
-        <Label className={clsx(styles.label, disabled && styles.disabled)}>
-          {label}
-        </Label>
-      )}
+      {label && <Label className={clsx(styles.label, disabled && styles.disabled)}>{label}</Label>}
     </Field>
   )
 }
 
 export default Checkbox
-

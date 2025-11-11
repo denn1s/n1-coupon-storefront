@@ -4,7 +4,7 @@ export { default as AuthProvider } from './AuthProvider'
 
 // Hooks
 export { default as useAuth } from './useAuth'
-export { useAuthActions, useAuth0Actions } from './useAuth'  // useAuth0Actions for backward compatibility
+export { useAuthActions, useAuth0Actions } from './useAuth' // useAuth0Actions for backward compatibility
 export { default as usePermissions } from './usePermissions'
 
 // Resource-specific permission hooks

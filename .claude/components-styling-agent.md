@@ -862,3 +862,57 @@ Use Tailwind's responsive utilities via @apply:
   @apply p-4 rounded-lg;
 }
 ```
+
+## Code Style Preferences
+
+This project follows specific JavaScript/TypeScript code style conventions:
+
+### Semicolons
+
+**Never use semicolons** in JavaScript/TypeScript code:
+
+```typescript
+// ❌ WRONG
+import React from 'react';
+import styles from './Component.module.css';
+
+export const Component = () => {
+  const value = 'hello';
+  return <div>{value}</div>;
+};
+
+// ✅ CORRECT
+import React from 'react'
+import styles from './Component.module.css'
+
+export const Component = () => {
+  const value = 'hello'
+  return <div>{value}</div>
+}
+```
+
+### Quotes
+
+- **Single quotes** for JavaScript/TypeScript strings
+- **Double quotes** for JSX attributes and HTML
+
+```typescript
+// ❌ WRONG
+import styles from "./Component.module.css"
+const message = "Hello world"
+return <div className='container'>Hello</div>
+
+// ✅ CORRECT
+import styles from './Component.module.css'
+const message = 'Hello world'
+return <div className="container">Hello</div>
+```
+
+### Configuration
+
+These rules are enforced by:
+
+- **ESLint**: `eslint.config.js` - Configured with `semi: ['error', 'never']` and `jsx-quotes: ['error', 'prefer-double']`
+- **Prettier**: `.prettierrc` - Configured with `"semi": false`, `"singleQuote": true`, `"jsxSingleQuote": false`
+
+Run `npm run fix` to automatically format all files according to these rules.

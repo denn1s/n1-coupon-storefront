@@ -37,11 +37,7 @@ const extractPermissions = (decodedToken: Record<string, unknown> | null): strin
   if (!decodedToken) return []
 
   // Example: check multiple possible locations
-  const permissions =
-    decodedToken.permissions ||
-    decodedToken.scopes ||
-    decodedToken.roles ||
-    []
+  const permissions = decodedToken.permissions || decodedToken.scopes || decodedToken.roles || []
 
   return Array.isArray(permissions) ? permissions : []
 }
@@ -92,14 +88,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     isAuthenticated,
     user: user || null,
     permissions,
-    isLoading,
+    isLoading
   }
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
 }
 
 export default AuthProvider

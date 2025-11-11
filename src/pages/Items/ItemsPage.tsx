@@ -48,9 +48,7 @@ export default function ItemsPage() {
           <h1 className="text-3xl font-bold">Items</h1>
           <p className="text-base-content/70 mt-1">Manage your items</p>
         </div>
-        <button className="btn btn-primary">
-          Create Item
-        </button>
+        <button className="btn btn-primary">Create Item</button>
       </div>
 
       {/* Search */}
@@ -76,29 +74,19 @@ export default function ItemsPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {data?.items.map((item) => (
-              <ItemCard key={item.id} item={item} />
-            ))}
+            {data?.items.map((item) => <ItemCard key={item.id} item={item} />)}
           </div>
 
           {/* Pagination */}
           {data && data.totalPages > 1 && (
             <div className="flex justify-center items-center gap-4">
-              <button
-                className="btn btn-outline"
-                disabled={page === 1}
-                onClick={() => setPage(page - 1)}
-              >
+              <button className="btn btn-outline" disabled={page === 1} onClick={() => setPage(page - 1)}>
                 Previous
               </button>
               <span>
                 Page {page} of {data.totalPages}
               </span>
-              <button
-                className="btn btn-outline"
-                disabled={page >= data.totalPages}
-                onClick={() => setPage(page + 1)}
-              >
+              <button className="btn btn-outline" disabled={page >= data.totalPages} onClick={() => setPage(page + 1)}>
                 Next
               </button>
             </div>
@@ -109,11 +97,7 @@ export default function ItemsPage() {
             <div className="card max-w-2xl mx-auto bg-base-100 shadow-xl">
               <div className="card-body text-center py-12">
                 <p>No items found.</p>
-                {search && (
-                  <p className="text-sm text-base-content/70 mt-2">
-                    Try adjusting your search terms
-                  </p>
-                )}
+                {search && <p className="text-sm text-base-content/70 mt-2">Try adjusting your search terms</p>}
               </div>
             </div>
           )}
@@ -155,29 +139,17 @@ function ItemCard({ item }: { item: { id: string; name: string; description: str
     <div className="card bg-base-100 shadow-xl hover:shadow-2xl transition-shadow">
       <div className="card-body">
         <h2 className="card-title">
-          <Link
-            to="/items/$itemId"
-            params={{ itemId: item.id }}
-            className="link link-hover"
-          >
+          <Link to="/items/$itemId" params={{ itemId: item.id }} className="link link-hover">
             {item.name}
           </Link>
         </h2>
         <p className="text-sm text-base-content/70">{item.description}</p>
-        <p className="text-xs text-base-content/50">
-          Created: {format(new Date(item.createdAt), 'MMM dd, yyyy')}
-        </p>
+        <p className="text-xs text-base-content/50">Created: {format(new Date(item.createdAt), 'MMM dd, yyyy')}</p>
         <div className="card-actions justify-end mt-4">
           <Link to="/items/$itemId" params={{ itemId: item.id }}>
-            <button className="btn btn-outline btn-sm">
-              View Details
-            </button>
+            <button className="btn btn-outline btn-sm">View Details</button>
           </Link>
-          <button
-            className="btn btn-error btn-outline btn-sm"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <button className="btn btn-error btn-outline btn-sm" onClick={handleDelete} disabled={isDeleting}>
             {isDeleting && <span className="loading loading-spinner loading-xs"></span>}
             Delete
           </button>

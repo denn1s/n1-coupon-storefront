@@ -458,7 +458,6 @@ When creating a new component:
 
 ```tsx
 import ProductCard from '@components/molecules/ProductCard'
-
 ;<ProductCard product={product} onBuyClick={(product) => handlePurchase(product)} />
 ```
 
@@ -516,7 +515,6 @@ import ProductCardSkeleton from '@components/molecules/ProductCardSkeleton'
 
 ```tsx
 import ProductFilters from '@components/molecules/ProductFilters'
-
 ;<ProductFilters
   categories={categories}
   stores={stores}
@@ -551,7 +549,6 @@ import ProductFilters from '@components/molecules/ProductFilters'
 
 ```tsx
 import CouponDisplay from '@components/molecules/CouponDisplay'
-
 ;<CouponDisplay coupon={purchasedCoupon} onClose={() => setShowCoupon(false)} />
 ```
 
@@ -581,7 +578,6 @@ import CouponDisplay from '@components/molecules/CouponDisplay'
 
 ```tsx
 import CheckoutModal from '@components/organisms/CheckoutModal'
-
 ;<CheckoutModal product={selectedProduct} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 ```
 
