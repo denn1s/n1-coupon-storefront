@@ -1,9 +1,17 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { createMemoryHistory, createRootRoute, createRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import ProductCard from './ProductCard'
 import { HoldingProduct } from '@lib/api/types'
+
+// Mock TanStack Router Link component
+vi.mock('@tanstack/react-router', () => ({
+  Link: ({ children, className, ...props }: { children: React.ReactNode; className?: string }) => (
+    <div className={className} data-testid="mock-link" {...props}>
+      {children}
+    </div>
+  )
+}))
 
 const mockProduct: HoldingProduct = {
   id: 1,
@@ -34,20 +42,9 @@ const mockLowStockProduct: HoldingProduct = {
   quantityAvailable: 5
 }
 
-const renderWithRouter = (ui: React.ReactElement) => {
-  const router = createRouter({
-    routeTree: createRootRoute({
-      component: () => ui
-    }),
-    history: createMemoryHistory()
-  })
-
-  return render(<RouterProvider router={router} />)
-}
-
 describe('ProductCard', () => {
   it('renders product information correctly', () => {
-    renderWithRouter(<ProductCard product={mockProduct} />)
+    render(<ProductCard product={mockProduct} />)
 
     expect(screen.getByText('Test Product')).toBeInTheDocument()
     expect(screen.getByText('This is a test product description')).toBeInTheDocument()
@@ -56,7 +53,7 @@ describe('ProductCard', () => {
   })
 
   it('displays product image with correct alt text', () => {
-    renderWithRouter(<ProductCard product={mockProduct} />)
+    render(<ProductCard product={mockProduct} />)
 
     const image = screen.getByRole('img', { name: 'Test Product' })
     expect(image).toBeInTheDocument()
@@ -67,7 +64,7 @@ describe('ProductCard', () => {
     const handleBuyClick = vi.fn()
     const user = userEvent.setup()
 
-    renderWithRouter(<ProductCard product={mockProduct} onBuyClick={handleBuyClick} />)
+    render(<ProductCard product={mockProduct} onBuyClick={handleBuyClick} />)
 
     const buyButton = screen.getByText('Buy Now')
     await user.click(buyButton)
@@ -76,7 +73,7 @@ describe('ProductCard', () => {
   })
 
   it('displays "Out of Stock" badge and disables button when quantity is 0', () => {
-    renderWithRouter(<ProductCard product={mockOutOfStockProduct} />)
+    render(<ProductCard product={mockOutOfStockProduct} />)
 
     expect(screen.getByText('Out of Stock', { selector: 'div' })).toBeInTheDocument()
     const buyButton = screen.getByRole('button', { name: /Out of Stock Product/i })
@@ -85,13 +82,13 @@ describe('ProductCard', () => {
   })
 
   it('displays low stock warning when quantity is less than 10', () => {
-    renderWithRouter(<ProductCard product={mockLowStockProduct} />)
+    render(<ProductCard product={mockLowStockProduct} />)
 
     expect(screen.getByText('Only 5 left!')).toBeInTheDocument()
   })
 
   it('does not display low stock warning when quantity is 10 or more', () => {
-    renderWithRouter(<ProductCard product={mockProduct} />)
+    render(<ProductCard product={mockProduct} />)
 
     expect(screen.queryByText(/Only \d+ left!/)).not.toBeInTheDocument()
   })
@@ -103,7 +100,7 @@ describe('ProductCard', () => {
         'This is a very long description that should be truncated after 80 characters to maintain consistent card heights and improve readability'
     }
 
-    renderWithRouter(<ProductCard product={longDescriptionProduct} />)
+    render(<ProductCard product={longDescriptionProduct} />)
 
     const description = screen.getByText(/This is a very long description/)
     expect(description.textContent).toContain('...')
@@ -116,7 +113,7 @@ describe('ProductCard', () => {
       salePrice: 50
     }
 
-    renderWithRouter(<ProductCard product={productWithWholePrice} />)
+    render(<ProductCard product={productWithWholePrice} />)
 
     expect(screen.getByText('$50.00')).toBeInTheDocument()
   })
@@ -125,12 +122,12 @@ describe('ProductCard', () => {
     const handleBuyClick = vi.fn((e) => e)
     const user = userEvent.setup()
 
-    renderWithRouter(<ProductCard product={mockProduct} onBuyClick={handleBuyClick} />)
+    render(<ProductCard product={mockProduct} onBuyClick={handleBuyClick} />)
 
     const buyButton = screen.getByText('Buy Now')
     await user.click(buyButton)
 
-    // If navigation was prevented, we shouldn't see the product detail page
-    expect(screen.queryByText('Product Detail')).not.toBeInTheDocument()
+    // Verify the click handler was called
+    expect(handleBuyClick).toHaveBeenCalledWith(mockProduct)
   })
 })
