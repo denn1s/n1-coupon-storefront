@@ -93,7 +93,6 @@ When you need a component, follow this priority:
 ```tsx
 import Button from '@components/atoms/Button'
 import { FaSave } from 'react-icons/fa'
-
 ;<Button onClick={handleSave} icon={<FaSave />}>
   Save Changes
 </Button>
@@ -116,7 +115,6 @@ import { FaSave } from 'react-icons/fa'
 
 ```tsx
 import { ButtonLink } from '@components/atoms/ButtonLink'
-
 ;<ButtonLink to="/settings">Go to Settings</ButtonLink>
 ```
 
@@ -230,7 +228,6 @@ const [search, setSearch] = useState('')
 
 ```tsx
 import ReactSelect from '@components/atoms/ReactSelect'
-
 ;<ReactSelect
   options={[
     { value: '1', label: 'Option 1' },
@@ -257,7 +254,6 @@ import ReactSelect from '@components/atoms/ReactSelect'
 
 ```tsx
 import Alert from '@components/atoms/Alert'
-
 ;<Alert type="success">Operation completed successfully!</Alert>
 ```
 
@@ -277,7 +273,6 @@ import Alert from '@components/atoms/Alert'
 
 ```tsx
 import CopyableId from '@components/atoms/CopyableId'
-
 ;<CopyableId id="abc-123-def-456" label="API Key" />
 ```
 
@@ -297,7 +292,6 @@ import CopyableId from '@components/atoms/CopyableId'
 
 ```tsx
 import Date from '@components/atoms/Date'
-
 ;<Date date={createdAt} format="MMM dd, yyyy HH:mm" />
 ```
 
@@ -341,7 +335,6 @@ import { BreadcrumbsRenderer } from '@components/atoms/Breadcrumbs'
 
 ```tsx
 import PermissionGuard from '@components/atoms/PermissionGuard'
-
 ;<PermissionGuard permission="items:write">
   <Button>Create Item</Button>
 </PermissionGuard>
@@ -362,7 +355,6 @@ import PermissionGuard from '@components/atoms/PermissionGuard'
 
 ```tsx
 import AccessDenied from '@components/atoms/AccessDenied'
-
 ;<AccessDenied message="You don't have access to this page" />
 ```
 
@@ -382,7 +374,6 @@ import AccessDenied from '@components/atoms/AccessDenied'
 
 ```tsx
 import ResourceAccessDenied from '@components/atoms/ResourceAccessDenied'
-
 ;<ResourceAccessDenied resourceName="Items" requiredPermission="items:write" />
 ```
 
@@ -468,10 +459,36 @@ When creating a new component:
 ```tsx
 import ProductCard from '@components/molecules/ProductCard'
 
-<ProductCard
-  product={product}
-  onBuyClick={(product) => handlePurchase(product)}
-/>
+;<ProductCard product={product} onBuyClick={(product) => handlePurchase(product)} />
+```
+
+---
+
+### ProductCardSkeleton
+
+**Location:** `src/components/molecules/ProductCardSkeleton/ProductCardSkeleton.tsx`
+**Purpose:** Skeleton loader for ProductCard, shown during pagination loading
+**When to use:** Pagination loading states, product list loading feedback
+**Props:** None (stateless skeleton)
+
+**Features:**
+
+- Matches ProductCard dimensions and layout for smooth transitions
+- Animated shimmer effect with staggered delays
+- Lightweight (no images, just divs with pulse animations)
+- Displays 20 cards during pagination for consistent grid
+
+**Usage:**
+
+```tsx
+import ProductCardSkeleton from '@components/molecules/ProductCardSkeleton'
+
+// Show during pagination loading
+{
+  isPaginationLoad
+    ? Array.from({ length: 20 }).map((_, index) => <ProductCardSkeleton key={`skeleton-${index}`} />)
+    : products.map((product) => <ProductCard key={product.id} product={product} />)
+}
 ```
 
 ---
@@ -500,7 +517,7 @@ import ProductCard from '@components/molecules/ProductCard'
 ```tsx
 import ProductFilters from '@components/molecules/ProductFilters'
 
-<ProductFilters
+;<ProductFilters
   categories={categories}
   stores={stores}
   selectedCategory={selectedCategory}
@@ -535,10 +552,7 @@ import ProductFilters from '@components/molecules/ProductFilters'
 ```tsx
 import CouponDisplay from '@components/molecules/CouponDisplay'
 
-<CouponDisplay
-  coupon={purchasedCoupon}
-  onClose={() => setShowCoupon(false)}
-/>
+;<CouponDisplay coupon={purchasedCoupon} onClose={() => setShowCoupon(false)} />
 ```
 
 ---
@@ -568,11 +582,7 @@ import CouponDisplay from '@components/molecules/CouponDisplay'
 ```tsx
 import CheckoutModal from '@components/organisms/CheckoutModal'
 
-<CheckoutModal
-  product={selectedProduct}
-  isOpen={isModalOpen}
-  onClose={() => setIsModalOpen(false)}
-/>
+;<CheckoutModal product={selectedProduct} isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
 ```
 
 ---

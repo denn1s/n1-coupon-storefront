@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useProductsPagination, useGetCategories, useGetStores } from '@services/holding.graphql'
 import { HoldingProduct } from '@lib/api/types'
 import SearchBox from '@components/atoms/SearchBox'
 import ProductCard from '@components/molecules/ProductCard'
+import ProductCardSkeleton from '@components/molecules/ProductCardSkeleton'
 import ProductFilters from '@components/molecules/ProductFilters'
 import CheckoutModal from '@components/organisms/CheckoutModal'
 import { Route } from '@routes/index'
@@ -26,22 +27,27 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<HoldingProduct | null>(null)
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false)
 
+  // Track if we've ever successfully loaded data to differentiate initial vs pagination load
+  const hasLoadedDataRef = useRef(false)
+
   const {
     data: products,
     totalCount,
     isLoading: productsLoading,
+    isFetching: productsFetching,
     error: productsError,
     hasNextPage,
     hasPreviousPage,
     goToNextPage,
     goToPreviousPage,
+    prefetchNextPage,
     searchTerm,
     setSearchTerm,
     selectedCategory,
     setSelectedCategory,
     selectedStore,
     setSelectedStore,
-    resetFilters,
+    resetFilters
   } = useProductsPagination(20, {
     initialData: loaderData?.products,
     staleTime: 5 * 60 * 1000
@@ -65,7 +71,19 @@ export default function ProductsPage() {
 
   const categories = categoriesData?.nodes ?? []
   const stores = storesData?.nodes ?? []
-  const isLoading = productsLoading || categoriesLoading || storesLoading
+
+  // Track when data has been successfully loaded
+  useEffect(() => {
+    if (products.length > 0 && !productsFetching) {
+      hasLoadedDataRef.current = true
+    }
+  }, [products.length, productsFetching])
+
+  // Differentiate between initial load and pagination load
+  // Initial load: First time loading data (no data loaded before)
+  // Pagination load: Loading more data when we've already loaded data once
+  const isInitialLoad = productsLoading && !hasLoadedDataRef.current
+  const isPaginationLoad = productsFetching && hasLoadedDataRef.current
 
   // Handle buy button click
   const handleBuyClick = (product: HoldingProduct) => {
@@ -78,8 +96,8 @@ export default function ProductsPage() {
     setSelectedProduct(null)
   }
 
-  // Loading state
-  if (isLoading && !products.length) {
+  // Initial loading state (first page load only)
+  if (isInitialLoad) {
     return (
       <div className={styles.container}>
         <div className={styles.loading}>
@@ -139,8 +157,8 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Empty state */}
-      {products.length === 0 ? (
+      {/* Empty state - only show if not loading and no products */}
+      {products.length === 0 && !isPaginationLoad ? (
         <div className={styles.empty}>
           <h2>No deals found</h2>
           <p>Try adjusting your search or filters</p>
@@ -154,67 +172,67 @@ export default function ProductsPage() {
         <>
           {/* Products Grid */}
           <div className={styles.grid}>
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onBuyClick={handleBuyClick}
-              />
-            ))}
+            {isPaginationLoad ? (
+              // Show skeleton cards during pagination
+              <>
+                {Array.from({ length: 20 }).map((_, index) => (
+                  <ProductCardSkeleton key={`skeleton-${index}`} />
+                ))}
+              </>
+            ) : (
+              // Show actual products
+              products.length > 0 &&
+              products.map((product) => <ProductCard key={product.id} product={product} onBuyClick={handleBuyClick} />)
+            )}
           </div>
 
-          {/* Pagination Controls */}
-          <div className={styles.pagination}>
-            <button
-              onClick={goToPreviousPage}
-              disabled={!hasPreviousPage}
-              className={styles.paginationButton}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className={styles.icon}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-              </svg>
-              Previous
-            </button>
+          {/* Pagination Controls - only show when we have data */}
+          {(products.length > 0 || isPaginationLoad) && (
+            <div className={styles.pagination}>
+              <button onClick={goToPreviousPage} disabled={!hasPreviousPage} className={styles.paginationButton}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className={styles.icon}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                </svg>
+                Previous
+              </button>
 
-            <span className={styles.paginationInfo}>
-              Showing {products.length} of {totalCount} deals
-            </span>
+              <span className={styles.paginationInfo}>
+                Showing {products.length} of {totalCount} deals
+              </span>
 
-            <button
-              onClick={goToNextPage}
-              disabled={!hasNextPage}
-              className={styles.paginationButton}
-            >
-              Next
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-                stroke="currentColor"
-                className={styles.icon}
+              <button
+                onClick={goToNextPage}
+                onMouseEnter={prefetchNextPage}
+                disabled={!hasNextPage}
+                className={styles.paginationButton}
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-              </svg>
-            </button>
-          </div>
+                Next
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className={styles.icon}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+              </button>
+            </div>
+          )}
         </>
       )}
 
       {/* Checkout Modal */}
       {selectedProduct && (
-        <CheckoutModal
-          product={selectedProduct}
-          isOpen={isCheckoutModalOpen}
-          onClose={handleCloseCheckout}
-        />
+        <CheckoutModal product={selectedProduct} isOpen={isCheckoutModalOpen} onClose={handleCloseCheckout} />
       )}
     </div>
   )
