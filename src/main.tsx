@@ -21,7 +21,7 @@ const queryClient = new QueryClient({
         return failureCount < 3
       },
       // Do not throw on error; let components handle error states (including 403)
-      throwOnError: false,
+      throwOnError: false
     },
     mutations: {
       retry: (failureCount, error) => {
@@ -30,20 +30,20 @@ const queryClient = new QueryClient({
         return failureCount < 3
       },
       // Do not throw on error by default; callers can handle errors explicitly
-      throwOnError: false,
-    },
-  },
+      throwOnError: false
+    }
+  }
 })
 const router = createRouter({
   routeTree,
   context: {
-    queryClient,
+    queryClient
   },
   defaultPreload: 'intent',
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
-  scrollRestoration: true,
+  scrollRestoration: true
 })
 
 declare module '@tanstack/react-router' {
@@ -70,6 +70,6 @@ if (!rootElement.innerHTML) {
       <App queryClient={queryClient}>
         <RouterProvider router={router} />
       </App>
-    </React.StrictMode>,
+    </React.StrictMode>
   )
 }

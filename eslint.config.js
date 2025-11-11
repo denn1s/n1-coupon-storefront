@@ -37,8 +37,12 @@ export default tseslint.config(
         },
       ],
 
-      // Enforce single quotes
-      quotes: ['error', 'single'],
+      // Enforce single quotes in JS, double quotes in JSX
+      quotes: ['error', 'single', { avoidEscape: true }],
+      'jsx-quotes': ['error', 'prefer-double'],
+
+      // No semicolons
+      semi: ['error', 'never'],
 
       // Disable React in JSX scope warning (React 17+)
       'react/react-in-jsx-scope': 'off',
@@ -48,8 +52,6 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
-
-      semi: ['error', 'never'],
     },
   },
 )

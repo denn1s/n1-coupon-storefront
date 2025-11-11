@@ -8,5 +8,5 @@ import { MyCouponsPage } from '@pages/MyCoupons'
  * Currently using mock data - will be connected to API when endpoints are available.
  */
 export const Route = createFileRoute('/my-coupons')({
-  component: MyCouponsPage,
+  component: MyCouponsPage
 })

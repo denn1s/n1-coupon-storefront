@@ -6,7 +6,11 @@ import { FaBeer } from 'react-icons/fa'
 
 describe('Button component', () => {
   test('renders with text and icon', () => {
-    render(<Button icon={<FaBeer />} onClick={() => {}}>Click me</Button>)
+    render(
+      <Button icon={<FaBeer />} onClick={() => {}}>
+        Click me
+      </Button>
+    )
     expect(screen.getByText('Click me')).toBeInTheDocument()
     expect(screen.getByRole('button').querySelector('svg')).toBeInTheDocument()
   })
@@ -93,4 +97,3 @@ describe('Button component', () => {
     expect(onClick).not.toHaveBeenCalled()
   })
 })
-

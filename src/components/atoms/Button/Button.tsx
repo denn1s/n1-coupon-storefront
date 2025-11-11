@@ -19,7 +19,7 @@ const Button = ({
   children,
   className,
   disableAfterClick = false,
-  disabled = false,
+  disabled = false
 }: ButtonProps) => {
   const [loading, setLoading] = useState(false)
   const [clickedOnce, setClickedOnce] = useState(false)
@@ -47,12 +47,7 @@ const Button = ({
       type="button"
       onClick={handleClick}
       disabled={isDisabled}
-      className={clsx(
-        styles.btn,
-        styles[color],
-        loading && styles.btnLoading,
-        className
-      )}
+      className={clsx(styles.btn, styles[color], loading && styles.btnLoading, className)}
       role="button"
       aria-label="Button"
     >
@@ -63,4 +58,3 @@ const Button = ({
 }
 
 export default Button
-

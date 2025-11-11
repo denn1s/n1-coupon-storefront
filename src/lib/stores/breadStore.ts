@@ -10,7 +10,7 @@ interface BreadcrumbState {
 }
 
 const breadcrumbStore = new Store<BreadcrumbState>({
-  breadcrumbs: [],
+  breadcrumbs: []
 })
 
 function useBreadcrumbStore() {
@@ -18,13 +18,11 @@ function useBreadcrumbStore() {
 
   const setBreadcrumbs = (items: BreadcrumbItem[]) => {
     breadcrumbStore.setState(() => ({
-      breadcrumbs: items,
+      breadcrumbs: items
     }))
   }
 
   return { breadcrumbs, setBreadcrumbs }
 }
 
-
 export { breadcrumbStore, useBreadcrumbStore }
-

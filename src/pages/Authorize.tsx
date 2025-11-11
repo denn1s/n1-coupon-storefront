@@ -71,10 +71,7 @@ const Authorize = () => {
             <h2 className="card-title text-error">Authorization Failed</h2>
             <p className="text-base-content/70">{error}</p>
             <div className="card-actions justify-center mt-4">
-              <button
-                className="btn btn-primary"
-                onClick={() => navigate({ to: '/login' })}
-              >
+              <button className="btn btn-primary" onClick={() => navigate({ to: '/login' })}>
                 Back to Login
               </button>
             </div>

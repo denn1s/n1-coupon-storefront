@@ -29,34 +29,19 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
   const isOutOfStock = product.quantityAvailable <= 0
 
   return (
-    <Link
-      to="/products/$productId"
-      params={{ productId: String(product.id) }}
-      className={styles.cardLink}
-    >
+    <Link to="/products/$productId" params={{ productId: String(product.id) }} className={styles.cardLink}>
       <div className={styles.card}>
         {/* Product Image */}
         <div className={styles.imageContainer}>
-          <img
-            src={product.productImageUrl}
-            alt={product.name}
-            className={styles.image}
-            loading="lazy"
-          />
-          {isOutOfStock && (
-            <div className={styles.outOfStockBadge}>
-              Out of Stock
-            </div>
-          )}
+          <img src={product.productImageUrl} alt={product.name} className={styles.image} loading="lazy" />
+          {isOutOfStock && <div className={styles.outOfStockBadge}>Out of Stock</div>}
         </div>
 
         {/* Product Info */}
         <div className={styles.content}>
           <h3 className={styles.title}>{product.name}</h3>
           <p className={styles.description}>
-            {product.description.length > 80
-              ? `${product.description.substring(0, 80)}...`
-              : product.description}
+            {product.description.length > 80 ? `${product.description.substring(0, 80)}...` : product.description}
           </p>
 
           {/* Price and Buy Section */}
@@ -78,9 +63,7 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
 
           {/* Stock Info */}
           {!isOutOfStock && product.quantityAvailable < 10 && (
-            <div className={styles.stockWarning}>
-              Only {product.quantityAvailable} left!
-            </div>
+            <div className={styles.stockWarning}>Only {product.quantityAvailable} left!</div>
           )}
         </div>
       </div>

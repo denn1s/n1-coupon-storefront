@@ -15,9 +15,9 @@ const mockProduct: HoldingProduct = {
   images: [
     {
       sequence: 1,
-      url: 'https://cdn.h4b.dev/images/store85/products/product19087/Image1.jpg?20220401011344',
-    },
-  ],
+      url: 'https://cdn.h4b.dev/images/store85/products/product19087/Image1.jpg?20220401011344'
+    }
+  ]
 }
 
 const mockOutOfStockProduct: HoldingProduct = {
@@ -25,7 +25,7 @@ const mockOutOfStockProduct: HoldingProduct = {
   id: 2,
   name: 'Popular Burger Combo',
   description: 'Best burger in town with fries and drink',
-  quantityAvailable: 0,
+  quantityAvailable: 0
 }
 
 const mockLowStockProduct: HoldingProduct = {
@@ -33,16 +33,17 @@ const mockLowStockProduct: HoldingProduct = {
   id: 3,
   name: 'Limited Coffee Deal',
   description: 'Premium coffee package with pastries',
-  quantityAvailable: 3,
+  quantityAvailable: 3
 }
 
 const mockLongDescriptionProduct: HoldingProduct = {
   ...mockProduct,
   id: 4,
   name: 'Gourmet Restaurant Experience',
-  description: 'Experience the finest dining in the city with our exclusive 5-course meal featuring locally sourced ingredients, wine pairing, and complimentary dessert. This incredible deal includes appetizer, soup, salad, main course, and a decadent dessert prepared by our award-winning chef.',
+  description:
+    'Experience the finest dining in the city with our exclusive 5-course meal featuring locally sourced ingredients, wine pairing, and complimentary dessert. This incredible deal includes appetizer, soup, salad, main course, and a decadent dessert prepared by our award-winning chef.',
   salePrice: 89.99,
-  quantityAvailable: 25,
+  quantityAvailable: 25
 }
 
 // Router wrapper for stories
@@ -51,12 +52,12 @@ const withRouter = (Story: React.ComponentType) => {
   const indexRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/',
-    component: () => <Story />,
+    component: () => <Story />
   })
   const productRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/products/$productId',
-    component: () => <div>Product Detail Page</div>,
+    component: () => <div>Product Detail Page</div>
   })
 
   const routeTree = rootRoute.addChildren([indexRoute, productRoute])
@@ -70,12 +71,12 @@ const meta = {
   component: ProductCard,
   decorators: [withRouter],
   parameters: {
-    layout: 'padded',
+    layout: 'padded'
   },
   tags: ['autodocs'],
   args: {
-    onBuyClick: fn(),
-  },
+    onBuyClick: fn()
+  }
 } satisfies Meta<typeof ProductCard>
 
 export default meta
@@ -86,8 +87,8 @@ type Story = StoryObj<typeof meta>
  */
 export const Default: Story = {
   args: {
-    product: mockProduct,
-  },
+    product: mockProduct
+  }
 }
 
 /**
@@ -95,8 +96,8 @@ export const Default: Story = {
  */
 export const OutOfStock: Story = {
   args: {
-    product: mockOutOfStockProduct,
-  },
+    product: mockOutOfStockProduct
+  }
 }
 
 /**
@@ -104,8 +105,8 @@ export const OutOfStock: Story = {
  */
 export const LowStock: Story = {
   args: {
-    product: mockLowStockProduct,
-  },
+    product: mockLowStockProduct
+  }
 }
 
 /**
@@ -113,8 +114,8 @@ export const LowStock: Story = {
  */
 export const LongDescription: Story = {
   args: {
-    product: mockLongDescriptionProduct,
-  },
+    product: mockLongDescriptionProduct
+  }
 }
 
 /**
@@ -126,9 +127,9 @@ export const HighPrice: Story = {
       ...mockProduct,
       name: 'Luxury Spa Package',
       description: 'Full day spa treatment with massage, facial, and relaxation',
-      salePrice: 299.99,
-    },
-  },
+      salePrice: 299.99
+    }
+  }
 }
 
 /**
@@ -136,11 +137,18 @@ export const HighPrice: Story = {
  */
 export const GridLayout: Story = {
   render: (args) => (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem', padding: '1rem' }}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+        gap: '1.5rem',
+        padding: '1rem'
+      }}
+    >
       <ProductCard product={mockProduct} onBuyClick={args.onBuyClick} />
       <ProductCard product={mockLowStockProduct} onBuyClick={args.onBuyClick} />
       <ProductCard product={mockLongDescriptionProduct} onBuyClick={args.onBuyClick} />
       <ProductCard product={mockOutOfStockProduct} onBuyClick={args.onBuyClick} />
     </div>
-  ),
+  )
 }

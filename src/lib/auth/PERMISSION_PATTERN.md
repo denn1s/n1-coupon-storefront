@@ -5,12 +5,14 @@
 Each protected module should follow this pattern:
 
 ### 1. Import Permission Hooks
+
 ```tsx
 import { useResourcePermissions } from '@auth/useResourcePermissions'
 import { ResourceAccessDenied } from '@components/atoms/ResourceAccessDenied'
 ```
 
 ### 2. Check Permissions
+
 ```tsx
 const { canRead, canWrite } = useResourcePermissions('resource-name')
 
@@ -20,6 +22,7 @@ if (!canRead) {
 ```
 
 ### 3. Conditional UI
+
 ```tsx
 // Create buttons
 {canWrite && <CreateButton />}
@@ -34,6 +37,7 @@ onRowClick={canWrite ? handleEdit : undefined}
 ## Resource-Specific Hooks
 
 Use the appropriate hook for each resource:
+
 - `useApplicationsPermissions()`
 - `useCampaignsPermissions()`
 - `useProfilesPermissions()`
@@ -42,6 +46,7 @@ Use the appropriate hook for each resource:
 ## Route Protection
 
 Add to route definitions:
+
 ```tsx
 export const Route = createFileRoute('/my-route')({
   component: MyComponent,

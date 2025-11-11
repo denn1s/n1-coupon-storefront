@@ -75,9 +75,7 @@ export interface RefreshResponse {
  *
  * This initiates the OTP flow by sending a code to the user's phone
  */
-export async function startPasswordlessAuth(
-  request: PasswordlessStartRequest
-): Promise<PasswordlessStartResponse> {
+export async function startPasswordlessAuth(request: PasswordlessStartRequest): Promise<PasswordlessStartResponse> {
   console.warn('⚠️  Using placeholder startPasswordlessAuth. Replace with actual API call.')
 
   // PLACEHOLDER IMPLEMENTATION
@@ -108,9 +106,7 @@ export async function startPasswordlessAuth(
  *
  * This verifies the OTP code and returns authentication tokens
  */
-export async function verifyPasswordlessAuth(
-  request: PasswordlessVerifyRequest
-): Promise<LoginResponse> {
+export async function verifyPasswordlessAuth(request: PasswordlessVerifyRequest): Promise<LoginResponse> {
   console.warn('⚠️  Using placeholder verifyPasswordlessAuth. Replace with actual API call.')
 
   // PLACEHOLDER IMPLEMENTATION

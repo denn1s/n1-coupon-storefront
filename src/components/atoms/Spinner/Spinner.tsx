@@ -16,7 +16,5 @@ export default function Spinner({ size = 'md', color = 'primary' }: SpinnerProps
 
   const colorClass = color ? `text-${color}` : ''
 
-  return (
-    <span className={`loading loading-spinner ${sizeClass} ${colorClass}`}></span>
-  )
+  return <span className={`loading loading-spinner ${sizeClass} ${colorClass}`}></span>
 }

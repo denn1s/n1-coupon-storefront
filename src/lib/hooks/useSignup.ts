@@ -20,7 +20,7 @@ export interface SignupPayload {
   confirmPassword: string
   firstName?: string
   lastName?: string
-  [key: string]: string | undefined  // Allow additional string fields
+  [key: string]: string | undefined // Allow additional string fields
 }
 
 export interface SignupError {
@@ -100,7 +100,7 @@ const useSignup = (): UseSignupReturn => {
   return {
     signup,
     isLoading,
-    error,
+    error
   }
 }
 

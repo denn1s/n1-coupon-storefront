@@ -8,7 +8,7 @@ export interface User {
   id: string
   email?: string
   name?: string
-  [key: string]: unknown  // Allow for additional custom fields
+  [key: string]: unknown // Allow for additional custom fields
 }
 
 /**
@@ -106,11 +106,7 @@ function useAuthStore() {
    * Set authentication state after successful login
    * This will persist tokens and user info to localStorage
    */
-  const setAuthState = (
-    accessToken: string,
-    refreshToken: string,
-    user: User
-  ) => {
+  const setAuthState = (accessToken: string, refreshToken: string, user: User) => {
     const newState: AuthState = {
       accessToken,
       refreshToken,
