@@ -1,13 +1,15 @@
 import type { User } from '@stores/authStore'
 
 /**
- * PLACEHOLDER AUTH SERVICE
+ * H4B Buyer Auth API Service
  *
- * This file contains placeholder functions for authentication.
- * These are configured for the H4B Buyer Auth API (https://api-auth.h4b.dev)
- * but can be adapted to any authentication provider.
+ * This file implements authentication for the H4B Buyer Auth API.
+ * API Specification: https://api-auth.h4b.dev/api/specification.json
  *
- * The H4B Auth API uses passwordless OTP-based authentication.
+ * The H4B Auth API provides:
+ * - Passwordless OTP authentication via phone
+ * - Token-based authentication (access, ID, and refresh tokens)
+ * - User information retrieval
  */
 
 /**
@@ -15,40 +17,96 @@ import type { User } from '@stores/authStore'
  * Set these via environment variables
  */
 export const AUTH_CONFIG = {
-  API_URL: import.meta.env.VITE_H4B_AUTH_API_URL || 'idp.h4b.dev',
-  API_PORT: import.meta.env.VITE_H4B_AUTH_API_PORT || '443',
-  API_MOUNT: import.meta.env.VITE_H4B_AUTH_API_MOUNT || 'api',
-  API_SECURE: import.meta.env.VITE_H4B_AUTH_API_SECURE !== 'false',
-  API_KEY: import.meta.env.VITE_H4B_AUTH_API_KEY || '',
+  API_URL: import.meta.env.VITE_H4B_AUTH_API_URL || 'api-auth.h4b.dev',
+  API_MOUNT: import.meta.env.VITE_H4B_AUTH_API_MOUNT || '/api'
 }
 
 /**
  * Build full API URL
  */
 const getAuthApiUrl = (endpoint: string): string => {
-  const protocol = AUTH_CONFIG.API_SECURE ? 'https' : 'http'
-  const port = AUTH_CONFIG.API_PORT === '443' || AUTH_CONFIG.API_PORT === '80' ? '' : `:${AUTH_CONFIG.API_PORT}`
-  return `${protocol}://${AUTH_CONFIG.API_URL}${port}/${AUTH_CONFIG.API_MOUNT}${endpoint}`
+  const apiMount = AUTH_CONFIG.API_MOUNT.startsWith('/') ? AUTH_CONFIG.API_MOUNT : `/${AUTH_CONFIG.API_MOUNT}`
+
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`
+
+  return `https://${AUTH_CONFIG.API_URL}${apiMount}${cleanEndpoint}`
 }
 
 /**
- * Start OTP Request (based on blueprint)
+ * Passwordless Start Request
+ * POST /api/Passwordless/start
  */
-export interface StartOTPRequest {
-  phone: string
+export interface PasswordlessStartRequest {
+  phone_number: string
+  channel?: string // SMS, WhatsApp, etc.
+  origin?: string
 }
 
 /**
- * Verify OTP Request (based on blueprint)
+ * Passwordless Start Response
  */
-export interface VerifyOTPRequest {
-  phone: string
+export interface PasswordlessStartResponse {
+  phone_number: string
+  phone_verified: boolean
+  _id: string // Session identifier
+}
+
+/**
+ * Passwordless Verify Request
+ * POST /api/Passwordless/verify
+ */
+export interface PasswordlessVerifyRequest {
+  phone_number: string
   otp: string
+  audience?: string
 }
 
 /**
- * Login Response Interface
- * Returned after successful authentication
+ * Passwordless Verify Response
+ * Returned after successful OTP verification
+ */
+export interface PasswordlessVerifyResponse {
+  access_token: string
+  id_token: string
+  refresh_token: string
+  expires_in: number
+  token_type: string
+  scope: string
+  user: Record<string, unknown>
+}
+
+/**
+ * Authenticate Request
+ * POST /api/Authenticate
+ */
+export interface AuthenticateRequest {
+  id_token?: string | null
+  access_token?: string | null
+  refresh_token?: string | null
+  force_refresh?: boolean | null
+}
+
+/**
+ * Token Information DTO
+ */
+export interface TokenInformationDto {
+  idToken: string
+  accessToken: string
+  refreshToken: string
+}
+
+/**
+ * Authenticate Response
+ * Returned from token validation/refresh
+ */
+export interface AuthenticateResponse {
+  user: Record<string, unknown>
+  tokens: TokenInformationDto
+}
+
+/**
+ * Login Response Interface (standardized for app use)
+ * Combines passwordless verify response into app format
  */
 export interface LoginResponse {
   access_token: string
@@ -59,7 +117,7 @@ export interface LoginResponse {
 }
 
 /**
- * Token Refresh Response Interface
+ * Token Refresh Response Interface (standardized for app use)
  */
 export interface RefreshResponse {
   accessToken: string
@@ -69,24 +127,34 @@ export interface RefreshResponse {
 
 /**
  * Start OTP authentication
+ * POST /api/Passwordless/start
  *
- * Sends an OTP code to the user's phone via SMS
- * Based on the passwordless authentication blueprint
+ * Initiates the passwordless authentication flow by sending
+ * an OTP code to the user's phone via the specified channel (SMS by default)
  */
-export async function startOTP(request: StartOTPRequest): Promise<void> {
-  const url = getAuthApiUrl('/auth/otp/start')
+export async function startOTP(
+  phoneNumber: string,
+  channel: string = 'sms',
+  origin?: string
+): Promise<PasswordlessStartResponse> {
+  const url = getAuthApiUrl('/Passwordless/start')
 
   if (import.meta.env.DEV) {
-    console.log('[AUTH] Starting OTP flow for phone:', request.phone)
+    console.log('[AUTH] Starting OTP flow for phone:', phoneNumber)
+  }
+
+  const request: PasswordlessStartRequest = {
+    phone_number: phoneNumber,
+    channel,
+    origin
   }
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': AUTH_CONFIG.API_KEY,
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(request),
+    body: JSON.stringify(request)
   })
 
   if (!response.ok) {
@@ -95,31 +163,40 @@ export async function startOTP(request: StartOTPRequest): Promise<void> {
     throw new Error('Failed to send OTP. Please check your phone number and try again.')
   }
 
+  const data: PasswordlessStartResponse = await response.json()
+
   if (import.meta.env.DEV) {
-    console.log('[AUTH] OTP sent successfully')
+    console.log('[AUTH] OTP sent successfully, session ID:', data._id)
   }
+
+  return data
 }
 
 /**
  * Verify OTP and complete login
+ * POST /api/Passwordless/verify
  *
  * Verifies the OTP code and returns authentication tokens
- * Based on the passwordless authentication blueprint
  */
-export async function verifyOTP(request: VerifyOTPRequest): Promise<LoginResponse> {
-  const url = getAuthApiUrl('/auth/otp/verify')
+export async function verifyOTP(phoneNumber: string, otp: string, audience?: string): Promise<LoginResponse> {
+  const url = getAuthApiUrl('/Passwordless/verify')
 
   if (import.meta.env.DEV) {
-    console.log('[AUTH] Verifying OTP for phone:', request.phone)
+    console.log('[AUTH] Verifying OTP for phone:', phoneNumber)
+  }
+
+  const request: PasswordlessVerifyRequest = {
+    phone_number: phoneNumber,
+    otp,
+    audience
   }
 
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'X-Api-Key': AUTH_CONFIG.API_KEY,
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(request),
+    body: JSON.stringify(request)
   })
 
   if (!response.ok) {
@@ -133,138 +210,141 @@ export async function verifyOTP(request: VerifyOTPRequest): Promise<LoginRespons
     throw new Error('Failed to verify OTP. Please try again.')
   }
 
-  const data = await response.json()
+  const data: PasswordlessVerifyResponse = await response.json()
 
   if (import.meta.env.DEV) {
     console.log('[AUTH] OTP verified successfully')
   }
 
+  // Extract user info from response
+  const userObj = data.user || {}
+  const userId =
+    typeof userObj === 'object' && userObj !== null
+      ? (userObj as Record<string, unknown>).id || (userObj as Record<string, unknown>).sub || 'unknown'
+      : 'unknown'
+
   // Transform the response to match our LoginResponse interface
   return {
-    access_token: data.accessToken,
-    id_token: data.idToken,
-    refresh_token: data.refreshToken,
-    expires_in: 3600, // Default to 1 hour
+    access_token: data.access_token,
+    id_token: data.id_token,
+    refresh_token: data.refresh_token,
+    expires_in: data.expires_in,
     user: {
-      id: data.userId || 'unknown',
-      phone: request.phone,
-      name: data.name || undefined,
-    },
-  }
-}
-
-/**
- * PLACEHOLDER: Simple login (for development)
- *
- * This is a simple placeholder that accepts email/password
- * Replace with your actual auth flow (could be passwordless, OAuth, etc.)
- */
-export interface LoginRequest {
-  email: string
-  password: string
-}
-
-export async function login(credentials: LoginRequest): Promise<LoginResponse> {
-  console.warn('⚠️  Using placeholder login function. Replace with your auth provider.')
-
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  return {
-    access_token: 'placeholder_access_token_' + Date.now(),
-    id_token: 'placeholder_id_token_' + Date.now(),
-    refresh_token: 'placeholder_refresh_token_' + Date.now(),
-    expires_in: 3600,
-    user: {
-      id: '1',
-      email: credentials.email,
-      name: 'Demo User'
+      id: String(userId),
+      phone: phoneNumber,
+      ...(typeof userObj === 'object' && userObj !== null ? userObj : {})
     }
   }
 }
 
 /**
- * PLACEHOLDER: Logout function
+ * Logout function
  *
- * Note: The H4B Auth API doesn't have a logout endpoint
- * Logout is typically just clearing local tokens
+ * Note: The H4B Auth API doesn't have a logout endpoint.
+ * Logout is performed client-side by clearing tokens.
  */
 export async function logout(_accessToken: string): Promise<void> {
-  console.warn('⚠️  Using placeholder logout function.')
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Logging out (client-side only)')
+  }
 
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  // For H4B API: no server-side logout needed
-  // Just clear tokens on the client side
+  // For H4B API: no server-side logout endpoint
+  // Tokens are cleared on the client side by the auth store
 }
 
 /**
- * PLACEHOLDER: Refresh access token
+ * Refresh access token
+ * POST /api/Authenticate
  *
- * Uses the /api/Authenticate endpoint with refresh_token
+ * Uses the refresh token to obtain new access and ID tokens
  */
-export async function refreshAccessToken(_refreshToken: string): Promise<RefreshResponse> {
-  console.warn('⚠️  Using placeholder refresh function. Replace with actual API call.')
+export async function refreshAccessToken(
+  refreshToken: string,
+  idToken?: string,
+  accessToken?: string
+): Promise<RefreshResponse> {
+  const url = getAuthApiUrl('/Authenticate')
 
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return {
-    accessToken: 'refreshed_access_token_' + Date.now(),
-    idToken: 'refreshed_id_token_' + Date.now(),
-    refreshToken: 'refreshed_refresh_token_' + Date.now()
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Refreshing access token')
   }
 
-  // PRODUCTION: Replace with actual API call:
-  // const response = await fetch(`${AUTH_CONFIG.API_URL}${AUTH_CONFIG.AUTHENTICATE_ENDPOINT}`, {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({
-  //     refresh_token: refreshToken,
-  //     force_refresh: true
-  //   })
-  // })
-  //
-  // if (!response.ok) {
-  //   throw new Error('Token refresh failed')
-  // }
-  //
-  // const data = await response.json()
-  // return {
-  //   accessToken: data.tokens.accessToken,
-  //   idToken: data.tokens.idToken,
-  //   refreshToken: data.tokens.refreshToken
-  // }
+  const request: AuthenticateRequest = {
+    refresh_token: refreshToken,
+    id_token: idToken || null,
+    access_token: accessToken || null,
+    force_refresh: true
+  }
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(request)
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('[AUTH] Token refresh failed:', errorText)
+    throw new Error('Token refresh failed')
+  }
+
+  const data: AuthenticateResponse = await response.json()
+
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Token refreshed successfully')
+  }
+
+  return {
+    accessToken: data.tokens.accessToken,
+    idToken: data.tokens.idToken,
+    refreshToken: data.tokens.refreshToken
+  }
 }
 
 /**
- * PLACEHOLDER: Get current user
+ * Get current user information
+ * GET /api/User
  *
- * Uses the /api/User endpoint with idToken
+ * Retrieves user information using the ID token
  */
-export async function getCurrentUser(_idToken: string): Promise<User> {
-  console.warn('⚠️  Using placeholder getCurrentUser function. Replace with actual API call.')
+export async function getCurrentUser(idToken: string): Promise<User> {
+  const url = getAuthApiUrl('/User')
 
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 500))
-
-  return {
-    id: '1',
-    email: 'demo@example.com',
-    name: 'Demo User'
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Fetching current user')
   }
 
-  // PRODUCTION: Replace with actual API call:
-  // const response = await fetch(
-  //   `${AUTH_CONFIG.API_URL}${AUTH_CONFIG.USER_ENDPOINT}?idToken=${encodeURIComponent(idToken)}`
-  // )
-  //
-  // if (!response.ok) {
-  //   throw new Error('Failed to fetch user info')
-  // }
-  //
-  // return await response.json()
+  const response = await fetch(`${url}?idToken=${encodeURIComponent(idToken)}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('[AUTH] Failed to fetch user info:', errorText)
+    throw new Error('Failed to fetch user info')
+  }
+
+  // The API returns a string representation of user data
+  // Try to parse it as JSON
+  const data = await response.json()
+
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] User fetched successfully')
+  }
+
+  // Transform API response to our User type
+  return {
+    id: data.id || data.sub || 'unknown',
+    phone: data.phone || data.phone_number,
+    email: data.email,
+    name: data.name,
+    ...data
+  }
 }
 
 /**

@@ -309,7 +309,7 @@ const { data, goToNextPage, hasNextPage } = useProductsPagination(20)
 #### GraphQL Configuration
 
 - Endpoint: `${VITE_API_HOST}/graphql`
-- Custom headers: `X-App-Id: yummy` (mandatory), `Authorization: Bearer {token}` (optional)
+- Custom headers: `X-App-Id: plazamalta` (mandatory), `Authorization: Bearer {token}` (optional)
 - See `.claude/graphql-agent.md` for complete patterns
 
 ### Authentication & Authorization

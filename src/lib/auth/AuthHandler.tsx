@@ -28,15 +28,13 @@ interface AuthHandlerProps {
  */
 export default function AuthHandler({ children }: AuthHandlerProps) {
   const { isAuthenticated, isLoading: authLoading } = useAuth()
-  const { accessToken, refreshToken: storedRefreshToken, setAccessToken } = useAuthStore()
+  const { accessToken, idToken, refreshToken: storedRefreshToken, setTokens } = useAuthStore()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const path = window.location.pathname
 
   // Define public paths that don't require authentication
-  const PUBLIC_PATHS = ['/', '/signup', '/login']
-  const isPublicPath = PUBLIC_PATHS.some(
-    (p) => path === p || path.startsWith(p + '/')
-  )
+  const PUBLIC_PATHS = ['/', '/login']
+  const isPublicPath = PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + '/'))
 
   // Auto-refresh token if expired
   useEffect(() => {
@@ -46,8 +44,8 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
         if (isTokenExpired(accessToken) && !isRefreshing) {
           setIsRefreshing(true)
           try {
-            const response = await refreshAccessToken(storedRefreshToken)
-            setAccessToken(response.accessToken, response.refreshToken)
+            const response = await refreshAccessToken(storedRefreshToken, idToken || undefined, accessToken)
+            setTokens(response.accessToken, response.idToken, response.refreshToken)
           } catch (error) {
             console.error('Token refresh failed:', error)
             // If refresh fails, user will be logged out by the auth store
@@ -59,7 +57,7 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
     }
 
     checkAndRefreshToken()
-  }, [isAuthenticated, accessToken, storedRefreshToken, isRefreshing, setAccessToken])
+  }, [isAuthenticated, accessToken, idToken, storedRefreshToken, isRefreshing, setTokens])
 
   // Allow public routes without auth checks/loading gate
   if (isPublicPath) {

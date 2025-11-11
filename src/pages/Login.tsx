@@ -45,7 +45,7 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      await startOTP({ phone })
+      await startOTP(phone)
       setStep('otp')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP')
@@ -70,10 +70,10 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const response = await verifyOTP({ phone, otp })
+      const response = await verifyOTP(phone, otp)
 
-      // Store auth state
-      setAuthState(response.access_token, response.refresh_token, response.user)
+      // Store auth state (including id_token)
+      setAuthState(response.access_token, response.id_token, response.refresh_token, response.user)
 
       // Redirect to intended page or my-coupons
       navigate({ to: redirectTo })
@@ -102,7 +102,7 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      await startOTP({ phone })
+      await startOTP(phone)
       setError(null)
       // Show success message briefly
       setError('OTP sent! Check your phone.')
@@ -120,13 +120,9 @@ export default function Login() {
         <div className={styles.cardBody}>
           {/* Logo/Title */}
           <div className={styles.header}>
-            <h1 className={styles.title}>
-              {step === 'phone' ? 'Welcome' : 'Enter Code'}
-            </h1>
+            <h1 className={styles.title}>{step === 'phone' ? 'Welcome' : 'Enter Code'}</h1>
             <p className={styles.subtitle}>
-              {step === 'phone'
-                ? 'Enter your phone number to get started'
-                : `We sent a code to ${phone}`}
+              {step === 'phone' ? 'Enter your phone number to get started' : `We sent a code to ${phone}`}
             </p>
           </div>
 

@@ -5,6 +5,7 @@ You are a specialized agent focused on creating and managing GraphQL services us
 ## Your Expertise
 
 You understand:
+
 - GraphQL query and mutation syntax
 - Custom GraphQL function builders (`graphqlQueryFn`, `graphqlMutationFn`)
 - TanStack Query integration with GraphQL (`useQuery`, `useMutation`)
@@ -53,11 +54,11 @@ export interface ResourcesResponse {
 }
 
 export interface ResourcesQueryVariables {
-  first?: number      // Forward pagination (number of items)
-  after?: string      // Forward pagination cursor
-  before?: string     // Backward pagination cursor
-  last?: number       // Backward pagination (number of items)
-  search?: string     // Optional filters
+  first?: number // Forward pagination (number of items)
+  after?: string // Forward pagination cursor
+  before?: string // Backward pagination cursor
+  last?: number // Backward pagination (number of items)
+  search?: string // Optional filters
 }
 
 // ============================================================================
@@ -98,16 +99,10 @@ const RESOURCE_DETAIL_QUERY = `
 // ============================================================================
 
 const getResources = (variables: ResourcesQueryVariables = {}) =>
-  graphqlQueryFn<ResourcesQueryVariables, ResourcesResponse>(
-    RESOURCES_QUERY,
-    variables
-  )
+  graphqlQueryFn<ResourcesQueryVariables, ResourcesResponse>(RESOURCES_QUERY, variables)
 
 const getResource = (id: string) =>
-  graphqlQueryFn<{ id: string }, { resource: Resource }>(
-    RESOURCE_DETAIL_QUERY,
-    { id }
-  )
+  graphqlQueryFn<{ id: string }, { resource: Resource }>(RESOURCE_DETAIL_QUERY, { id })
 
 // ============================================================================
 // QUERY HOOKS (Public API)
@@ -116,14 +111,14 @@ const getResource = (id: string) =>
 export const useGetResources = (variables: ResourcesQueryVariables = { first: 20 }) => {
   return useQuery({
     queryKey: ['resources', 'list', variables],
-    queryFn: getResources(variables),
+    queryFn: getResources(variables)
   })
 }
 
 export const resourcesOptions = (variables: ResourcesQueryVariables = { first: 20 }) =>
   queryOptions({
     queryKey: ['resources', 'list', variables],
-    queryFn: getResources(variables),
+    queryFn: getResources(variables)
   })
 
 export const useGetResource = (id: string) => {
@@ -131,7 +126,7 @@ export const useGetResource = (id: string) => {
     queryKey: ['resources', 'detail', id],
     queryFn: getResource(id),
     enabled: !!id,
-    select: (data) => data.resource, // Extract resource from response
+    select: (data) => data.resource // Extract resource from response
   })
 }
 
@@ -166,12 +161,10 @@ export const useCreateResource = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: graphqlMutationFn<{ input: CreateResourceInput }, CreateResourceResponse>(
-      CREATE_RESOURCE_MUTATION
-    ),
+    mutationFn: graphqlMutationFn<{ input: CreateResourceInput }, CreateResourceResponse>(CREATE_RESOURCE_MUTATION),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resources', 'list'] })
-    },
+    }
   })
 }
 ```
@@ -187,7 +180,7 @@ import React from 'react'
 
 export const useResourcesPagination = (pageSize: number = 20) => {
   const [variables, setVariables] = React.useState<ResourcesQueryVariables>({
-    first: pageSize,
+    first: pageSize
   })
 
   const query = useGetResources(variables)
@@ -200,7 +193,7 @@ export const useResourcesPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasNextPage && pageInfo.endCursor) {
       setVariables({
         first: pageSize,
-        after: pageInfo.endCursor,
+        after: pageInfo.endCursor
       })
     }
   }
@@ -209,7 +202,7 @@ export const useResourcesPagination = (pageSize: number = 20) => {
     if (pageInfo?.hasPreviousPage && pageInfo.startCursor) {
       setVariables({
         last: pageSize,
-        before: pageInfo.startCursor,
+        before: pageInfo.startCursor
       })
     }
   }
@@ -229,7 +222,7 @@ export const useResourcesPagination = (pageSize: number = 20) => {
     goToPreviousPage,
     resetPagination,
     pageInfo,
-    refetch: query.refetch,
+    refetch: query.refetch
   }
 }
 ```
@@ -281,24 +274,30 @@ Follow these strict patterns for GraphQL services:
 Use the provided builders in `@lib/api/graphqlFn`:
 
 ### For Queries (useQuery)
+
 ```typescript
 graphqlQueryFn<VariablesType, ResponseType>(query, variables)
 ```
+
 Returns a function compatible with TanStack Query's `useQuery`.
 
 ### For Mutations (useMutation)
+
 ```typescript
 graphqlMutationFn<VariablesType, ResponseType>(mutation)
 ```
+
 Returns a function that accepts variables and returns a Promise.
 
 ### Authentication Headers
 
 The GraphQL client automatically handles headers:
-- **`X-App-Id: yummy`** - Always included (mandatory)
+
+- **`X-App-Id: plazamalta`** - Always included (mandatory)
 - **`Authorization: Bearer {token}`** - Conditionally included (only when token exists)
 
 This means your services work for both:
+
 - ✅ Public endpoints (no authentication required)
 - ✅ Protected endpoints (when user is logged in)
 
@@ -327,9 +326,9 @@ GraphQL uses the "Connection" pattern for pagination:
 
 ```graphql
 type ResourceConnection {
-  nodes: [Resource!]!      # The actual data
-  totalCount: Int!         # Total number of items
-  pageInfo: PageInfo!      # Pagination metadata
+  nodes: [Resource!]! # The actual data
+  totalCount: Int! # Total number of items
+  pageInfo: PageInfo! # Pagination metadata
 }
 
 type PageInfo {
@@ -345,16 +344,20 @@ Always model your TypeScript types to match this structure.
 ## Pagination Arguments
 
 ### Forward Pagination (Most Common)
+
 ```typescript
 { first: 20, after: cursor }
 ```
+
 - `first`: Number of items to fetch
 - `after`: Cursor to start from (get items after this cursor)
 
 ### Backward Pagination
+
 ```typescript
 { last: 20, before: cursor }
 ```
+
 - `last`: Number of items to fetch
 - `before`: Cursor to start from (get items before this cursor)
 
@@ -372,6 +375,7 @@ Always model your TypeScript types to match this structure.
 ## Common Patterns
 
 ### List with Search/Filters
+
 ```typescript
 export interface ResourcesQueryVariables {
   first?: number
@@ -405,20 +409,19 @@ const RESOURCES_QUERY = `
 ```
 
 ### Nested Resources
+
 ```typescript
 export const useGetResourceComments = (resourceId: string, variables = {}) => {
   return useQuery({
     queryKey: ['resources', resourceId, 'comments', variables],
-    queryFn: graphqlQueryFn<CommentsVariables, CommentsResponse>(
-      RESOURCE_COMMENTS_QUERY,
-      { resourceId, ...variables }
-    ),
-    enabled: !!resourceId,
+    queryFn: graphqlQueryFn<CommentsVariables, CommentsResponse>(RESOURCE_COMMENTS_QUERY, { resourceId, ...variables }),
+    enabled: !!resourceId
   })
 }
 ```
 
 ### Mutation with Input Type
+
 ```typescript
 const UPDATE_RESOURCE_MUTATION = `
   mutation UpdateResource($id: ID!, $input: UpdateResourceInput!) {
@@ -442,14 +445,13 @@ export const useUpdateResource = (id: string) => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: graphqlMutationFn<
-      { id: string; input: UpdateResourceInput },
-      UpdateResourceResponse
-    >(UPDATE_RESOURCE_MUTATION),
+    mutationFn: graphqlMutationFn<{ id: string; input: UpdateResourceInput }, UpdateResourceResponse>(
+      UPDATE_RESOURCE_MUTATION
+    ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['resources', 'list'] })
       queryClient.invalidateQueries({ queryKey: ['resources', 'detail', id] })
-    },
+    }
   })
 }
 ```
@@ -479,13 +481,14 @@ export const Route = createFileRoute('/resources')({
   component: ResourcesPage,
   loader: ({ context }) => {
     return context.queryClient.ensureQueryData(resourcesOptions({ first: 20 }))
-  },
+  }
 })
 ```
 
 ## API Configuration
 
 GraphQL endpoint is configured via environment variables:
+
 - `VITE_API_HOST` - API host (e.g., `https://localhost:5005`)
 - GraphQL endpoint: `${VITE_API_HOST}/graphql`
 
