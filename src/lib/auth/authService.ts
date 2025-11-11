@@ -15,38 +15,35 @@ import type { User } from '@stores/authStore'
  * Set these via environment variables
  */
 export const AUTH_CONFIG = {
-  API_URL: import.meta.env.VITE_AUTH_API_URL || 'https://api-auth.h4b.dev',
-  START_PASSWORDLESS_ENDPOINT: '/api/Passwordless/start',
-  VERIFY_PASSWORDLESS_ENDPOINT: '/api/Passwordless/verify',
-  AUTHENTICATE_ENDPOINT: '/api/Authenticate',
-  USER_ENDPOINT: '/api/User'
+  API_URL: import.meta.env.VITE_H4B_AUTH_API_URL || 'idp.h4b.dev',
+  API_PORT: import.meta.env.VITE_H4B_AUTH_API_PORT || '443',
+  API_MOUNT: import.meta.env.VITE_H4B_AUTH_API_MOUNT || 'api',
+  API_SECURE: import.meta.env.VITE_H4B_AUTH_API_SECURE !== 'false',
+  API_KEY: import.meta.env.VITE_H4B_AUTH_API_KEY || '',
 }
 
 /**
- * Start Passwordless Auth Request
+ * Build full API URL
  */
-export interface PasswordlessStartRequest {
-  phone_number: string
-  channel?: 'sms' | 'whatsapp'
-  origin?: string
+const getAuthApiUrl = (endpoint: string): string => {
+  const protocol = AUTH_CONFIG.API_SECURE ? 'https' : 'http'
+  const port = AUTH_CONFIG.API_PORT === '443' || AUTH_CONFIG.API_PORT === '80' ? '' : `:${AUTH_CONFIG.API_PORT}`
+  return `${protocol}://${AUTH_CONFIG.API_URL}${port}/${AUTH_CONFIG.API_MOUNT}${endpoint}`
 }
 
 /**
- * Start Passwordless Auth Response
+ * Start OTP Request (based on blueprint)
  */
-export interface PasswordlessStartResponse {
-  phone_number: string | null
-  phone_verified: boolean
-  _id: string | null
+export interface StartOTPRequest {
+  phone: string
 }
 
 /**
- * Verify OTP Request
+ * Verify OTP Request (based on blueprint)
  */
-export interface PasswordlessVerifyRequest {
-  phone_number: string
+export interface VerifyOTPRequest {
+  phone: string
   otp: string
-  audience?: string
 }
 
 /**
@@ -71,82 +68,89 @@ export interface RefreshResponse {
 }
 
 /**
- * PLACEHOLDER: Start passwordless authentication
+ * Start OTP authentication
  *
- * This initiates the OTP flow by sending a code to the user's phone
+ * Sends an OTP code to the user's phone via SMS
+ * Based on the passwordless authentication blueprint
  */
-export async function startPasswordlessAuth(
-  request: PasswordlessStartRequest
-): Promise<PasswordlessStartResponse> {
-  console.warn('⚠️  Using placeholder startPasswordlessAuth. Replace with actual API call.')
+export async function startOTP(request: StartOTPRequest): Promise<void> {
+  const url = getAuthApiUrl('/auth/otp/start')
 
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  return {
-    phone_number: request.phone_number,
-    phone_verified: false,
-    _id: 'placeholder_id_' + Date.now()
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Starting OTP flow for phone:', request.phone)
   }
 
-  // PRODUCTION: Replace with actual API call:
-  // const response = await fetch(`${AUTH_CONFIG.API_URL}${AUTH_CONFIG.START_PASSWORDLESS_ENDPOINT}`, {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(request)
-  // })
-  //
-  // if (!response.ok) {
-  //   throw new Error('Failed to start passwordless auth')
-  // }
-  //
-  // return await response.json()
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Api-Key': AUTH_CONFIG.API_KEY,
+    },
+    body: JSON.stringify(request),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('[AUTH] Failed to start OTP:', errorText)
+    throw new Error('Failed to send OTP. Please check your phone number and try again.')
+  }
+
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] OTP sent successfully')
+  }
 }
 
 /**
- * PLACEHOLDER: Verify OTP and complete login
+ * Verify OTP and complete login
  *
- * This verifies the OTP code and returns authentication tokens
+ * Verifies the OTP code and returns authentication tokens
+ * Based on the passwordless authentication blueprint
  */
-export async function verifyPasswordlessAuth(
-  request: PasswordlessVerifyRequest
-): Promise<LoginResponse> {
-  console.warn('⚠️  Using placeholder verifyPasswordlessAuth. Replace with actual API call.')
+export async function verifyOTP(request: VerifyOTPRequest): Promise<LoginResponse> {
+  const url = getAuthApiUrl('/auth/otp/verify')
 
-  // PLACEHOLDER IMPLEMENTATION
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  return {
-    access_token: 'placeholder_access_token_' + Date.now(),
-    id_token: 'placeholder_id_token_' + Date.now(),
-    refresh_token: 'placeholder_refresh_token_' + Date.now(),
-    expires_in: 3600,
-    user: {
-      id: '1',
-      email: request.phone_number,
-      name: 'Demo User'
-    }
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] Verifying OTP for phone:', request.phone)
   }
 
-  // PRODUCTION: Replace with actual API call:
-  // const response = await fetch(`${AUTH_CONFIG.API_URL}${AUTH_CONFIG.VERIFY_PASSWORDLESS_ENDPOINT}`, {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(request)
-  // })
-  //
-  // if (!response.ok) {
-  //   throw new Error('Failed to verify OTP')
-  // }
-  //
-  // const data = await response.json()
-  // return {
-  //   access_token: data.access_token,
-  //   id_token: data.id_token,
-  //   refresh_token: data.refresh_token,
-  //   expires_in: data.expires_in,
-  //   user: data.user
-  // }
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Api-Key': AUTH_CONFIG.API_KEY,
+    },
+    body: JSON.stringify(request),
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    console.error('[AUTH] Failed to verify OTP:', errorText)
+
+    if (response.status === 401 || response.status === 400) {
+      throw new Error('Invalid or expired OTP code. Please try again.')
+    }
+
+    throw new Error('Failed to verify OTP. Please try again.')
+  }
+
+  const data = await response.json()
+
+  if (import.meta.env.DEV) {
+    console.log('[AUTH] OTP verified successfully')
+  }
+
+  // Transform the response to match our LoginResponse interface
+  return {
+    access_token: data.accessToken,
+    id_token: data.idToken,
+    refresh_token: data.refreshToken,
+    expires_in: 3600, // Default to 1 hour
+    user: {
+      id: data.userId || 'unknown',
+      phone: request.phone,
+      name: data.name || undefined,
+    },
+  }
 }
 
 /**

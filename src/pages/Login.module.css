@@ -1,0 +1,104 @@
+@reference "tailwindcss";
+
+.container {
+  @apply min-h-screen flex items-center justify-center p-4;
+}
+
+.card {
+  @apply w-full max-w-md bg-white rounded-2xl shadow-xl;
+}
+
+.cardBody {
+  @apply p-8;
+}
+
+.header {
+  @apply text-center mb-8;
+}
+
+.title {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.subtitle {
+  @apply text-sm text-gray-600;
+}
+
+.form {
+  @apply flex flex-col gap-6;
+}
+
+.formControl {
+  @apply flex flex-col gap-2;
+}
+
+.label {
+  @apply flex items-center;
+}
+
+.labelText {
+  @apply text-sm font-medium text-gray-700;
+}
+
+/* Phone Input Styling */
+.phoneInput {
+  @apply w-full;
+}
+
+.phoneInput :global(.PhoneInputInput) {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg text-base transition-all;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  @apply disabled:bg-gray-100 disabled:cursor-not-allowed;
+}
+
+/* OTP Input Styling */
+.otpContainer {
+  @apply flex justify-center;
+}
+
+.otpInputContainer {
+  @apply flex gap-2 justify-center;
+}
+
+.otpInput {
+  @apply w-12 h-14 text-center text-2xl font-semibold border-2 border-gray-300 rounded-lg;
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500;
+  @apply transition-all;
+}
+
+.otpInput:disabled {
+  @apply bg-gray-100 cursor-not-allowed;
+}
+
+/* Alert Styling */
+.alert {
+  @apply flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm;
+}
+
+.alertIcon {
+  @apply w-5 h-5 flex-shrink-0 mt-0.5;
+}
+
+/* Button Styling */
+.button {
+  @apply w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg;
+  @apply hover:bg-blue-700 active:bg-blue-800;
+  @apply transition-colors duration-200;
+  @apply disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300;
+  @apply flex items-center justify-center gap-2;
+}
+
+.spinner {
+  @apply inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin;
+}
+
+/* Actions (links) */
+.actions {
+  @apply flex justify-between items-center gap-4 mt-2;
+}
+
+.linkButton {
+  @apply text-sm text-blue-600 hover:text-blue-800 hover:underline;
+  @apply transition-colors duration-200;
+  @apply disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed;
+}

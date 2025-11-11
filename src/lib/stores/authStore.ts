@@ -1,11 +1,12 @@
 import { Store, useStore } from '@tanstack/react-store'
 
 /**
- * Simple User interface
- * Customize this based on your auth provider's user object
+ * User interface for passwordless OTP authentication
+ * Supports phone-based authentication
  */
 export interface User {
   id: string
+  phone?: string
   email?: string
   name?: string
   [key: string]: unknown  // Allow for additional custom fields

@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as MyCouponsRouteImport } from './routes/my-coupons'
 import { Route as LogoutRouteImport } from './routes/logout'
@@ -20,11 +19,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 import { Route as ItemsItemIdRouteImport } from './routes/items/$itemId'
 
-const SignupRoute = SignupRouteImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -79,7 +73,6 @@ export interface FileRoutesByFullPath {
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
   '/settings': typeof SettingsRoute
-  '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -91,7 +84,6 @@ export interface FileRoutesByTo {
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
   '/settings': typeof SettingsRoute
-  '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -104,7 +96,6 @@ export interface FileRoutesById {
   '/logout': typeof LogoutRoute
   '/my-coupons': typeof MyCouponsRoute
   '/settings': typeof SettingsRoute
-  '/signup': typeof SignupRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
 }
@@ -118,7 +109,6 @@ export interface FileRouteTypes {
     | '/logout'
     | '/my-coupons'
     | '/settings'
-    | '/signup'
     | '/items/$itemId'
     | '/products/$productId'
   fileRoutesByTo: FileRoutesByTo
@@ -130,7 +120,6 @@ export interface FileRouteTypes {
     | '/logout'
     | '/my-coupons'
     | '/settings'
-    | '/signup'
     | '/items/$itemId'
     | '/products/$productId'
   id:
@@ -142,7 +131,6 @@ export interface FileRouteTypes {
     | '/logout'
     | '/my-coupons'
     | '/settings'
-    | '/signup'
     | '/items/$itemId'
     | '/products/$productId'
   fileRoutesById: FileRoutesById
@@ -155,19 +143,11 @@ export interface RootRouteChildren {
   LogoutRoute: typeof LogoutRoute
   MyCouponsRoute: typeof MyCouponsRoute
   SettingsRoute: typeof SettingsRoute
-  SignupRoute: typeof SignupRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/signup': {
-      id: '/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof SignupRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -252,7 +232,6 @@ const rootRouteChildren: RootRouteChildren = {
   LogoutRoute: LogoutRoute,
   MyCouponsRoute: MyCouponsRoute,
   SettingsRoute: SettingsRoute,
-  SignupRoute: SignupRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
 }
 export const routeTree = rootRouteImport

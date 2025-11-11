@@ -1,0 +1,63 @@
+@reference "tailwindcss";
+
+.navbar {
+  @apply w-full bg-white shadow-sm border-b border-gray-200;
+}
+
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply flex items-center justify-between;
+  @apply h-16;
+}
+
+/* Brand/Logo */
+.brand {
+  @apply flex items-center;
+}
+
+.logoLink {
+  @apply flex items-center gap-2 text-gray-900 hover:text-blue-600 transition-colors;
+  @apply no-underline;
+}
+
+.logoIcon {
+  @apply w-8 h-8;
+}
+
+.logoText {
+  @apply text-xl font-bold;
+}
+
+/* Navigation */
+.nav {
+  @apply flex items-center gap-4;
+}
+
+.navLink {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg;
+  @apply text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50;
+  @apply transition-all duration-200;
+  @apply no-underline;
+}
+
+.navIcon {
+  @apply w-5 h-5;
+}
+
+.userInfo {
+  @apply text-sm text-gray-600 px-3;
+}
+
+.loginLink {
+  @apply px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg;
+  @apply hover:bg-blue-700 active:bg-blue-800;
+  @apply transition-colors duration-200;
+  @apply no-underline;
+}
+
+.logoutButton {
+  @apply px-4 py-2 text-gray-600 font-medium rounded-lg;
+  @apply hover:text-red-600 hover:bg-red-50;
+  @apply transition-all duration-200;
+  @apply cursor-pointer;
+}

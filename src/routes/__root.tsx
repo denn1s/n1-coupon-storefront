@@ -12,7 +12,7 @@ export interface RouterContext {
 const RootComponent = () => {
   const location = useLocation()
   const pathname = location.pathname
-  const publicPaths = ['/', '/signup', '/login', '/products']
+  const publicPaths = ['/', '/login', '/products']
   const isPublic = publicPaths.includes(pathname) || publicPaths.some((p) => p !== '/' && pathname.startsWith(`${p}/`))
 
   return (
