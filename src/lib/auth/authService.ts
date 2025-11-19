@@ -137,7 +137,7 @@ export async function startOTP(
   channel: string = 'sms',
   origin?: string
 ): Promise<PasswordlessStartResponse> {
-  const url = getAuthApiUrl('/Passwordless/start')
+  const url = getAuthApiUrl('/passwordless/start')
 
   if (import.meta.env.DEV) {
     console.log('[AUTH] Starting OTP flow for phone:', phoneNumber)
@@ -179,7 +179,7 @@ export async function startOTP(
  * Verifies the OTP code and returns authentication tokens
  */
 export async function verifyOTP(phoneNumber: string, otp: string, audience?: string): Promise<LoginResponse> {
-  const url = getAuthApiUrl('/Passwordless/verify')
+  const url = getAuthApiUrl('/passwordless/verify')
 
   if (import.meta.env.DEV) {
     console.log('[AUTH] Verifying OTP for phone:', phoneNumber)

@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as OrdersRouteImport } from './routes/orders'
-import { Route as MyCouponsRouteImport } from './routes/my-coupons'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ItemsRouteImport } from './routes/items'
@@ -24,57 +23,52 @@ import { Route as ItemsItemIdRouteImport } from './routes/items/$itemId'
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const OrdersRoute = OrdersRouteImport.update({
   id: '/orders',
   path: '/orders',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MyCouponsRoute = MyCouponsRouteImport.update({
-  id: '/my-coupons',
-  path: '/my-coupons',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const LogoutRoute = LogoutRouteImport.update({
   id: '/logout',
   path: '/logout',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const ItemsRoute = ItemsRouteImport.update({
   id: '/items',
   path: '/items',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const ProductsProductIdRoute = ProductsProductIdRouteImport.update({
   id: '/products/$productId',
   path: '/products/$productId',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => rootRouteImport
 } as any)
 const OrdersOrderIdRoute = OrdersOrderIdRouteImport.update({
   id: '/$orderId',
   path: '/$orderId',
-  getParentRoute: () => OrdersRoute,
+  getParentRoute: () => OrdersRoute
 } as any)
 const ItemsItemIdRoute = ItemsItemIdRouteImport.update({
   id: '/$itemId',
   path: '/$itemId',
-  getParentRoute: () => ItemsRoute,
+  getParentRoute: () => ItemsRoute
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -83,7 +77,6 @@ export interface FileRoutesByFullPath {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/my-coupons': typeof MyCouponsRoute
   '/orders': typeof OrdersRouteWithChildren
   '/settings': typeof SettingsRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -96,7 +89,6 @@ export interface FileRoutesByTo {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/my-coupons': typeof MyCouponsRoute
   '/orders': typeof OrdersRouteWithChildren
   '/settings': typeof SettingsRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -110,7 +102,6 @@ export interface FileRoutesById {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
-  '/my-coupons': typeof MyCouponsRoute
   '/orders': typeof OrdersRouteWithChildren
   '/settings': typeof SettingsRoute
   '/items/$itemId': typeof ItemsItemIdRoute
@@ -125,7 +116,6 @@ export interface FileRouteTypes {
     | '/items'
     | '/login'
     | '/logout'
-    | '/my-coupons'
     | '/orders'
     | '/settings'
     | '/items/$itemId'
@@ -138,7 +128,6 @@ export interface FileRouteTypes {
     | '/items'
     | '/login'
     | '/logout'
-    | '/my-coupons'
     | '/orders'
     | '/settings'
     | '/items/$itemId'
@@ -151,7 +140,6 @@ export interface FileRouteTypes {
     | '/items'
     | '/login'
     | '/logout'
-    | '/my-coupons'
     | '/orders'
     | '/settings'
     | '/items/$itemId'
@@ -165,7 +153,6 @@ export interface RootRouteChildren {
   ItemsRoute: typeof ItemsRouteWithChildren
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
-  MyCouponsRoute: typeof MyCouponsRoute
   OrdersRoute: typeof OrdersRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
@@ -185,13 +172,6 @@ declare module '@tanstack/react-router' {
       path: '/orders'
       fullPath: '/orders'
       preLoaderRoute: typeof OrdersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/my-coupons': {
-      id: '/my-coupons'
-      path: '/my-coupons'
-      fullPath: '/my-coupons'
-      preLoaderRoute: typeof MyCouponsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logout': {
@@ -258,7 +238,7 @@ interface ItemsRouteChildren {
 }
 
 const ItemsRouteChildren: ItemsRouteChildren = {
-  ItemsItemIdRoute: ItemsItemIdRoute,
+  ItemsItemIdRoute: ItemsItemIdRoute
 }
 
 const ItemsRouteWithChildren = ItemsRoute._addFileChildren(ItemsRouteChildren)
@@ -268,11 +248,10 @@ interface OrdersRouteChildren {
 }
 
 const OrdersRouteChildren: OrdersRouteChildren = {
-  OrdersOrderIdRoute: OrdersOrderIdRoute,
+  OrdersOrderIdRoute: OrdersOrderIdRoute
 }
 
-const OrdersRouteWithChildren =
-  OrdersRoute._addFileChildren(OrdersRouteChildren)
+const OrdersRouteWithChildren = OrdersRoute._addFileChildren(OrdersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -280,11 +259,8 @@ const rootRouteChildren: RootRouteChildren = {
   ItemsRoute: ItemsRouteWithChildren,
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
-  MyCouponsRoute: MyCouponsRoute,
   OrdersRoute: OrdersRouteWithChildren,
   SettingsRoute: SettingsRoute,
-  ProductsProductIdRoute: ProductsProductIdRoute,
+  ProductsProductIdRoute: ProductsProductIdRoute
 }
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
