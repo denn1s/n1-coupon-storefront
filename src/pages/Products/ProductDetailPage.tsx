@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Route } from '@routes/products/$productId'
 import { Link, useParams } from '@tanstack/react-router'
 import CheckoutModal from '@components/organisms/CheckoutModal'
-import type { ProductImage, HoldingProduct } from '@lib/api/types'
+import type { ProductImage } from '@lib/api/types'
 import styles from './ProductDetailPage.module.css'
 
 /**
@@ -15,15 +15,12 @@ import styles from './ProductDetailPage.module.css'
  * - Stock availability indicator
  */
 export default function ProductDetailPage() {
-  const { productId } = useParams({ from: '/products/$productId' })
+  useParams({ from: '/products/$productId' })
   const [selectedImage, setSelectedImage] = useState<string>('')
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false)
 
   // Use loader data (already fetched and cached by the route loader)
-  const productsData = Route.useLoaderData()
-  // Transform edges to nodes
-  const products = productsData?.holdingProducts?.edges?.map((edge: { node: HoldingProduct }) => edge.node) ?? []
-  const product = products.find((p: HoldingProduct) => p.id === Number(productId))
+  const { product } = Route.useLoaderData()
 
   // Handle buy button click
   const handleBuyNow = () => {
@@ -76,7 +73,11 @@ export default function ProductDetailPage() {
           {product.images && product.images.length > 1 && (
             <div className={styles.thumbnails}>
               {product.images.map((image: ProductImage, index: number) => (
-                <button key={image.sequence ?? index} className={styles.thumbnail} onClick={() => setSelectedImage(image.url)}>
+                <button
+                  key={image.sequence ?? index}
+                  className={styles.thumbnail}
+                  onClick={() => setSelectedImage(image.url)}
+                >
                   <img src={image.url} alt={`${product.name} - ${index + 1}`} className={styles.thumbnailImage} />
                 </button>
               ))}

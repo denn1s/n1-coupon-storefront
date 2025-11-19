@@ -69,8 +69,8 @@ export default function ProductsPage() {
     }
   )
 
-  const categories = categoriesData?.nodes ?? []
-  const stores = storesData?.nodes ?? []
+  const categories = categoriesData?.holdingBusinessCategories?.nodes ?? []
+  const stores = storesData?.holdingStores?.nodes ?? []
 
   // Track when data has been successfully loaded
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { useQuery, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 /**
  * Products GraphQL Service

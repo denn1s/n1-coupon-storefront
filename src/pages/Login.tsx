@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useAuthStore } from '@stores/authStore'
 import { startOTP, verifyOTP } from '@lib/auth/authService'
+import { getEnv } from '@helpers/env'
 import PhoneInput from 'react-phone-number-input'
 import OtpInput from 'react-otp-input'
 import 'react-phone-number-input/style.css'
@@ -70,7 +71,8 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      const response = await verifyOTP(phone, otp)
+      const audience = getEnv('AUTH_AUDIENCE')
+      const response = await verifyOTP(phone, otp, audience)
 
       // Store auth state (including id_token)
       setAuthState(response.access_token, response.id_token, response.refresh_token, response.user)
@@ -135,7 +137,8 @@ export default function Login() {
                 </label>
                 <PhoneInput
                   international
-                  defaultCountry="US"
+                  defaultCountry="GT"
+                  countryOptionsOrder={['GT', 'SV', 'HN', 'NI', 'CR', 'PA', 'US']}
                   value={phone}
                   onChange={(value) => setPhone(value || '')}
                   className={styles.phoneInput}

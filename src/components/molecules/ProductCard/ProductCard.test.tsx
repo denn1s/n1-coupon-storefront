@@ -16,16 +16,12 @@ vi.mock('@tanstack/react-router', () => ({
 const mockProduct: HoldingProduct = {
   id: 1,
   name: 'Test Product',
-  description: 'This is a test product description',
-  salePrice: 29.99,
+  description: 'Test Description',
+  salePrice: 19.99,
+  price: 29.99,
   productImageUrl: 'https://example.com/image.jpg',
   quantityAvailable: 10,
-  images: [
-    {
-      sequence: 1,
-      url: 'https://example.com/image.jpg'
-    }
-  ]
+  images: [{ sequence: 1, url: 'https://example.com/image.jpg' }]
 }
 
 const mockOutOfStockProduct: HoldingProduct = {

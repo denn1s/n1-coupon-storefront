@@ -113,12 +113,33 @@ const HOLDING_COLLECTIONS_QUERY = `
   }
 `
 
+const PRODUCT_QUERY = `
+  query Product($id: Int!) {
+    product(id: $id) {
+      id
+      name
+      description
+      salePrice
+      price
+      productImageUrl
+      quantityAvailable
+      images {
+        sequence
+        url
+      }
+    }
+  }
+`
+
 // ============================================================================
 // QUERY FUNCTIONS (Internal)
 // ============================================================================
 
 const getProducts = (variables: PaginationVariables = {}) =>
   graphqlQueryFn<PaginationVariables, HoldingProductsResponse>(HOLDING_PRODUCTS_QUERY, variables)
+
+const getProduct = (variables: { id: number }) =>
+  graphqlQueryFn<{ id: number }, { product: HoldingProduct }>(PRODUCT_QUERY, variables)
 
 const getCategories = (variables: PaginationVariables = {}) =>
   graphqlQueryFn<PaginationVariables, HoldingBusinessCategoriesResponse>(HOLDING_BUSINESS_CATEGORIES_QUERY, variables)
@@ -153,6 +174,30 @@ export const productsOptions = (variables: PaginationVariables = { first: 20 }) 
   queryOptions({
     queryKey: ['holding', 'products', 'list', variables],
     queryFn: getProducts(variables),
+    staleTime: 5 * 60 * 1000 // 5 minutes cache
+  })
+
+/**
+ * Fetch a single product by ID
+ *
+ * @example
+ * const { data, isLoading } = useGetProduct(123)
+ */
+export const useGetProduct = (productId: number) => {
+  return useQuery({
+    queryKey: ['holding', 'product', productId],
+    queryFn: getProduct({ id: productId }),
+    enabled: !!productId
+  })
+}
+
+/**
+ * Query options for single product (useful for route prefetching)
+ */
+export const productOptions = (productId: number) =>
+  queryOptions({
+    queryKey: ['holding', 'product', productId],
+    queryFn: getProduct({ id: productId }),
     staleTime: 5 * 60 * 1000 // 5 minutes cache
   })
 

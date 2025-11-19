@@ -163,7 +163,9 @@ export interface HoldingProduct {
   name: string
   description: string | null
   salePrice: number
+  price: number
   productImageUrl: string | null
+  imageUrl?: string | null
   quantityAvailable: number
   images: ProductImage[]
 }

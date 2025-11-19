@@ -12,14 +12,12 @@ export interface ErrorPageProps {
 export default function ErrorPage({ error, reset, showDetails = false }: ErrorPageProps) {
   const navigate = useNavigate()
 
-  // Determine if this is a GraphQL error with specific handling
-  const isGQLError = error ? isGraphQLError(error) : false
   const userMessage = error ? getUserErrorMessage(error) : 'An unexpected error occurred.'
 
   // Get error code if available
-  const errorCode = isGQLError && error ? error.code : 'UNKNOWN'
-  const requiresAuth = isGQLError && error ? error.requiresAuth : false
-  const isRetryable = isGQLError && error ? error.isRetryable : true
+  const errorCode = isGraphQLError(error) ? error.code : 'UNKNOWN'
+  const requiresAuth = isGraphQLError(error) ? error.requiresAuth : false
+  const isRetryable = isGraphQLError(error) ? error.isRetryable : true
 
   const handleGoHome = () => {
     navigate({ to: '/' })
@@ -52,9 +50,7 @@ export default function ErrorPage({ error, reset, showDetails = false }: ErrorPa
         <p className={styles.message}>{userMessage}</p>
 
         {/* Show error code if available */}
-        {showDetails && errorCode !== 'UNKNOWN' && (
-          <p className={styles.errorCode}>Error Code: {errorCode}</p>
-        )}
+        {showDetails && errorCode !== 'UNKNOWN' && <p className={styles.errorCode}>Error Code: {errorCode}</p>}
 
         {/* Action Buttons */}
         <div className={styles.actions}>

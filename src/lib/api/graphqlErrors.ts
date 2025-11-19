@@ -56,11 +56,7 @@ export class GraphQLError extends Error {
 /**
  * Parse GraphQL error response and categorize the error
  */
-export function parseGraphQLError(
-  error: unknown,
-  query?: string,
-  variables?: unknown
-): GraphQLError {
+export function parseGraphQLError(error: unknown, query?: string, variables?: unknown): GraphQLError {
   // Handle graphql-request ClientError
   if (error && typeof error === 'object' && 'response' in error) {
     const clientError = error as {
@@ -76,7 +72,7 @@ export function parseGraphQLError(
     const errorCode = firstError?.extensions?.code
     const errorMessage = firstError?.message || 'An unknown error occurred'
 
-    return categorizeGraphQLError(errorCode, errorMessage, error as Error, query, variables)
+    return categorizeGraphQLError(errorCode, errorMessage, error as unknown as Error, query, variables)
   }
 
   // Handle network errors
