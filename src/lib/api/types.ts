@@ -112,36 +112,22 @@ export interface ValidationError extends ApiError {
 
 /**
  * GraphQL cursor-based pagination info
+ * Matches the actual API response from APIDOCS.md
  */
 export interface PageInfo {
   hasNextPage: boolean
-  hasPreviousPage?: boolean
-  startCursor?: string | null
+  hasPreviousPage: boolean
+  startCursor: string | null
   endCursor: string | null
 }
 
 /**
- * GraphQL edge wrapper
- */
-export interface GraphQLEdge<T> {
-  node: T
-  cursor: string
-}
-
-/**
- * Generic GraphQL connection response with edges
+ * Standard GraphQL connection response with nodes
+ * This is the pattern used by the actual API (not edges)
  */
 export interface GraphQLConnection<T> {
-  edges: GraphQLEdge<T>[]
-  pageInfo: PageInfo
-}
-
-/**
- * Legacy GraphQL connection with nodes (for backward compatibility)
- */
-export interface GraphQLConnectionWithNodes<T> {
   nodes: T[]
-  totalCount?: number
+  totalCount: number
   pageInfo: PageInfo
 }
 
@@ -151,12 +137,11 @@ export interface GraphQLConnectionWithNodes<T> {
 
 /**
  * Product image
+ * Matches APIDOCS.md structure
  */
 export interface ProductImage {
+  sequence: number
   url: string
-  altText?: string | null
-  // Legacy field for backward compatibility
-  sequence?: number
 }
 
 /**
@@ -171,61 +156,53 @@ export interface ProductVariant {
 
 /**
  * Holding Product (Coupon/Deal)
+ * Matches APIDOCS.md structure exactly
  */
 export interface HoldingProduct {
-  id: number | string
+  id: number
   name: string
-  slug?: string
   description: string | null
-  price?: number
-  salePrice?: number // Legacy field, maps to price
-  compareAtPrice?: number | null
-  imageUrl?: string | null
-  productImageUrl?: string | null // Legacy field, maps to imageUrl
-  quantityAvailable?: number // Legacy field
+  salePrice: number
+  productImageUrl: string | null
+  quantityAvailable: number
   images: ProductImage[]
-  variants?: ProductVariant[]
 }
 
 /**
  * Holding Business Category
+ * Matches APIDOCS.md structure exactly
  */
 export interface HoldingBusinessCategory {
-  id: number | string
+  id: number
   name: string
-  slug?: string
-  imageUrl?: string | null
-  description?: string // Legacy field
-  bannerImageUrl?: string | null // Legacy field
-  smallBannerImageUrl?: string | null // Legacy field
-  storeCount?: number // Legacy field
+  description: string
+  bannerImageUrl: string | null
+  smallBannerImageUrl: string | null
+  storeCount: number
 }
 
 /**
  * Holding Store
+ * Matches APIDOCS.md structure exactly
  */
 export interface HoldingStore {
-  id: number | string
+  id: number
   name: string
-  slug?: string
   description: string | null
-  logoUrl?: string | null
-  bannerUrl?: string | null
-  storeImageUrl?: string | null // Legacy field
+  storeImageUrl: string | null
 }
 
 /**
  * Holding Collection
+ * Matches APIDOCS.md structure exactly
  */
 export interface HoldingCollection {
-  id: number | string
+  id: number
   name: string
-  slug?: string
-  description: string | null
-  imageUrl?: string | null
-  bannerImageUrl?: string | null // Legacy field
-  smallBannerImageUrl?: string | null // Legacy field
-  productCount?: number // Legacy field
+  description: string
+  bannerImageUrl: string | null
+  smallBannerImageUrl: string | null
+  productCount: number
 }
 
 // ============================================================================
@@ -260,85 +237,150 @@ export interface PaginationVariables {
 }
 
 // ============================================================================
-// Checkout & Cart Types
+// Checkout & Cart Types (Based on APIDOCS.md)
 // ============================================================================
 
 /**
- * Cart item
+ * Product metadata in cart
  */
-export interface CartItem {
-  id: string
-  productId: string
-  variantId?: string
-  quantity: number
-  price: number
-  subtotal: number
+export interface CartProductMetadata {
+  key: string
+  value: string
 }
 
 /**
- * Shopping cart
+ * Cart item from checkout session
+ * Matches APIDOCS.md GetCheckoutSession response
  */
-export interface Cart {
-  id: string
-  items: CartItem[]
-  subtotal: number
-  tax: number
-  shipping: number
+export interface CartItem {
+  productId: number
+  name: string
+  productImageUrl: string | null
+  price: number
+  promoPrice: number | null
+  salePrice: number
+  quantity: number
+  requiresShipping: boolean
+  productMetadata: CartProductMetadata[] | null
+}
+
+/**
+ * Cart detail from checkout session
+ */
+export interface CartDetail {
+  storeId: number
+  locationId: number
+  cart: CartItem[]
+  savedTotal: number
   total: number
 }
 
 /**
- * Buyer information
+ * Store location
  */
-export interface Buyer {
-  id: string
-  email: string
-  firstName: string
-  lastName: string
-  phone: string
+export interface StoreLocation {
+  id: number
+  name: string
+  isDefault: boolean
 }
 
 /**
- * Address (shipping or billing)
+ * Store information in checkout session
  */
-export interface Address {
-  street: string
-  city: string
-  state: string
-  postalCode: string
-  country: string
+export interface CheckoutStore {
+  id: number
+  name: string
+  locations: StoreLocation[]
 }
 
 /**
- * Payment method
+ * Payment option
  */
-export interface PaymentMethod {
-  type: string
-  last4: string
+export interface PaymentOption {
+  id: number
+  name: string
+  paymentOptionType: string
 }
 
 /**
  * Shipment option
  */
 export interface ShipmentOption {
-  id: string
+  id: number
   name: string
-  price: number
-  estimatedDays: number
+  baseCost: number
+  shipmentOptionType: string
 }
 
 /**
- * Checkout session
+ * Geographic location/coordinates
+ */
+export interface Location {
+  latitude: number
+  longitude: number
+}
+
+/**
+ * Buyer address
+ */
+export interface BuyerAddress {
+  id: number
+  name: string
+  address: string
+  addressLine2: string | null
+  location: Location
+  reference: string | null
+  phone: string | null
+  note: string | null
+}
+
+/**
+ * Buyer payment method
+ */
+export interface BuyerPaymentMethod {
+  id: number
+  name: string
+  number: string
+  cardCustomName: string | null
+  cardCustomColor: string | null
+  type: string
+  isTokenized: boolean
+}
+
+/**
+ * Buyer information (only present in authenticated sessions)
+ */
+export interface CheckoutBuyer {
+  id: string
+  name: string
+  email: string
+  phone: string
+  addresses: BuyerAddress[]
+  paymentMethods: BuyerPaymentMethod[]
+}
+
+/**
+ * Session detail with pricing breakdown
+ */
+export interface SessionDetail {
+  subTotal: number
+  totalSurcharge: number
+  totalDiscount: number
+  deliveryCost: number
+  total: number
+}
+
+/**
+ * Checkout session (matches APIDOCS.md structure)
  */
 export interface CheckoutSession {
-  id: string
-  status: string
-  cart: Cart
-  buyer?: Buyer | null
-  shippingAddress?: Address | null
-  billingAddress?: Address | null
-  paymentMethod?: PaymentMethod | null
+  customerSessionId: number
+  cartDetail: CartDetail
+  store: CheckoutStore
+  paymentOptions: PaymentOption[]
   shipmentOptions: ShipmentOption[]
+  buyer: CheckoutBuyer | null
+  sessionDetail: SessionDetail
 }
 
 /**
@@ -349,14 +391,14 @@ export interface CheckoutSessionResponse {
 }
 
 /**
- * Order
+ * Checkout input for creating a session
  */
-export interface Order {
-  id: string
-  orderNumber: string
-  status: string
-  total: number
-  createdAt: string
+export interface CheckoutSessionInput {
+  storeId: number
+  cart: {
+    productId: number
+    quantity: number
+  }
 }
 
 /**
@@ -368,7 +410,18 @@ export interface CheckoutError {
 }
 
 /**
- * Checkout input
+ * Order creation response
+ */
+export interface Order {
+  id: string
+  orderNumber: string
+  status: string
+  total: number
+  createdAt: string
+}
+
+/**
+ * Checkout mutation input (for processing checkout)
  */
 export interface CheckoutInput {
   checkoutSessionId: string

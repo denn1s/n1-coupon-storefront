@@ -1,11 +1,14 @@
 import { useQuery, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
+import React, { useState } from 'react'
 
 /**
  * Products GraphQL Service
  *
  * This service demonstrates how to work with GraphQL queries using TanStack Query.
  * It includes cursor-based pagination patterns that are easy to use in components.
+ *
+ * Updated to match APIDOCS.md structure
  */
 
 // ============================================================================
@@ -18,7 +21,7 @@ export interface ProductImage {
 }
 
 export interface Product {
-  id: string
+  id: number
   name: string
   description: string | null
   salePrice: number
@@ -57,7 +60,6 @@ export interface ProductsQueryVariables {
   after?: string // Cursor for forward pagination
   before?: string // Cursor for backward pagination
   last?: number // Number of items to fetch (backward pagination)
-  search?: string // Optional search filter
 }
 
 // ============================================================================
@@ -91,7 +93,7 @@ const HOLDING_PRODUCTS_QUERY = `
 `
 
 const PRODUCT_DETAIL_QUERY = `
-  query ProductDetail($id: ID!) {
+  query ProductDetail($id: Int!) {
     product(id: $id) {
       id
       name
@@ -114,7 +116,7 @@ const PRODUCT_DETAIL_QUERY = `
 const getProducts = (variables: ProductsQueryVariables = {}) =>
   graphqlQueryFn<ProductsQueryVariables, HoldingProductsResponse>(HOLDING_PRODUCTS_QUERY, variables)
 
-const getProduct = (id: string) => graphqlQueryFn<{ id: string }, ProductDetailResponse>(PRODUCT_DETAIL_QUERY, { id })
+const getProduct = (id: number) => graphqlQueryFn<{ id: number }, ProductDetailResponse>(PRODUCT_DETAIL_QUERY, { id })
 
 // ============================================================================
 // QUERY HOOKS (Public API)
@@ -158,7 +160,7 @@ export const productsOptions = (variables: ProductsQueryVariables = { first: 20 
  * @example
  * const { data: product, isLoading } = useGetProduct(productId)
  */
-export const useGetProduct = (id: string) => {
+export const useGetProduct = (id: number) => {
   return useQuery({
     queryKey: ['products', 'detail', id],
     queryFn: getProduct(id),
@@ -175,7 +177,7 @@ export const useGetProduct = (id: string) => {
  *   return context.queryClient.ensureQueryData(productOptions(params.productId))
  * }
  */
-export const productOptions = (id: string) =>
+export const productOptions = (id: number) =>
   queryOptions({
     queryKey: ['products', 'detail', id],
     queryFn: getProduct(id)
@@ -209,7 +211,7 @@ export const productOptions = (id: string) =>
  * )
  */
 export const useProductsPagination = (pageSize: number = 20) => {
-  const [variables, setVariables] = React.useState<ProductsQueryVariables>({
+  const [variables, setVariables] = useState<ProductsQueryVariables>({
     first: pageSize
   })
 
@@ -262,126 +264,3 @@ export const useProductsPagination = (pageSize: number = 20) => {
     refetch: query.refetch
   }
 }
-
-// Import React for useState in pagination hook
-import React from 'react'
-
-// ============================================================================
-// MUTATION EXAMPLES (Uncomment when needed)
-// ============================================================================
-
-/*
-const CREATE_PRODUCT_MUTATION = `
-  mutation CreateProduct($input: CreateProductInput!) {
-    createProduct(input: $input) {
-      product {
-        id
-        name
-        description
-        salePrice
-        productImageUrl
-        quantityAvailable
-      }
-    }
-  }
-`
-
-const UPDATE_PRODUCT_MUTATION = `
-  mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
-    updateProduct(id: $id, input: $input) {
-      product {
-        id
-        name
-        description
-        salePrice
-        productImageUrl
-        quantityAvailable
-      }
-    }
-  }
-`
-
-const DELETE_PRODUCT_MUTATION = `
-  mutation DeleteProduct($id: ID!) {
-    deleteProduct(id: $id) {
-      success
-    }
-  }
-`
-
-interface CreateProductInput {
-  name: string
-  description?: string
-  salePrice: number
-  quantityAvailable: number
-}
-
-interface UpdateProductInput {
-  name?: string
-  description?: string
-  salePrice?: number
-  quantityAvailable?: number
-}
-
-interface CreateProductResponse {
-  createProduct: {
-    product: Product
-  }
-}
-
-interface UpdateProductResponse {
-  updateProduct: {
-    product: Product
-  }
-}
-
-interface DeleteProductResponse {
-  deleteProduct: {
-    success: boolean
-  }
-}
-
-export const useCreateProduct = () => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: graphqlMutationFn<{ input: CreateProductInput }, CreateProductResponse>(
-      CREATE_PRODUCT_MUTATION
-    ),
-    onSuccess: () => {
-      // Invalidate products list to refetch with new product
-      queryClient.invalidateQueries({ queryKey: ['products', 'list'] })
-    },
-  })
-}
-
-export const useUpdateProduct = (id: string) => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: graphqlMutationFn<{ id: string; input: UpdateProductInput }, UpdateProductResponse>(
-      UPDATE_PRODUCT_MUTATION
-    ),
-    onSuccess: () => {
-      // Invalidate both list and detail queries
-      queryClient.invalidateQueries({ queryKey: ['products', 'list'] })
-      queryClient.invalidateQueries({ queryKey: ['products', 'detail', id] })
-    },
-  })
-}
-
-export const useDeleteProduct = (id: string) => {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: graphqlMutationFn<{ id: string }, DeleteProductResponse>(
-      DELETE_PRODUCT_MUTATION
-    ),
-    onSuccess: () => {
-      // Invalidate list and remove detail from cache
-      queryClient.invalidateQueries({ queryKey: ['products', 'list'] })
-      queryClient.removeQueries({ queryKey: ['products', 'detail', id] })
-    },
-  })
-}
-*/
