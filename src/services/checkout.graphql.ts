@@ -1,12 +1,18 @@
 import { useQuery, useMutation, useQueryClient, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn, graphqlMutationFn } from '@lib/api/graphqlFn'
-import { CheckoutSessionResponse, CheckoutInput, CheckoutResponse } from '@lib/api/types'
+import {
+  CheckoutSessionResponse,
+  CheckoutSessionInput,
+  CheckoutInput,
+  CheckoutResponse
+} from '@lib/api/types'
 import { addToast } from '@lib/toasts'
 
 /**
  * Checkout GraphQL Service
  *
  * This service provides hooks for managing checkout sessions and processing orders.
+ * Updated to match APIDOCS.md structure
  */
 
 // ============================================================================
@@ -14,55 +20,83 @@ import { addToast } from '@lib/toasts'
 // ============================================================================
 
 const CHECKOUT_SESSION_QUERY = `
-  query checkoutSession {
-    checkoutSession {
-      id
-      status
-      cart {
-        id
-        items {
-          id
+  query GetCheckoutSession($input: GetAppCheckoutSessionQueryInput!) {
+    checkoutSession(input: $input) {
+      customerSessionId
+      cartDetail {
+        storeId
+        locationId
+        cart {
           productId
-          variantId
-          quantity
+          name
+          productImageUrl
           price
-          subtotal
+          promoPrice
+          salePrice
+          quantity
+          requiresShipping
+          productMetadata {
+            key
+            value
+          }
         }
-        subtotal
-        tax
-        shipping
+        savedTotal
         total
       }
-      buyer {
+      store {
         id
-        email
-        firstName
-        lastName
-        phone
+        name
+        locations {
+          id
+          name
+          isDefault
+        }
       }
-      shippingAddress {
-        street
-        city
-        state
-        postalCode
-        country
-      }
-      billingAddress {
-        street
-        city
-        state
-        postalCode
-        country
-      }
-      paymentMethod {
-        type
-        last4
+      paymentOptions {
+        id
+        name
+        paymentOptionType
       }
       shipmentOptions {
         id
         name
-        price
-        estimatedDays
+        baseCost
+        shipmentOptionType
+      }
+      buyer {
+        id
+        name
+        email
+        phone
+        addresses {
+          id
+          name
+          address
+          addressLine2
+          location {
+            latitude
+            longitude
+          }
+          reference
+          phone
+          note
+        }
+        paymentMethods {
+          id
+          name
+          number
+          cardCustomName
+          cardCustomColor
+          type
+          isTokenized
+        }
+      }
+      sessionDetail {
+        subTotal
+        totalSurcharge
+        totalDiscount
+        deliveryCost
+        total
       }
     }
   }
@@ -73,7 +107,7 @@ const CHECKOUT_SESSION_QUERY = `
 // ============================================================================
 
 const CHECKOUT_MUTATION = `
-  mutation checkout($input: CheckoutInput!) {
+  mutation Checkout($input: CheckoutInput!) {
     checkout(input: $input) {
       order {
         id
@@ -94,25 +128,30 @@ const CHECKOUT_MUTATION = `
 // QUERY FUNCTIONS (Internal)
 // ============================================================================
 
-const getCheckoutSession = () => graphqlQueryFn<undefined, CheckoutSessionResponse>(CHECKOUT_SESSION_QUERY, undefined)
+const getCheckoutSession = (input: CheckoutSessionInput) =>
+  graphqlQueryFn<{ input: CheckoutSessionInput }, CheckoutSessionResponse>(CHECKOUT_SESSION_QUERY, { input })
 
-const processCheckout = graphqlMutationFn<CheckoutInput, CheckoutResponse>(CHECKOUT_MUTATION)
+const processCheckout = graphqlMutationFn<{ input: CheckoutInput }, CheckoutResponse>(CHECKOUT_MUTATION)
 
 // ============================================================================
 // QUERY HOOKS
 // ============================================================================
 
 /**
- * Fetch the current checkout session
+ * Fetch a checkout session with cart details
  *
  * @example
- * const { data, isLoading } = useGetCheckoutSession()
+ * const { data, isLoading } = useGetCheckoutSession({
+ *   storeId: 57,
+ *   cart: { productId: 18804, quantity: 1 }
+ * })
  * const session = data?.checkoutSession
  */
-export const useGetCheckoutSession = () => {
+export const useGetCheckoutSession = (input: CheckoutSessionInput) => {
   return useQuery({
-    queryKey: ['checkout', 'session'],
-    queryFn: getCheckoutSession(),
+    queryKey: ['checkout', 'session', input],
+    queryFn: getCheckoutSession(input),
+    enabled: !!input.storeId && !!input.cart.productId,
     staleTime: 1 * 60 * 1000 // 1 minute cache
   })
 }
@@ -120,10 +159,10 @@ export const useGetCheckoutSession = () => {
 /**
  * Query options for checkout session (useful for route prefetching)
  */
-export const checkoutSessionOptions = () =>
+export const checkoutSessionOptions = (input: CheckoutSessionInput) =>
   queryOptions({
-    queryKey: ['checkout', 'session'],
-    queryFn: getCheckoutSession(),
+    queryKey: ['checkout', 'session', input],
+    queryFn: getCheckoutSession(input),
     staleTime: 1 * 60 * 1000
   })
 
@@ -139,11 +178,13 @@ export const checkoutSessionOptions = () =>
  *
  * const handleCheckout = async () => {
  *   const result = await checkout.mutateAsync({
- *     checkoutSessionId: 'session_123',
- *     paymentMethodId: 'pm_card_visa',
- *     shippingAddressId: 'addr_123',
- *     billingAddressId: 'addr_123',
- *     shipmentOptionId: 'ship_standard'
+ *     input: {
+ *       checkoutSessionId: 'session_123',
+ *       paymentMethodId: 'pm_card_visa',
+ *       shippingAddressId: 'addr_123',
+ *       billingAddressId: 'addr_123',
+ *       shipmentOptionId: 'ship_standard'
+ *     }
  *   })
  *
  *   if (result.checkout.order) {
@@ -157,7 +198,7 @@ export const useCheckout = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: processCheckout,
+    mutationFn: ({ input }: { input: CheckoutInput }) => processCheckout({ input }),
     onSuccess: (data) => {
       const { order, errors } = data.checkout
 
@@ -200,20 +241,18 @@ export const useCheckout = () => {
  * Get cart total items count from checkout session
  *
  * @example
- * const itemCount = useCartItemCount()
+ * const itemCount = useCartItemCount(checkoutSession)
  */
-export const useCartItemCount = (): number => {
-  const { data } = useGetCheckoutSession()
-  return data?.checkoutSession?.cart?.items?.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+export const useCartItemCount = (checkoutSession: CheckoutSessionResponse['checkoutSession'] | undefined): number => {
+  return checkoutSession?.cartDetail.cart.reduce((sum, item) => sum + item.quantity, 0) ?? 0
 }
 
 /**
  * Get cart total amount from checkout session
  *
  * @example
- * const total = useCartTotal()
+ * const total = useCartTotal(checkoutSession)
  */
-export const useCartTotal = (): number => {
-  const { data } = useGetCheckoutSession()
-  return data?.checkoutSession?.cart?.total ?? 0
+export const useCartTotal = (checkoutSession: CheckoutSessionResponse['checkoutSession'] | undefined): number => {
+  return checkoutSession?.sessionDetail.total ?? 0
 }
