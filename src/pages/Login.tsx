@@ -27,8 +27,8 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Get redirect path from query params or default to /my-coupons
-  const redirectTo = (search as { redirect?: string })?.redirect || '/my-coupons'
+  // Get redirect path from query params or default to /orders
+  const redirectTo = (search as { redirect?: string })?.redirect || '/orders'
 
   /**
    * Step 1: Send OTP to phone
@@ -77,7 +77,7 @@ export default function Login() {
       // Store auth state (including id_token)
       setAuthState(response.access_token, response.id_token, response.refresh_token, response.user)
 
-      // Redirect to intended page or my-coupons
+      // Redirect to intended page or orders
       navigate({ to: redirectTo })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify OTP')
