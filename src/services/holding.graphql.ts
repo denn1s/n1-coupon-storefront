@@ -15,6 +15,8 @@ import { useState } from 'react'
  *
  * This service provides hooks for fetching products (coupons/deals),
  * business categories, stores, and collections for a Groupon-like application.
+ *
+ * Updated to match APIDOCS.md - uses nodes[] pattern directly
  */
 
 // ============================================================================
@@ -24,30 +26,23 @@ import { useState } from 'react'
 const HOLDING_PRODUCTS_QUERY = `
   query HoldingProducts($first: Int, $after: String, $before: String, $last: Int) {
     holdingProducts(first: $first, after: $after, before: $before, last: $last) {
-      edges {
-        node {
-          id
-          name
-          slug
-          description
-          price
-          compareAtPrice
-          imageUrl
-          images {
-            url
-            altText
-          }
-          variants {
-            id
-            name
-            price
-            sku
-          }
+      nodes {
+        id
+        name
+        description
+        salePrice
+        productImageUrl
+        quantityAvailable
+        images {
+          sequence
+          url
         }
-        cursor
       }
+      totalCount
       pageInfo {
         hasNextPage
+        hasPreviousPage
+        startCursor
         endCursor
       }
     }
@@ -57,17 +52,19 @@ const HOLDING_PRODUCTS_QUERY = `
 const HOLDING_BUSINESS_CATEGORIES_QUERY = `
   query HoldingBusinessCategories($first: Int, $after: String) {
     holdingBusinessCategories(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          name
-          slug
-          imageUrl
-        }
-        cursor
+      nodes {
+        id
+        name
+        description
+        bannerImageUrl
+        smallBannerImageUrl
+        storeCount
       }
+      totalCount
       pageInfo {
         hasNextPage
+        hasPreviousPage
+        startCursor
         endCursor
       }
     }
@@ -77,19 +74,17 @@ const HOLDING_BUSINESS_CATEGORIES_QUERY = `
 const HOLDING_STORES_QUERY = `
   query HoldingStores($first: Int, $after: String) {
     holdingStores(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          name
-          slug
-          description
-          logoUrl
-          bannerUrl
-        }
-        cursor
+      nodes {
+        id
+        name
+        description
+        storeImageUrl
       }
+      totalCount
       pageInfo {
         hasNextPage
+        hasPreviousPage
+        startCursor
         endCursor
       }
     }
@@ -99,52 +94,24 @@ const HOLDING_STORES_QUERY = `
 const HOLDING_COLLECTIONS_QUERY = `
   query HoldingCollections($first: Int, $after: String) {
     holdingCollections(first: $first, after: $after) {
-      edges {
-        node {
-          id
-          name
-          slug
-          description
-          imageUrl
-        }
-        cursor
+      nodes {
+        id
+        name
+        description
+        bannerImageUrl
+        smallBannerImageUrl
+        productCount
       }
+      totalCount
       pageInfo {
         hasNextPage
+        hasPreviousPage
+        startCursor
         endCursor
       }
     }
   }
 `
-
-// ============================================================================
-// HELPER FUNCTIONS - Transform edges to nodes for backward compatibility
-// ============================================================================
-
-/**
- * Transform GraphQL edges structure to nodes array
- * Maintains backward compatibility with existing code
- */
-function edgesToNodes<T>(edges: Array<{ node: T; cursor: string }>): T[] {
-  return edges.map((edge) => edge.node)
-}
-
-/**
- * Transform API product to include legacy fields
- */
-function transformProduct(product: Partial<HoldingProduct>): HoldingProduct {
-  return {
-    ...product,
-    id: product.id!,
-    name: product.name!,
-    description: product.description ?? '',
-    images: product.images || [],
-    // Map new fields to legacy fields for backward compatibility
-    salePrice: product.price || product.salePrice || 0,
-    productImageUrl: product.imageUrl || product.productImageUrl || '',
-    quantityAvailable: product.quantityAvailable || 0
-  } as HoldingProduct
-}
 
 // ============================================================================
 // QUERY FUNCTIONS (Internal)
@@ -196,16 +163,12 @@ export const productsOptions = (variables: PaginationVariables = { first: 20 }) 
  * @example
  * const {
  *   data,
- *   isLoading,
+ *   totalCount,
  *   hasNextPage,
  *   goToNextPage,
  *   searchTerm,
- *   setSearchTerm,
- *   selectedCategory,
- *   setSelectedCategory,
- *   selectedStore,
- *   setSelectedStore
- * } = useProductsPagination(20, { initialData: loaderData?.products, staleTime: 5 * 60 * 1000 })
+ *   setSearchTerm
+ * } = useProductsPagination(20)
  */
 export const useProductsPagination = (
   pageSize: number = 20,
@@ -230,10 +193,8 @@ export const useProductsPagination = (
   })
 
   const pageInfo = query.data?.holdingProducts.pageInfo
-  // Transform edges to nodes for backward compatibility
-  const edges = query.data?.holdingProducts.edges ?? []
-  const allProducts = edgesToNodes(edges).map(transformProduct)
-  const totalCount = allProducts.length // totalCount not available in new API
+  const allProducts = query.data?.holdingProducts.nodes ?? []
+  const totalCount = query.data?.holdingProducts.totalCount ?? 0
 
   // Client-side filtering (since API doesn't support filters yet)
   const filteredProducts = allProducts.filter((product) => {
@@ -340,7 +301,7 @@ export const useProductsPagination = (
  * Fetch business categories
  *
  * @example
- * const { data, isLoading } = useGetCategories({ first: 50 }, { initialData: loaderData?.categories })
+ * const { data, isLoading } = useGetCategories({ first: 50 })
  */
 export const useGetCategories = (
   variables: PaginationVariables = { first: 50 },
@@ -349,11 +310,6 @@ export const useGetCategories = (
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
-    // Transform edges to nodes for backward compatibility
-    select: (data) => ({
-      nodes: edgesToNodes(data.holdingBusinessCategories.edges),
-      pageInfo: data.holdingBusinessCategories.pageInfo
-    }),
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
@@ -377,7 +333,7 @@ export const categoriesOptions = (variables: PaginationVariables = { first: 50 }
  * Fetch stores
  *
  * @example
- * const { data, isLoading } = useGetStores({ first: 50 }, { initialData: loaderData?.stores })
+ * const { data, isLoading } = useGetStores({ first: 50 })
  */
 export const useGetStores = (
   variables: PaginationVariables = { first: 50 },
@@ -386,11 +342,6 @@ export const useGetStores = (
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
-    // Transform edges to nodes for backward compatibility
-    select: (data) => ({
-      nodes: edgesToNodes(data.holdingStores.edges),
-      pageInfo: data.holdingStores.pageInfo
-    }),
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
@@ -416,15 +367,15 @@ export const storesOptions = (variables: PaginationVariables = { first: 50 }) =>
  * @example
  * const { data, isLoading } = useGetCollections()
  */
-export const useGetCollections = (variables: PaginationVariables = { first: 50 }) => {
+export const useGetCollections = (
+  variables: PaginationVariables = { first: 50 },
+  options?: { initialData?: HoldingCollectionsResponse; staleTime?: number }
+) => {
   return useQuery({
     queryKey: ['holding', 'collections', 'list', variables],
     queryFn: getCollections(variables),
-    // Transform edges to nodes for backward compatibility
-    select: (data) => ({
-      nodes: edgesToNodes(data.holdingCollections.edges),
-      pageInfo: data.holdingCollections.pageInfo
-    })
+    initialData: options?.initialData,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
 }
 
