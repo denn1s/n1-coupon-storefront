@@ -49,7 +49,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const additionalItemsCount = order.orderDetails.length - 1
 
   return (
-    <Link to="/orders/$orderId" params={{ orderId: order.orderId }} className={styles.cardLink} preload={500}>
+    <Link to="/orders/$orderId" params={{ orderId: order.orderId }} className={styles.cardLink}>
       <div className={styles.card}>
         <div className={styles.header}>
           <div className={styles.storeInfo}>
@@ -70,11 +70,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
           {primaryProduct && (
             <div className={styles.productInfo}>
               {primaryProduct.productImageUrl && (
-                <img
-                  src={primaryProduct.productImageUrl}
-                  alt={primaryProduct.name}
-                  className={styles.productImage}
-                />
+                <img src={primaryProduct.productImageUrl} alt={primaryProduct.name} className={styles.productImage} />
               )}
               <div className={styles.productDetails}>
                 <p className={styles.productName}>

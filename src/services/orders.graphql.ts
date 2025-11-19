@@ -1,10 +1,6 @@
-import { useQuery, useQueryClient, queryOptions } from '@tanstack/react-query'
+import { useQuery, queryOptions } from '@tanstack/react-query'
 import { graphqlQueryFn } from '@lib/api/graphqlFn'
-import {
-  OrdersListResponse,
-  OrderDetailResponse,
-  PaginationVariables
-} from '@lib/api/types'
+import { OrdersListResponse, OrderDetailResponse, PaginationVariables } from '@lib/api/types'
 import { useState } from 'react'
 
 /**
@@ -219,56 +215,10 @@ const getOrderDetail = (orderId: number) =>
  * const { data, isLoading } = useGetOrders({ first: 20 })
  */
 export const useGetOrders = (variables: PaginationVariables = { first: 20 }) => {
-  const queryClient = useQueryClient()
-
   return useQuery({
     queryKey: ['orders', 'list', variables],
     queryFn: getOrdersList(variables),
-    staleTime: 2 * 60 * 1000, // 2 minutes cache
-    select: (data) => {
-      // Seed individual order queries from list data for instant navigation
-      data.orders.nodes.forEach((order) => {
-        // Cache the basic order data from the list
-        // This will be used as initialData for the detail page
-        queryClient.setQueryData(['orders', 'detail', order.orderId], (oldData: OrderDetailResponse | undefined) => {
-          // Only seed if we don't already have more detailed data
-          if (!oldData || !oldData.orderView) {
-            // Transform list item to detail format for caching
-            return {
-              orderView: {
-                id: parseInt(order.orderId),
-                status: order.orderStatus,
-                subTotal: order.subTotal,
-                totalDiscount: order.totalDiscount,
-                totalSurcharge: order.totalSurcharge,
-                total: order.total,
-                created: order.orderDate,
-                deliveryCost: 0,
-                driverTip: 0,
-                store: {
-                  id: order.storeId,
-                  name: order.storeName,
-                  imageUrl: order.storeImageUrl,
-                  currencySymbol: order.currencySymbol,
-                  currencyCode: order.currencyCode,
-                  locale: order.locale,
-                  timezone: order.timezone
-                },
-                orderDetails: order.orderDetails,
-                payment: {
-                  status: 'PAID',
-                  paymentOptionType: order.paymentOption || 'UNKNOWN'
-                }
-              },
-              // Don't seed coupon data, let it be fetched fresh
-              coupon: null
-            } as OrderDetailResponse
-          }
-          return oldData
-        })
-      })
-      return data.orders
-    }
+    staleTime: 2 * 60 * 1000 // 2 minutes cache
   })
 }
 
@@ -301,9 +251,9 @@ export const useOrdersPagination = (pageSize: number = 20) => {
 
   const query = useGetOrders(variables)
 
-  const pageInfo = query.data?.pageInfo
-  const orders = query.data?.nodes ?? []
-  const totalCount = query.data?.totalCount ?? 0
+  const pageInfo = query.data?.orders.pageInfo
+  const orders = query.data?.orders.nodes ?? []
+  const totalCount = query.data?.orders.totalCount ?? 0
 
   const goToNextPage = () => {
     if (pageInfo?.hasNextPage && pageInfo.endCursor) {
@@ -407,5 +357,5 @@ export const useRecentOrders = () => {
  */
 export const useOrderCount = (): number => {
   const { data } = useGetOrders({ first: 1 })
-  return data?.totalCount ?? 0
+  return data?.orders.totalCount ?? 0
 }
