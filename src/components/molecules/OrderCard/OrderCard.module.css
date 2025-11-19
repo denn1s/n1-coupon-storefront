@@ -1,0 +1,109 @@
+@reference "tailwindcss";
+
+.cardLink {
+  @apply block no-underline;
+}
+
+.card {
+  @apply flex flex-col gap-4 p-5 rounded-xl bg-white border border-gray-200 transition-all duration-200;
+}
+
+.card:hover {
+  @apply border-blue-300 shadow-md transform -translate-y-0.5;
+}
+
+.header {
+  @apply flex justify-between items-start gap-3;
+}
+
+.storeInfo {
+  @apply flex items-center gap-3 flex-1 min-w-0;
+}
+
+.storeLogo {
+  @apply w-12 h-12 rounded-lg object-cover flex-shrink-0 border border-gray-100;
+}
+
+.storeName {
+  @apply text-base font-semibold text-gray-900 truncate m-0;
+}
+
+.orderDate {
+  @apply text-sm text-gray-500 m-0;
+}
+
+.statusBadge {
+  @apply px-3 py-1 rounded-full text-xs font-medium flex-shrink-0;
+}
+
+.statusSuccess {
+  @apply bg-green-100 text-green-800;
+}
+
+.statusPending {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.statusError {
+  @apply bg-red-100 text-red-800;
+}
+
+.statusDefault {
+  @apply bg-gray-100 text-gray-800;
+}
+
+.body {
+  @apply py-3 border-t border-b border-gray-100;
+}
+
+.productInfo {
+  @apply flex items-center gap-3;
+}
+
+.productImage {
+  @apply w-16 h-16 rounded-lg object-cover border border-gray-100 flex-shrink-0;
+}
+
+.productDetails {
+  @apply flex-1 min-w-0;
+}
+
+.productName {
+  @apply text-sm font-medium text-gray-900 truncate m-0;
+}
+
+.additionalItems {
+  @apply ml-2 text-xs font-normal text-gray-500;
+}
+
+.productMeta {
+  @apply text-xs text-gray-500 mt-1 m-0;
+}
+
+.footer {
+  @apply flex justify-between items-center gap-4;
+}
+
+.total {
+  @apply flex flex-col gap-0.5;
+}
+
+.totalLabel {
+  @apply text-xs text-gray-500 uppercase tracking-wide;
+}
+
+.totalAmount {
+  @apply text-xl font-bold text-gray-900;
+}
+
+.couponBadge {
+  @apply flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50 border border-purple-200;
+}
+
+.couponIcon {
+  @apply w-4 h-4 text-purple-600;
+}
+
+.couponBadge span {
+  @apply text-xs font-medium text-purple-700;
+}

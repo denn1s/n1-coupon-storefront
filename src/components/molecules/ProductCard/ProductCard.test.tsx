@@ -104,7 +104,7 @@ describe('ProductCard', () => {
 
     const description = screen.getByText(/This is a very long description/)
     expect(description.textContent).toContain('...')
-    expect(description.textContent?.length).toBeLessThan(longDescriptionProduct.description.length)
+    expect(description.textContent?.length).toBeLessThan((longDescriptionProduct.description ?? '').length)
   })
 
   it('formats price with two decimal places', () => {

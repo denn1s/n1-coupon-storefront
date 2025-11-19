@@ -26,14 +26,18 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
     onBuyClick?.(product)
   }
 
-  const isOutOfStock = product.quantityAvailable <= 0
+  const quantityAvailable = product.quantityAvailable ?? 0
+  const isOutOfStock = quantityAvailable <= 0
+  const imageUrl = product.productImageUrl || product.imageUrl || ''
+  const description = product.description || ''
+  const price = product.salePrice ?? product.price ?? 0
 
   return (
     <Link to="/products/$productId" params={{ productId: String(product.id) }} className={styles.cardLink}>
       <div className={styles.card}>
         {/* Product Image */}
         <div className={styles.imageContainer}>
-          <img src={product.productImageUrl} alt={product.name} className={styles.image} loading="lazy" />
+          <img src={imageUrl} alt={product.name} className={styles.image} loading="lazy" />
           {isOutOfStock && <div className={styles.outOfStockBadge}>Out of Stock</div>}
         </div>
 
@@ -41,14 +45,14 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
         <div className={styles.content}>
           <h3 className={styles.title}>{product.name}</h3>
           <p className={styles.description}>
-            {product.description.length > 80 ? `${product.description.substring(0, 80)}...` : product.description}
+            {description.length > 80 ? `${description.substring(0, 80)}...` : description}
           </p>
 
           {/* Price and Buy Section */}
           <div className={styles.footer}>
             <div className={styles.priceContainer}>
               <span className={styles.priceLabel}>Price</span>
-              <span className={styles.price}>${product.salePrice.toFixed(2)}</span>
+              <span className={styles.price}>${price.toFixed(2)}</span>
             </div>
 
             <button
@@ -62,8 +66,8 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
           </div>
 
           {/* Stock Info */}
-          {!isOutOfStock && product.quantityAvailable < 10 && (
-            <div className={styles.stockWarning}>Only {product.quantityAvailable} left!</div>
+          {!isOutOfStock && quantityAvailable < 10 && (
+            <div className={styles.stockWarning}>Only {quantityAvailable} left!</div>
           )}
         </div>
       </div>

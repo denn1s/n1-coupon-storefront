@@ -21,7 +21,9 @@ export default function ProductDetailPage() {
 
   // Use loader data (already fetched and cached by the route loader)
   const productsData = Route.useLoaderData()
-  const product = productsData?.holdingProducts?.nodes?.find((p: HoldingProduct) => p.id === Number(productId))
+  // Transform edges to nodes
+  const products = productsData?.holdingProducts?.edges?.map((edge: { node: HoldingProduct }) => edge.node) ?? []
+  const product = products.find((p: HoldingProduct) => p.id === Number(productId))
 
   // Handle buy button click
   const handleBuyNow = () => {
@@ -49,7 +51,7 @@ export default function ProductDetailPage() {
     )
   }
 
-  const displayImage = selectedImage || product.productImageUrl
+  const displayImage = selectedImage || product.productImageUrl || product.imageUrl || ''
 
   return (
     <div className={styles.container}>
@@ -73,9 +75,9 @@ export default function ProductDetailPage() {
           {/* Thumbnail Gallery (if additional images exist) */}
           {product.images && product.images.length > 1 && (
             <div className={styles.thumbnails}>
-              {product.images.map((image: ProductImage) => (
-                <button key={image.sequence} className={styles.thumbnail} onClick={() => setSelectedImage(image.url)}>
-                  <img src={image.url} alt={`${product.name} - ${image.sequence}`} className={styles.thumbnailImage} />
+              {product.images.map((image: ProductImage, index: number) => (
+                <button key={image.sequence ?? index} className={styles.thumbnail} onClick={() => setSelectedImage(image.url)}>
+                  <img src={image.url} alt={`${product.name} - ${index + 1}`} className={styles.thumbnailImage} />
                 </button>
               ))}
             </div>
@@ -89,12 +91,12 @@ export default function ProductDetailPage() {
           {/* Price */}
           <div className={styles.priceSection}>
             <span className={styles.priceLabel}>Deal Price</span>
-            <span className={styles.price}>${product.salePrice.toFixed(2)}</span>
+            <span className={styles.price}>${(product.salePrice ?? product.price ?? 0).toFixed(2)}</span>
           </div>
 
           {/* Stock Status */}
           <div className={styles.stockSection}>
-            {product.quantityAvailable > 0 ? (
+            {(product.quantityAvailable ?? 0) > 0 ? (
               <div className={styles.stockAvailable}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -110,7 +112,7 @@ export default function ProductDetailPage() {
                     d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                   />
                 </svg>
-                <span>{product.quantityAvailable} coupons available</span>
+                <span>{product.quantityAvailable ?? 0} coupons available</span>
               </div>
             ) : (
               <div className={styles.stockUnavailable}>
@@ -134,7 +136,7 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Low stock warning */}
-          {product.quantityAvailable > 0 && product.quantityAvailable < 10 && (
+          {(product.quantityAvailable ?? 0) > 0 && (product.quantityAvailable ?? 0) < 10 && (
             <div className={styles.lowStockWarning}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +152,7 @@ export default function ProductDetailPage() {
                   d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
                 />
               </svg>
-              Only {product.quantityAvailable} left! Hurry up!
+              Only {product.quantityAvailable ?? 0} left! Hurry up!
             </div>
           )}
 
@@ -166,10 +168,10 @@ export default function ProductDetailPage() {
           <div className={styles.actions}>
             <button
               className={styles.addToCartButton}
-              disabled={product.quantityAvailable === 0}
+              disabled={(product.quantityAvailable ?? 0) === 0}
               onClick={handleBuyNow}
             >
-              {product.quantityAvailable > 0 ? 'Buy Now' : 'Deal Expired'}
+              {(product.quantityAvailable ?? 0) > 0 ? 'Buy Now' : 'Deal Expired'}
             </button>
             <Link to="/" className={styles.backButton}>
               Back to Deals
