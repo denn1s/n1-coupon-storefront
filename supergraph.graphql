@@ -1,0 +1,3709 @@
+
+schema
+  @link(url: "https://specs.apollo.dev/link/v1.0")
+  @link(url: "https://specs.apollo.dev/join/v0.3", for: EXECUTION)
+  
+  
+  
+  
+  
+  @link(
+  url: "https://the-guild.dev/graphql/mesh/spec/v1.0"
+  import: ["@transport", "@extraSchemaDefinitionDirective", "@merge"]
+)
+{
+  query: Query
+  mutation: Mutation
+  
+}
+
+
+  directive @join__enumValue(graph: join__Graph!) repeatable on ENUM_VALUE
+
+  directive @join__field(
+    graph: join__Graph
+    requires: join__FieldSet
+    provides: join__FieldSet
+    type: String
+    external: Boolean
+    override: String
+    usedOverridden: Boolean
+  ) repeatable on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+  directive @join__graph(name: String!, url: String!) on ENUM_VALUE
+
+  directive @join__implements(
+    graph: join__Graph!
+    interface: String!
+  ) repeatable on OBJECT | INTERFACE
+
+  directive @join__type(
+    graph: join__Graph!
+    key: join__FieldSet
+    extension: Boolean! = false
+    resolvable: Boolean! = true
+    isInterfaceObject: Boolean! = false
+  ) repeatable on OBJECT | INTERFACE | UNION | ENUM | INPUT_OBJECT | SCALAR
+
+  directive @join__unionMember(graph: join__Graph!, member: String!) repeatable on UNION
+
+  scalar join__FieldSet
+
+
+  directive @link(
+    url: String
+    as: String
+    for: link__Purpose
+    import: [link__Import]
+  ) repeatable on SCHEMA
+
+  scalar link__Import
+
+  enum link__Purpose {
+    """
+    `SECURITY` features provide metadata necessary to securely resolve fields.
+    """
+    SECURITY
+
+    """
+    `EXECUTION` features provide metadata necessary for operation execution.
+    """
+    EXECUTION
+  }
+
+
+
+
+
+
+
+enum join__Graph {
+  COUPON_HUB_API @join__graph(name: "CouponHubApi", url: "https://n1-coupon-hub.h4b.workers.dev/graphql") 
+  MERCHANTS_APP_API @join__graph(name: "MerchantsAppApi", url: "https://api-app.h4b.dev/graphql") 
+}
+
+directive @transport(
+  kind: String!
+  subgraph: String!
+  location: String!
+  headers: [[String]]
+  options: TransportOptions
+) repeatable on SCHEMA
+
+directive @extraSchemaDefinitionDirective(directives: _DirectiveExtensions)  repeatable on OBJECT
+
+directive @merge(
+  subgraph: String
+  argsExpr: String
+  keyArg: String
+  keyField: String
+  key: [String!]
+  additionalArgs: String
+) repeatable on FIELD_DEFINITION
+
+scalar TransportOptions @join__type(graph: COUPON_HUB_API)  @join__type(graph: MERCHANTS_APP_API) 
+
+scalar _DirectiveExtensions @join__type(graph: COUPON_HUB_API)  @join__type(graph: MERCHANTS_APP_API) 
+
+scalar Geometry @join__type(graph: MERCHANTS_APP_API) 
+
+"""
+A position is an array of numbers. There MUST be two or more elements. The first two elements are longitude and latitude, or easting and northing, precisely in that order and using decimal numbers. Altitude or elevation MAY be included as an optional third element.
+"""
+scalar Position @join__type(graph: MERCHANTS_APP_API) 
+
+"""
+A coordinate is an array of positions.
+"""
+scalar Coordinates @join__type(graph: MERCHANTS_APP_API) 
+
+"""
+The built-in `Decimal` scalar type.
+"""
+scalar Decimal @join__type(graph: MERCHANTS_APP_API) 
+
+"""
+The `DateTime` scalar represents an ISO-8601 compliant date time type.
+"""
+scalar DateTime @join__type(graph: MERCHANTS_APP_API) 
+
+type Coupon @join__type(graph: COUPON_HUB_API)  {
+  code: String!
+  orderId: String!
+  buyerName: String!
+  buyerPhone: String!
+  buyerEmail: String!
+  chargeId: String!
+  paymentId: String!
+  transactionDate: String!
+  itemId: String!
+  itemName: String!
+  itemDescription: String!
+  itemPrice: String!
+  status: String!
+  createdAt: String!
+  usedAt: String
+  used: Boolean!
+  redemptionDate: String
+  qrCodeUrl: String
+  endDate: String
+}
+
+type CampaignCoupon @join__type(graph: COUPON_HUB_API)  {
+  id: String!
+  value: String!
+  campaignId: String!
+  redemptionLimit: Int!
+  startDate: String
+  endDate: String
+  redemptionCount: Int!
+  created: String!
+  createdBy: String!
+  lastModified: String!
+  lastModifiedBy: String!
+  orderId: Int!
+}
+
+type Query @extraSchemaDefinitionDirective(
+  directives: {transport: [{kind: "http", subgraph: "CouponHubApi", location: "https://n1-coupon-hub.h4b.workers.dev/graphql", options: {}}]}
+) @extraSchemaDefinitionDirective(
+  directives: {transport: [{kind: "http", subgraph: "MerchantsAppApi", location: "https://api-app.h4b.dev/graphql", options: {}}]}
+) @join__type(graph: COUPON_HUB_API)  @join__type(graph: MERCHANTS_APP_API)  {
+  getCoupon(code: String!, storeName: String) : Coupon @join__field(graph: COUPON_HUB_API) 
+  getCouponByOrderId(orderId: Int!) : Coupon @join__field(graph: COUPON_HUB_API) 
+  getCouponsByOrderIds(orderIds: [Int!]!) : [CampaignCoupon!]! @join__field(graph: COUPON_HUB_API) 
+  page(input: GetAppPageQueryInput) : PageInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  buyerProfile: AppProfileVm @join__field(graph: MERCHANTS_APP_API) 
+  buyerPaymentMethods: [PaymentMethodDto] @join__field(graph: MERCHANTS_APP_API) 
+  buyerPaymentMethod(id: Int!) : PaymentMethodDto @join__field(graph: MERCHANTS_APP_API) 
+  buyerShippingAddresses: [BuyerAddressByPurchaseFrequencyDto] @join__field(graph: MERCHANTS_APP_API) 
+  buyerShippingAddress(id: Int!) : BuyerAddressByPurchaseFrequencyDto @join__field(graph: MERCHANTS_APP_API) 
+  buyerCreditBalance(countryCode: String) : CreditBalanceModel @join__field(graph: MERCHANTS_APP_API) 
+  buyerReferralCodes: [RuleEngineReferralCode] @join__field(graph: MERCHANTS_APP_API) 
+  buyerInventory: BuyerInventoryVm @join__field(graph: MERCHANTS_APP_API) 
+  buyerInvoiceInfos: [BuyerInvoiceInfoDto] @join__field(graph: MERCHANTS_APP_API) 
+  buyerInvoiceInfo(id: Int!) : BuyerInvoiceInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  paymentMethodBinInfo(bin: String) : BinInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  checkoutInfo(input: GetAppCheckoutInfoQueryInput) : AppCheckoutInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  courierCheckoutInfo(input: GetCourierCheckoutInfoQueryInput) : CourierCheckoutInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  checkoutSession(input: GetAppCheckoutSessionQueryInput) : AppCheckoutSessionDto @join__field(graph: MERCHANTS_APP_API) 
+  cartDetail(input: GetCartDetailQueryInput) : CartDetailDto @join__field(graph: MERCHANTS_APP_API) 
+  order(input: GetOrderQueryInput) : OrderVm @join__field(graph: MERCHANTS_APP_API) 
+  orderView(input: GetAppBuyerOrderQueryInput) : AppOrderDto @join__field(graph: MERCHANTS_APP_API) 
+  pendingOrders: [BuyerOrder] @join__field(graph: MERCHANTS_APP_API) 
+  dailyOrders: [BuyerOrder] @join__field(graph: MERCHANTS_APP_API) 
+  orders(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: BuyerOrderFilterInput
+    order: [BuyerOrderSortInput!]
+  ): OrdersConnection @join__field(graph: MERCHANTS_APP_API) 
+  ordersToRate(where: OrderToRateDtoFilterInput) : [OrderToRateDto] @join__field(graph: MERCHANTS_APP_API) 
+  countries(where: CountryDtoFilterInput, order: [CountryDtoSortInput!]) : [CountryDto] @join__field(graph: MERCHANTS_APP_API) 
+  states(
+    input: GetStatesQueryInput
+    where: StateDtoFilterInput
+    order: [StateDtoSortInput!]
+  ): [StateDto] @join__field(graph: MERCHANTS_APP_API) 
+  countryTerritories(
+    input: GetCountryTerritoriesQueryInput
+    where: CountryTerritoryBaseDtoFilterInput
+    order: [CountryTerritoryBaseDtoSortInput!]
+  ): [CountryTerritoryBaseDto] @join__field(graph: MERCHANTS_APP_API) 
+  territoryByGeolocation(input: GetTerritoryByGeolocationQueryInput) : CountryTerritoryDto @join__field(graph: MERCHANTS_APP_API) 
+  territoryByCode(input: GetTerritoryByCodeQueryInput) : CountryTerritoryDto @join__field(graph: MERCHANTS_APP_API) 
+  geolocationInfo(input: GetGeolocationInfoQueryInput) : GeolocationInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  operationZones: [GeoJSONPolygonType] @join__field(graph: MERCHANTS_APP_API) 
+  subscriptionOnboardingDetailsByLang(input: GetSubscriptionOnBoardingDetailsByLangQueryInput) : SubscriptionOnBoardingDetailVm @join__field(graph: MERCHANTS_APP_API) 
+  subscription(input: GetSubscriptionQueryInput) : SubscriptionByCountryResponseVm @join__field(graph: MERCHANTS_APP_API) 
+  subscriptionBenefits(input: GetSubscriptionBenefitsQueryInput) : SubscriptionBenefitsByCountryVm @join__field(graph: MERCHANTS_APP_API) 
+  subscriptionsAvailableForUser(input: GetSubscriptionsAvailableForUserQueryInput) : SubscriptionsAvailableForUserVm @join__field(graph: MERCHANTS_APP_API) 
+  userSubscriptionDetails(input: GetUserSubscriptionDetailsQueryInput) : GetUserSubscriptionDetailsResponseVm @join__field(graph: MERCHANTS_APP_API) 
+  isUserSubscribedToAny: GetIsUserSubscribedToAnyVm @join__field(graph: MERCHANTS_APP_API) 
+  isUserSubscribed(input: GetIsUserSubscribedQueryInput) : IsUserSubscribedVm @join__field(graph: MERCHANTS_APP_API) 
+  subscriptionLadingPage: GetLandingPageByCountryVm @join__field(graph: MERCHANTS_APP_API) 
+  isUserSubscribedToMain: GetIsUserSubscribedToMainVm @join__field(graph: MERCHANTS_APP_API) 
+  isMainSubscriptionAvailable(input: GetIsMainSubscriptionAvailableQueryInput) : SubscriptionByCountryResponseVm @join__field(graph: MERCHANTS_APP_API) 
+  storeLocations(input: GetAppStoreLocationsQueryInput) : [StoreLocationDto] @join__field(graph: MERCHANTS_APP_API) 
+  app: AppInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  verifiedUserInfo: UserInfoDto @join__field(graph: MERCHANTS_APP_API) 
+  products(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: ProductFilterInput
+    order: [ProductSortInput!]
+  ): ProductsConnection @join__field(graph: MERCHANTS_APP_API) 
+  allProducts(where: ProductFilterInput, order: [ProductSortInput!]) : [Product] @join__field(graph: MERCHANTS_APP_API) 
+  product(id: Int!) : Product @merge(subgraph: "MerchantsAppApi", keyField: "id", keyArg: "id")  @join__field(graph: MERCHANTS_APP_API) 
+  collections(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: CollectionFilterInput
+    order: [CollectionSortInput!]
+  ): CollectionsConnection @join__field(graph: MERCHANTS_APP_API) 
+  allCollections(where: CollectionFilterInput, order: [CollectionSortInput!]) : [Collection] @join__field(graph: MERCHANTS_APP_API) 
+  holdingProducts(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: ProductFilterInput
+    order: [ProductSortInput!]
+  ): HoldingProductsConnection @join__field(graph: MERCHANTS_APP_API) 
+  holdingCollections(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: CollectionFilterInput
+    order: [CollectionSortInput!]
+  ): HoldingCollectionsConnection @join__field(graph: MERCHANTS_APP_API) 
+  holdingStores(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: StoreDtoFilterInput
+    order: [StoreDtoSortInput!]
+  ): HoldingStoresConnection @join__field(graph: MERCHANTS_APP_API) 
+  holdingBusinessCategories(
+    """
+    Returns the first _n_ elements from the list.
+    """
+    first: Int
+    """
+    Returns the elements in the list that come after the specified cursor.
+    """
+    after: String
+    """
+    Returns the last _n_ elements from the list.
+    """
+    last: Int
+    """
+    Returns the elements in the list that come before the specified cursor.
+    """
+    before: String
+    where: BusinessCategoryDtoFilterInput
+    order: [BusinessCategoryDtoSortInput!]
+  ): HoldingBusinessCategoriesConnection @join__field(graph: MERCHANTS_APP_API) 
+}
+
+type GeoJSONPointType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field is a single position.
+  """
+  coordinates: Position
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiPointType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field is an array of positions.
+  """
+  coordinates: [Position]
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONLineStringType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field is an array of two or more positions.
+  """
+  coordinates: [Position]
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiLineStringType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field is an array of LineString coordinate arrays.
+  """
+  coordinates: [Position]
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONPolygonType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field MUST be an array of linear ring coordinate arrays. For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+  """
+  coordinates: [[Position]]
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type GeoJSONMultiPolygonType implements GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  @join__implements(graph: MERCHANTS_APP_API, interface: "GeoJSONInterface")  {
+  """
+  The "coordinates" field is an array of Polygon coordinate arrays.
+  """
+  coordinates: Coordinates
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float!]!
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int!
+}
+
+type Mutation @join__type(graph: MERCHANTS_APP_API)  {
+  buyerPaymentMethodCreate(input: CreatePaymentMethodCommandInput) : GenericMutationPayload
+  buyerPaymentMethodByCardIdCreate(input: CreatePaymentMethodByCardIdCommandInput) : GenericMutationPayload
+  buyerPaymentMethodUpdate(input: UpdatePaymentMethodCommandInput) : GenericMutationPayload
+  buyerPaymentMethodDelete(input: DeletePaymentMethodCommandInput) : GenericMutationPayload
+  buyerShippingAddressCreate(input: CreateShippingAddressCommandInput) : GenericMutationPayload
+  buyerShippingAddressUpdate(input: UpdateShippingAddressCommandInput) : GenericMutationPayload
+  buyerShippingAddressDelete(input: DeleteShippingAddressCommandInput) : GenericMutationPayload
+  buyerInfoUpdate(input: UpdateAppBuyerInfoCommandInput) : GenericMutationPayload
+  buyerDeviceTokenUpdate(input: UpdateBuyerDeviceTokenCommandInput) : GenericMutationPayload
+  buyerFavoriteStoreUpdate(input: UpdateBuyerFavoriteStoreCommandInput) : GenericMutationPayload
+  buyerInvoiceInfoCreate(input: CreateBuyerInvoiceInfoCommandInput) : GenericMutationPayload
+  buyerInvoiceInfoUpdate(input: UpdateBuyerInvoiceInfoCommandInput) : GenericMutationPayload
+  buyerInvoiceInfoDelete(input: DeleteBuyerInvoiceInfoCommandInput) : GenericMutationPayload
+  checkout(input: ProcessAppCheckoutCommandInput) : CheckoutPayload
+  deliveryQuoteCreate(input: CreateDeliveryQuoteCommandInput) : DeliveryQuoteCreationPayload
+  courierCheckout(input: ProcessCourierCheckoutCommandInput) : CheckoutPayload
+  courierDeliveryQuoteCreate(input: CreateCourierDeliveryQuoteCommandInput) : DeliveryQuoteCreationPayload
+  courierAddressCreateOrUpdate(input: CreateOrUpdateCourierAddressCommandInput) : GenericMutationPayload
+  generateValidationCode(input: GenerateValidationCodeCommandInput) : GenericMutationPayload
+  checkValidationCode(input: CheckValidationCodeCommandInput) : GenericMutationPayload
+  orderRatingCreate(input: CreateOrderRatingCommandInput) : GenericMutationPayload
+  updateUserSubscriptionStatus(input: UpdateUserSubscriptionStatusCommandInput) : SubscriptionGenericResponse
+  deleteUserSubscription(input: DeleteUserSubscriptionCommandInput) : SubscriptionGenericResponse
+  updateUserSubscriptionPaymentMethod(input: UpdateUserSubscriptionPaymentMethodCommandInput) : SubscriptionGenericResponse
+  sendPaymentSubscriptionEmail(input: SendPaymentSubscriptionEmailCommandInput) : SubscriptionGenericResponse
+  payAndSubscribeUser(input: PayAndSubscribeUserCommandInput) : SubscriptionGenericResponse
+}
+
+type OrderDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  sKU: String
+  itemId: Int!
+  name: String
+  price: Decimal!
+  promoId: Int
+  promoPrice: Decimal
+  promoName: String
+  promoDiscountAmount: Decimal!
+  quantity: Int!
+  subTotal: Decimal!
+  modifiersTotal: Decimal!
+  productImageUrl: String
+  modifiers: [OrderDetailModifierDto]
+  note: String
+  description: String
+  quantityAvailable: Int
+  requiresShipping: Boolean!
+  productMetadata: [KeyValuePairOfStringAndString!]
+}
+
+type BuyerOrder @join__type(graph: MERCHANTS_APP_API)  {
+  couponStatus: CouponStatus
+  orderId: Int!
+  storeName: String
+  orderDate: DateTime!
+  paymentDate: DateTime!
+  name: String
+  paymentOption: String
+  shipmentOption: String
+  linkUrl: String
+  subTotal: Decimal!
+  deliveryCost: Decimal!
+  totalDiscount: Decimal!
+  totalSurcharge: Decimal!
+  total: Decimal!
+  totalFormatted: String
+  timezone: String
+  currencyCode: String
+  currencySymbol: String
+  locale: String
+  orderStatus: OrderStatusValue!
+  shipmentStatus: ShipmentStatusValue!
+  storeId: Int!
+  orderType: OrderTypeValue!
+  shipmentType: ShipmentTypeValue!
+  storeImageUrl: String
+  storeBannerUrl: String
+  storeBannerColor: String
+  requiresShipping: Boolean!
+  customerSessionId: Int
+  orderDetails: [OrderDetailBaseDto]
+}
+
+type OrderDetailModifierDto @join__type(graph: MERCHANTS_APP_API)  {
+  modifierId: Int!
+  name: String
+  selectedOptionsTotal: Decimal!
+  selectedOptions: [SelectedOptionDto]
+}
+
+type KeyValuePairOfStringAndString @join__type(graph: MERCHANTS_APP_API)  {
+  key: String!
+  value: String!
+}
+
+type OrderDetailBaseDto @join__type(graph: MERCHANTS_APP_API)  {
+  itemId: Int!
+  name: String
+  description: String
+  price: Decimal!
+  promoPrice: Decimal
+  productImageUrl: String
+  requiresShipping: Boolean!
+  productMetadata: [KeyValuePairOfStringAndString!]
+  quantity: Int!
+  subTotal: Decimal!
+}
+
+"""
+A connection to a list of items.
+"""
+type OrdersConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [OrdersEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [BuyerOrder]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type ProductsConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [ProductsEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [Product]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type CollectionsConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [CollectionsEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [Collection]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type HoldingProductsConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [HoldingProductsEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [Product]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type HoldingCollectionsConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [HoldingCollectionsEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [Collection]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type HoldingStoresConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [HoldingStoresEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [StoreDto]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+A connection to a list of items.
+"""
+type HoldingBusinessCategoriesConnection @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Information to aid in pagination.
+  """
+  pageInfo: PageInfo!
+  """
+  A list of edges.
+  """
+  edges: [HoldingBusinessCategoriesEdge!]
+  """
+  A flattened list of the nodes.
+  """
+  nodes: [BusinessCategoryDto]
+  """
+  Identifies the total count of items in the connection.
+  """
+  totalCount: Int!
+}
+
+"""
+Information about pagination in a connection.
+"""
+type PageInfo @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  Indicates whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+  """
+  Indicates whether more edges exist prior the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+  """
+  When paginating backwards, the cursor to continue.
+  """
+  startCursor: String
+  """
+  When paginating forwards, the cursor to continue.
+  """
+  endCursor: String
+}
+
+"""
+An edge in a connection.
+"""
+type OrdersEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: BuyerOrder
+}
+
+type Product @join__type(graph: MERCHANTS_APP_API, key: "id")  {
+  id: Int!
+  sku: String
+  name: String
+  vendorName: String
+  keywords: String
+  description: String
+  quantityAvailable: Int
+  collectionId: Int
+  collection: String
+  price: Decimal!
+  promoId: Int
+  promoPrice: Decimal
+  productImageUrl: String
+  images: [Image]
+  slug: String
+  salePrice: Decimal!
+  modifiers: [StorefrontProductModifierDto]
+  hasModifiers: Boolean!
+  storeId: Int!
+  collectionHasAgeRestriction: Boolean!
+  upc: String
+  requiresShipping: Boolean!
+  created: DateTime!
+  metadata: [KeyValuePairOfStringAndString!]
+}
+
+"""
+An edge in a connection.
+"""
+type ProductsEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: Product
+}
+
+type Collection @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  code: String
+  name: String
+  description: String
+  keywords: String
+  bannerImageUrl: String
+  smallBannerImageUrl: String
+  productCount: Int!
+  slug: String
+  parentId: Int
+  parentName: String
+  storeName: String
+  hasSubCollections: Boolean!
+  hasAgeRestriction: Boolean!
+  storeId: Int!
+  order: Int
+}
+
+"""
+An edge in a connection.
+"""
+type CollectionsEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: Collection
+}
+
+"""
+An edge in a connection.
+"""
+type HoldingProductsEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: Product
+}
+
+"""
+An edge in a connection.
+"""
+type HoldingCollectionsEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: Collection
+}
+
+type StoreDto @join__type(graph: MERCHANTS_APP_API)  {
+  isActive: Boolean!
+  businessCategoriesIds: [String]
+  address: String
+  email: String
+  phone: String
+  location: Coordinate
+  appViewType: AppViewTypeValue!
+  isOpen: Boolean!
+  canScheduleOrders: Boolean!
+  schedules: [ScheduleDto]
+  preparationTime: Int!
+  nearestLocationId: Int
+  isFavorite: Boolean!
+  distance: Float!
+  shipmentOptions: [ShipmentTypeValue!]
+  rating: Decimal!
+  id: Int!
+  name: String
+  description: String
+  storeImageUrl: String
+  storeBannerUrl: String
+  storeBannerColor: String
+}
+
+"""
+An edge in a connection.
+"""
+type HoldingStoresEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: StoreDto
+}
+
+type BusinessCategoryDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  parentBusinessCategoryId: Int
+  parentBusinessCategoryName: String
+  name: String
+  description: String
+  storeCount: Int!
+  jsonDynamicFilters: String
+  keywords: String
+  visible: Boolean!
+  bannerImageUrl: String
+  smallBannerImageUrl: String
+  holdingId: Int!
+}
+
+"""
+An edge in a connection.
+"""
+type HoldingBusinessCategoriesEdge @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  A cursor for use in pagination.
+  """
+  cursor: String!
+  """
+  The item at the end of the edge.
+  """
+  node: BusinessCategoryDto
+}
+
+type GeolocationInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  territory: CountryTerritoryDto
+  country: CountryDto
+  address: AddressDto
+  type: GeolocationTypeValue!
+}
+
+type CountryTerritoryDto @join__type(graph: MERCHANTS_APP_API)  {
+  geometry: GeoJSONPolygonType
+  centroid: [Float!]
+  operationZones: [GeoJSONPolygonType]
+  name: String
+  territoryCode: String
+  currencySymbol: String
+  currencyCode: String
+  countryCode: String
+  countryName: String
+  timezone: String
+}
+
+type CountryTerritoryBaseDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  territoryCode: String
+  currencySymbol: String
+  currencyCode: String
+  countryCode: String
+  countryName: String
+  timezone: String
+}
+
+type StateDto @join__type(graph: MERCHANTS_APP_API)  {
+  stateId: Int!
+  name: String
+  cities: [CityDto]
+}
+
+type CountryDto @join__type(graph: MERCHANTS_APP_API)  {
+  countryId: Int!
+  name: String
+  currencySymbol: String
+  currencyCode: String
+  countryCode: String
+  timezone: String
+  isActive: Boolean!
+  inactiveStoreSalesLimitAmount: Decimal!
+  locale: String
+  threeDSecureFlatFee: Decimal!
+  states: [StateDto]
+  processingFeeRate: Decimal!
+}
+
+type OrderToRateDto @join__type(graph: MERCHANTS_APP_API)  {
+  orderId: Int!
+  storeId: Int!
+  storeName: String
+  storeImageUrl: String
+  driverName: String
+  driverImageUrl: String
+  shipmentType: ShipmentTypeValue!
+  orderType: OrderTypeValue!
+  orderDate: DateTime!
+  timezone: String
+}
+
+type AppOrderDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  status: OrderStatusValue!
+  type: OrderTypeValue!
+  subTotal: Decimal!
+  deliveryCost: Decimal!
+  total: Decimal!
+  created: DateTime!
+  checkoutNote: String
+  orderDetails: [OrderDetailDto]
+  store: AppOrderStoreDto
+  shipment: AppOrderShipmentDto
+  payment: AppOrderPaymentDto
+  totalDiscount: Decimal!
+  totalSurcharge: Decimal!
+  discountEffects: [CheckoutEffectDto]
+  surchargeEffects: [CheckoutEffectDto]
+  driverTip: Decimal!
+  tip: Decimal!
+  buyer: AppOrderBuyerDto
+}
+
+type OrderVm @join__type(graph: MERCHANTS_APP_API)  {
+  order: OrderViewDetailDto
+  orderEventHistory: [OrderEventHistoryDto]
+  orderUpdateHistory: [OrderUpdateHistoryDto]
+  payment: PaymentInfoDto
+  shipment: ShipmentInfoDto
+  orderBuyer: OrderBuyerInfoDto
+  invoice: InvoiceInfoDto
+  storeConfig: StoreConfig
+  paymentLinkInfo: OrderLinkDto
+  cxData: CustomerExperienceDto
+}
+
+type CartDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int
+  locationId: Int
+  cart: [CartItemDetailDto]
+  savedTotal: Decimal!
+  total: Decimal!
+}
+
+type AppCheckoutSessionDto @join__type(graph: MERCHANTS_APP_API)  {
+  customerSessionId: Int!
+  deliveryQuote: DeliveryQuoteDto
+  deliveryQuoteMessage: DeliveryQuoteMessageDto
+  discountEffects: [CheckoutEffectDto]
+  surchargeEffects: [CheckoutEffectDto]
+  couponCodeErrors: [CouponCodeErrorDto]
+  validCouponCodes: [String]
+  sessionDetail: AppCheckoutSessionDetailDto
+  driverTipOptions: [DriverTipOptionDto]
+  referralCodeDetail: ReferralCodeDetailDto
+  tipOptions: [TipOptionDto]
+  deliveryLocations: [DeliveryLocationDto]
+  requiresTip: Boolean!
+  couponCodes: [String]
+  cartDetail: CartDetailDto
+  store: StoreInfoDto
+  buyer: BuyerInfoDto
+  paymentOptions: [CheckoutPaymentOptionDto]
+  shipmentOptions: [CheckoutShipmentOptionDto]
+}
+
+type CourierCheckoutInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  customerSessionId: Int!
+  store: CourierStoreDto
+  deliveryQuoteResult: DeliveryQuoteResultDto
+  originAddress: BuyerAddressDto
+  destinationAddress: BuyerAddressDto
+  paymentOptions: [CheckoutPaymentOptionDto]
+  shipmentOption: CheckoutShipmentOptionDto
+  creditBalance: BalanceDto
+  buyer: BuyerInfoDto
+  driverTipOptions: [DriverTipOptionDto]
+  discountEffects: [CheckoutEffectDto]
+  surchargeEffects: [CheckoutEffectDto]
+  couponCodeErrors: [CouponCodeErrorDto]
+  validCouponCodes: [String]
+  referralCodeDetail: ReferralCodeDetailDto
+  sessionDetail: CourierCheckoutSessionDetailDto
+}
+
+type AppCheckoutInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  cartDetail: CartDetailDto
+  store: StoreInfoDto
+  buyer: BuyerInfoDto
+  paymentOptions: [CheckoutPaymentOptionDto]
+  shipmentOptions: [CheckoutShipmentOptionDto]
+}
+
+type BinInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  brand: String
+  type: String
+  level: String
+  countryCode: String
+  requiresBillingInfo: Boolean!
+}
+
+type BuyerInvoiceInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  nit: String
+  name: String
+  address: String
+}
+
+type BuyerInventoryVm @join__type(graph: MERCHANTS_APP_API)  {
+  referralCodes: [RuleEngineReferralCode]
+  couponCodes: [RuleEngineCouponCodeResponse]
+  giveaways: [RuleEngineGiveawayResponse]
+}
+
+type RuleEngineReferralCode @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+  usageLimit: Int!
+  usageCounter: Int!
+  startDate: DateTime!
+  expirationDate: DateTime!
+  creationDate: DateTime!
+}
+
+type CreditBalanceModel @join__type(graph: MERCHANTS_APP_API)  {
+  success: Boolean!
+  balance: BalanceDto
+}
+
+type BuyerAddressByPurchaseFrequencyDto @join__type(graph: MERCHANTS_APP_API)  {
+  purchaseFrequency: PurchaseFrequencyValue!
+  purchaseCount: Int!
+  id: Int!
+  name: String
+  address: String
+  addressLine2: String
+  location: Coordinate
+  phone: String
+  note: String
+  shippingAddressType: ShippingAddressTypeValue!
+  isDefault: Boolean!
+  city: String
+  depto: String
+  territoryCode: String
+  reference: String
+}
+
+type PaymentMethodDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  number: String
+  type: String
+  isTokenized: Boolean!
+  cardCustomName: String
+  cardCustomColor: String
+  billingInfo: BillingInfoDto
+  requiresBillingInfo: Boolean!
+}
+
+type AppProfileVm @join__type(graph: MERCHANTS_APP_API)  {
+  buyer: BuyerInfoDto
+  orders: [BuyerOrder]
+}
+
+type PageInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  sections: [SectionInfoDto]
+}
+
+type SubscriptionOnBoardingDetailVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: SubscriptionOnBoardingDetailDto
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type SubscriptionByCountryResponseVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: SubscriptionBaseResponseDto
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type SubscriptionBenefitsByCountryVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: [BenefitsDto]
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type SubscriptionsAvailableForUserVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: SubscriptionsAvailableVm
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type GetUserSubscriptionDetailsResponseVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: UserSubscriptionDetailsResponseData
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type GetIsUserSubscribedToAnyVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: [SubscriptionSubscriberDto]
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type IsUserSubscribedVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: IsUserSubscribedDto
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type GetLandingPageByCountryVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: SubscriptionLandingByCountryDto
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type GetIsUserSubscribedToMainVm @join__type(graph: MERCHANTS_APP_API)  {
+  data: IsUserSubscribedToMainDto
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type StoreLocationDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  address: String
+  coordinates: Coordinate
+  schedules: [ScheduleDto]
+  isOpen: Boolean!
+  canScheduleOrders: Boolean!
+  isDefault: Boolean!
+  territory: String
+  shipmentOptions: [CheckoutShipmentOptionDto]
+}
+
+type AppInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  type: HoldingTypeValue!
+  stores: [AppStoreInfoDto]
+  checkoutSettings: CheckoutSettings
+  deliveryLocations: [DeliveryLocationDto]
+}
+
+type UserInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  email: String
+  phone: String
+  picture: String
+  birthdate: DateTime
+}
+
+type StorefrontProductModifierDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  minOptions: Int
+  maxOptions: Int
+  options: [StorefrontProductModifierOptionDto]
+}
+
+type Image @join__type(graph: MERCHANTS_APP_API)  {
+  sequence: Int!
+  url: String
+}
+
+type GenericMutationPayload @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  success: Boolean!
+  message: String
+  userErrors: [UserError]
+}
+
+type CheckoutPayload @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  userErrors: [UserError]
+  orderId: Int!
+  success: Boolean!
+  message: String
+  voucherUrl: String
+  authorizationCode: String
+  authentication: CheckoutAuthenticationResult
+  status: ProcessOrderResultStatus!
+  error: CheckoutError
+}
+
+type DeliveryQuoteCreationPayload @join__type(graph: MERCHANTS_APP_API)  {
+  deliveryQuote: DeliveryQuoteDto
+  id: Int!
+  success: Boolean!
+  message: String
+  userErrors: [UserError]
+}
+
+type SubscriptionGenericResponse @join__type(graph: MERCHANTS_APP_API)  {
+  success: Boolean!
+  message: String
+  code: Int!
+}
+
+type SelectedOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  selectedOptionId: Int!
+  name: String
+  amount: Decimal!
+}
+
+type Coordinate @join__type(graph: MERCHANTS_APP_API)  {
+  latitude: Float!
+  longitude: Float!
+}
+
+type ScheduleDto @join__type(graph: MERCHANTS_APP_API)  {
+  isActive: Boolean!
+  day: DayValue!
+  hours: [HoursOpen]
+}
+
+type HoursOpen @join__type(graph: MERCHANTS_APP_API)  {
+  startTime: String
+  endTime: String
+}
+
+type CheckoutError @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+  message: String
+  title: String
+  detail: String
+}
+
+type CheckoutAuthenticationResult @join__type(graph: MERCHANTS_APP_API)  {
+  url: String
+  id: String
+}
+
+type UserError @join__type(graph: MERCHANTS_APP_API)  {
+  field: String
+  message: String
+}
+
+type StorefrontProductModifierOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  amount: Decimal
+}
+
+type CheckoutSettings @join__type(graph: MERCHANTS_APP_API)  {
+  actionLabel: String
+  actionUrl: String
+}
+
+type AppStoreInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  locations: [StoreLocationDto]
+  countryId: Int!
+  countryCode: String
+  currencyCode: String
+  currencySymbol: String
+  locale: String
+  timezone: String
+  id: Int!
+  name: String
+  description: String
+  storeImageUrl: String
+  storeBannerUrl: String
+  storeBannerColor: String
+}
+
+type IsUserSubscribedToMainDto @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  isSubscribed: Boolean!
+  subscriptionName: String
+  countryAvailable: Boolean!
+  userCountry: String
+}
+
+type SubscriptionLandingByCountryDto @join__type(graph: MERCHANTS_APP_API)  {
+  landingPageUrl: String
+}
+
+type IsUserSubscribedDto @join__type(graph: MERCHANTS_APP_API)  {
+  isSubscribed: Boolean!
+  subscriptionName: String
+  countryAvailable: Boolean!
+  userCountry: String
+}
+
+type SubscriptionSubscriberDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  subscriptionSlug: String
+  userId: String
+  userCountry: String
+  startDate: Int!
+  endDate: Int!
+  subscriptionType: String
+  isTrial: Boolean!
+  ccVgs: String
+  status: String
+  activityLog: [ActivityLogDto]
+  promoCode: String
+  canceledAt: String
+  createdAt: String
+  updatedAt: String
+  lang: String
+  phoneNumber: String
+  name: String
+  email: String
+  currencyCode: String
+}
+
+type UserSubscriptionDetailsResponseData @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionTypes: [SubscriptionTypeResponseDto]
+  paymentMethod: PaymentMethodDto
+  cardData: CardDataDto
+  renewalDate: String
+  canceled: Boolean!
+  promoCode: String
+  name: String
+  icon: String
+  slug: String
+  termsConditionsUrl: String
+  shortDescription: String
+}
+
+type SubscriptionsAvailableVm @join__type(graph: MERCHANTS_APP_API)  {
+  active: [SubscriptionDetailBaseDto]
+  inactive: [SubscriptionDetailBaseDto]
+}
+
+type BenefitsDto @join__type(graph: MERCHANTS_APP_API)  {
+  title: String
+  subtitle: String
+  icon: String
+  detail: String
+}
+
+type SubscriptionBaseResponseDto @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionTypes: [SubscriptionTypeResponseDto]
+  name: String
+  icon: String
+  slug: String
+  termsConditionsUrl: String
+  shortDescription: String
+}
+
+type SubscriptionOnBoardingDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  images: [SubscriptionImageDto]
+  subscriptionName: String
+}
+
+type SectionInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  title: String
+  sectionType: SectionTypeValue!
+  metadata: [KeyValuePairOfStringAndString!]
+  items: [ItemInfoDto]
+  additionalData: AdditionalDataDto
+}
+
+type BillingInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  countryCode: String
+  stateCode: String
+  zipCode: String
+}
+
+type RuleEngineGiveawayResponse @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+  startDate: DateTime!
+  expirationDate: DateTime!
+  creationDate: DateTime!
+}
+
+type RuleEngineCouponCodeResponse @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  description: String
+  code: String
+  usageLimit: Int!
+  usageCounter: Int!
+  startDate: DateTime!
+  expirationDate: DateTime!
+  creationDate: DateTime!
+}
+
+type CourierCheckoutSessionDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  subTotal: Decimal!
+  totalSurcharge: Decimal!
+  totalDiscount: Decimal!
+  total: Decimal!
+}
+
+type BalanceDto @join__type(graph: MERCHANTS_APP_API)  {
+  amount: Decimal!
+  currency: String
+}
+
+type BuyerAddressDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  address: String
+  addressLine2: String
+  location: Coordinate
+  phone: String
+  note: String
+  shippingAddressType: ShippingAddressTypeValue!
+  isDefault: Boolean!
+  city: String
+  depto: String
+  territoryCode: String
+  reference: String
+}
+
+type DeliveryQuoteResultDto @join__type(graph: MERCHANTS_APP_API)  {
+  deliveryQuote: DeliveryQuoteDto
+  success: Boolean!
+  message: String
+}
+
+type CourierStoreDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  countryCode: String
+  currencyCode: String
+  currencySymbol: String
+  locale: String
+  timezone: String
+}
+
+type CheckoutShipmentOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  baseCost: Decimal!
+  originAddress: String
+  isManaged: Boolean!
+  acceptsCash: Boolean!
+  shipmentOptionType: ShipmentTypeValue!
+  hasCustomFee: Boolean!
+  customFeeSettings: ShipmentOptionCustomFeeSettings
+  requiresQuote: Boolean!
+  requiresCourier: Boolean!
+  couriers: [CourierDto]
+  defaultParcelSizeId: Int
+}
+
+type CheckoutPaymentOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  instructions: String
+  paymentOptionType: PaymentOptionTypeValue!
+  providers: [CheckoutPaymentOptionProviderDto]
+}
+
+type BuyerInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  email: String
+  phone: String
+  paymentMethods: [PaymentMethodDto]
+  addresses: [BuyerAddressDto]
+  name: String
+  nit: String
+  invoiceName: String
+  invoiceAddress: String
+  picture: String
+  birthdate: DateTime
+  isVerified: Boolean!
+  isBlocked: Boolean!
+  hasMainSubscription: Boolean
+  invoiceInfos: [BuyerInvoiceInfoDto]
+}
+
+type StoreInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  address: String
+  phone: String
+  storeUrl: String
+  storeImageUrl: String
+  storeBannerUrl: String
+  storeBannerColor: String
+  config: StoreConfig
+  locations: [StoreLocationDto]
+  nearestLocation: StoreLocationDto
+  pickupLocations: [StoreLocationDto]
+  canIssueTaxDocuments: Boolean!
+}
+
+type DeliveryLocationDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  code: String
+}
+
+type TipOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  amount: Decimal!
+  percentageLabel: String
+  isDefault: Boolean!
+}
+
+type ReferralCodeDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  referralCode: String
+  rejectionReason: String
+}
+
+type DriverTipOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  type: TipOptionTypeValue!
+  amount: Decimal!
+  percentageLabel: String
+  isDefault: Boolean!
+}
+
+type AppCheckoutSessionDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  subTotal: Decimal!
+  totalSurcharge: Decimal!
+  deliveryCost: Decimal!
+  totalDiscount: Decimal!
+  tip: Decimal
+  total: Decimal!
+}
+
+type CouponCodeErrorDto @join__type(graph: MERCHANTS_APP_API)  {
+  couponCode: String
+  rejectionReason: String
+}
+
+type DeliveryQuoteMessageDto @join__type(graph: MERCHANTS_APP_API)  {
+  success: Boolean!
+  message: String
+}
+
+type DeliveryQuoteDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  deliveryFee: Decimal!
+  distance: Decimal!
+  distanceUnit: String
+  formattedDistance: String
+  routeTime: Decimal!
+  routeTimeUnit: String
+  formattedRouteTime: String
+  driverTips: [TerritoryDriverTip]
+  paymentMethods: [TerritoryPaymentMethod]
+  shipmentType: ShipmentTypeValue!
+}
+
+type CartItemDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  productId: Int!
+  name: String
+  price: Decimal!
+  promoId: Int
+  promoPrice: Decimal
+  promoName: String
+  promoDiscountAmount: Decimal!
+  quantity: Int!
+  subTotal: Decimal!
+  modifiersTotal: Decimal
+  salePrice: Decimal!
+  note: String
+  productImageUrl: String
+  modifiers: [CartItemDetailModifierDto]
+  quantityAvailable: Int
+  requiresShipping: Boolean!
+  productMetadata: [KeyValuePairOfStringAndString!]
+}
+
+type CustomerExperienceDto @join__type(graph: MERCHANTS_APP_API)  {
+  adminUserId: Int!
+  adminUserName: String
+  adminUserEmail: String
+  description: String
+  status: CustomerExperienceStatusValue!
+  priority: CustomerExperiencePriorityValue!
+}
+
+type OrderLinkDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  linkUrl: String
+  successUrl: String
+  cancelUrl: String
+}
+
+type StoreConfig @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  storeUrl: String
+  isSlave: Boolean!
+  localSalesOnly: Boolean!
+  isActive: Boolean!
+  hasInstallments: Boolean!
+  imageUrl: String
+  layoutType: LayoutTypeValue!
+  address: String
+  isBlocked: Boolean!
+  countryId: Int!
+  countryCode: String
+  currencyCode: String
+  currencySymbol: String
+  locale: String
+  timezone: String
+  salesLimitAmount: Decimal!
+  kamPhone: String
+  kam: KamBaseDto
+  onboardingStatus: OnboardingStatusValue!
+}
+
+type InvoiceInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  address: String
+  taxCode: String
+}
+
+type OrderBuyerInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  buyerId: Int
+  externalBuyerId: Int
+  deviceToken: String
+  name: String
+  phone: String
+  email: String
+}
+
+type ShipmentInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentOption: String
+  name: String
+  address: String
+  addressLine2: String
+  location: Coordinate
+  phone: String
+  note: String
+  shipmentStatus: String
+  hugoShipmentInfo: HugoShipmentInformation
+  shipmentOptionId: Int
+  shipmentStatusId: Int
+  reservationDateTime: DateTime
+  shipmentType: ShipmentTypeValue!
+  driver: ShipmentDriverInfoDto
+  elapsedTimeInMin: Float!
+  city: String
+  depto: String
+  tracking: TrackingInfoDto
+  deliveryLocation: DeliveryLocationDto
+  reference: String
+  guideUrl: String
+}
+
+type PaymentInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  paymentOption: String
+  cardholderName: String
+  number: String
+  paymentMethodLastDigits: String
+  paymentMethodFirstDigits: String
+  type: String
+  paymentStatus: String
+  paidAmount: Decimal
+  authorizationCode: String
+  voucherUrl: String
+  installments: Int
+  payDate: DateTime
+  charges: [ChargeInfoDto]
+  chargebacks: [ChargebackDto]
+  paymentOptionType: String
+  has3ds: Boolean!
+}
+
+type OrderUpdateHistoryDto @join__type(graph: MERCHANTS_APP_API)  {
+  orderUpdateHistoryId: Int!
+  orderId: Int!
+  storeId: Int!
+  deliveryCost: Decimal!
+  subTotal: Decimal!
+  totalDiscount: Decimal!
+  totalSurcharge: Decimal!
+  driverTip: Decimal!
+  tip: Decimal!
+  total: Decimal!
+  checkoutNote: String
+  locationId: Int
+  customerSessionId: Int
+  customerSessionState: RuleEngineSessionStateValue
+  customerSessionEffects: [RuleEngineSessionEffectDto]
+  status: OrderUpdateStatusValue!
+  orderDetails: [CartItemDetailDto]
+}
+
+type OrderEventHistoryDto @join__type(graph: MERCHANTS_APP_API)  {
+  description: String
+  level: LogLevel!
+  type: OrderEventType!
+  metadata: [KeyValuePairOfStringAndString!]
+  createdBy: String
+  created: DateTime!
+}
+
+type OrderViewDetailDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  note: String
+  created: DateTime!
+  createdBy: String
+  status: String
+  statusId: Int!
+  orderType: String
+  makeInvoice: Boolean!
+  sendInvoice: Boolean!
+  subTotal: Decimal!
+  taxAmount: Decimal!
+  deliveryCost: Decimal!
+  total: Decimal!
+  linkUrl: String
+  linkExpirationDate: DateTime
+  orderDetails: [OrderDetailDto]
+  cancellationReason: String
+  orderMetadata: [Metafield]
+  voucherUrl: String
+  locationName: String
+  locationAddress: String
+  customFields: [CustomFieldValue]
+  checkoutNote: String
+  shipmentOptionId: Int
+  paymentMethodId: Int
+  cashToCollect: Decimal!
+  salesChannel: SalesChannelValue!
+  isLocationOpen: Boolean!
+  hasLocation: Boolean!
+  locationCanScheduleOrders: Boolean!
+  storeId: Int!
+  orderTypeId: Int!
+  locationId: Int!
+  totalDiscount: Decimal!
+  totalSurcharge: Decimal!
+  discountEffects: [CheckoutEffectDto]
+  surchargeEffects: [CheckoutEffectDto]
+  driverTip: Decimal!
+  tip: Decimal!
+  originOrderId: Int
+  customerSessionId: Int
+  customerNotificationsEnabled: Boolean!
+  locationPhone: String
+  rejectionReason: String
+  callRequestReason: String
+  successUrl: String
+  cancelUrl: String
+  requiresShipping: Boolean!
+}
+
+type AppOrderBuyerDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  name: String
+  email: String
+  phone: String
+}
+
+type CheckoutEffectDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  amount: Decimal!
+}
+
+type AppOrderPaymentDto @join__type(graph: MERCHANTS_APP_API)  {
+  status: PaymentStatusValue!
+  paymentOptionType: PaymentOptionTypeValue!
+  paymentMethod: PaymentMethodInfoDto
+  creditsChargeAmount: Decimal!
+  proofOfPaymentProviderCode: String
+  voucherUrl: String
+}
+
+type AppOrderShipmentDto @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentOptionName: String
+  shipmentOptionType: ShipmentTypeValue!
+  originAddress: AppOrderAddressDto
+  destinationAddress: AppOrderAddressDto
+  history: [AppShipmentHistoryDto]
+  trackingLinkUrl: String
+  estimatedTimeOfArrival: Int
+  driver: AppOrderDriver
+  deliveryLocation: DeliveryLocationDto
+}
+
+type AppOrderStoreDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  imageUrl: String
+  currencyCode: String
+  currencySymbol: String
+  locale: String
+  timezone: String
+}
+
+type CityDto @join__type(graph: MERCHANTS_APP_API)  {
+  cityId: Int!
+  name: String
+}
+
+type AddressDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  address: String
+  territoryCode: String
+  currencySymbol: String
+  currencyCode: String
+  countryCode: String
+  timezone: String
+}
+
+type AppOrderDriver @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  name: String
+  phone: String
+  licensePlate: String
+  avatar: String
+}
+
+type AppShipmentHistoryDto @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentStatus: ShipmentStatusValue!
+  entry: String
+  created: DateTime
+  entryStatus: HistoryEntryStatus!
+}
+
+type AppOrderAddressDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  address: String
+  coordinates: Coordinate
+  phone: String
+}
+
+type PaymentMethodInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  cardholderName: String
+  lastDigits: String
+  firstDigits: String
+  type: String
+  cardName: String
+}
+
+type CustomFieldValue @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  label: String
+  value: String
+}
+
+type Metafield @join__type(graph: MERCHANTS_APP_API)  {
+  namespace: String
+  key: String
+  value: String
+  valueType: MetafieldValueType!
+}
+
+type RuleEngineSessionEffectDto @join__type(graph: MERCHANTS_APP_API)  {
+  ruleEngineSessionEffectId: Int!
+  name: String
+  storeFinancedPercentage: Decimal!
+  amount: Decimal!
+  type: RuleEngineEffectTypeValue!
+  metadata: [KeyValuePairOfStringAndObject!]
+}
+
+type ChargebackDto @join__type(graph: MERCHANTS_APP_API)  {
+  chargebackId: Int!
+  chargeId: Int!
+  chargebackReferenceId: String
+  reason: String
+  status: ChargebackStatusValue!
+  authorizationCode: String
+  amount: Decimal!
+  estimatedResolutionAt: DateTime
+}
+
+type ChargeInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  chargeId: Int!
+  authorizationCode: String
+  status: String
+  amount: Decimal!
+  chargeType: ChargeTypeValue!
+  paymentMethod: PaymentMethodInfoDto
+  voucherUrl: String
+  installments: Int
+  payDate: DateTime
+  refunds: [RefundDto]
+}
+
+type TrackingInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  url: String
+  estimatedTimeOfArrival: Int!
+}
+
+type ShipmentDriverInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int
+  externalId: String
+  name: String
+  phone: String
+  licensePlate: String
+  avatar: String
+  isCustom: Boolean!
+}
+
+type HugoShipmentInformation @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  orderId: String
+  status: String
+  rideId: String
+  rideCode: String
+  hugoOrderId: String
+  hugoOrderCode: String
+  createdDate: DateTime
+  updatedDate: DateTime
+  description: String
+  arrivalTime: String
+  distanceKm: Float!
+  durationMin: Float!
+  driverName: String
+  driverPhone: String
+  driverLicensePlate: String
+  payment: HugoShipmentPaymentInfo
+  isSaturated: Boolean!
+  isSaturatedMessage: String
+  etaAssignment: String
+  etaDelivery: String
+}
+
+type KamBaseDto @join__type(graph: MERCHANTS_APP_API)  {
+  kamId: Int!
+  name: String
+  email: String
+  phone: String
+}
+
+type CartItemDetailModifierDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  selectedOptionsTotal: Decimal!
+  selectedOptions: [CartItemDetailModifierOptionDto]
+}
+
+type TerritoryPaymentMethod @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+  name: String
+  instructions: String
+  link: String
+  requiresAttachment: Boolean!
+  imageUrl: String
+}
+
+type TerritoryDriverTip @join__type(graph: MERCHANTS_APP_API)  {
+  type: String
+  value: String
+  default: Boolean!
+}
+
+type CheckoutPaymentOptionProviderDto @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+  name: String
+  instructions: String
+  link: String
+  imageUrl: String
+}
+
+type CourierDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: String
+  name: String
+  imageUrl: String
+  price: Decimal!
+  deliveryType: CourierDeliveryTypeValue!
+  estimatedDeliveryDate: DateTime
+}
+
+type ShipmentOptionCustomFeeSettings @join__type(graph: MERCHANTS_APP_API)  {
+  minFeeAmount: Decimal!
+  maxFeeAmount: Decimal!
+  feePercentage: Decimal!
+}
+
+type AdditionalDataDto @join__type(graph: MERCHANTS_APP_API)  {
+  collection: Collection
+  product: Product
+  promotion: PromotionDto
+  store: StoreDto
+  filter: FilterDto
+  sectionBehavior: SectionBehaviorDto
+  businessCategory: BusinessCategoryDto
+  order: BuyerOrder
+  orderView: OrderVm
+}
+
+type ItemInfoDto @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  imageUrl: String
+  navigation: NavigationDto
+  metadata: [KeyValuePairOfStringAndString!]
+  additionalData: AdditionalDataDto
+}
+
+type SubscriptionImageDto @join__type(graph: MERCHANTS_APP_API)  {
+  img: String
+  title: String
+  subtitle: String
+}
+
+type SubscriptionDetailBaseDto @join__type(graph: MERCHANTS_APP_API)  {
+  cardData: CardDataDto
+  renewalDate: String
+  canceled: Boolean!
+  promoCode: String
+  name: String
+  icon: String
+  slug: String
+  termsConditionsUrl: String
+  shortDescription: String
+}
+
+type CardDataDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  cardId: String
+  cardName: String
+  cardNumber: String
+  cardExpirationDate: String
+  cardCvc: String
+  cardIdentifierName: String
+  cardStart: String
+  cardEnd: String
+  cardBrand: String
+  cardColor: String
+  extraNumber: String
+  customerId: String
+  customerProfileId: String
+  app: String
+  build: Int!
+  appId: String
+  blocked: Boolean!
+  enabled: Boolean!
+  isDefault: Boolean!
+  availableTime: String
+  isTokenPan: String
+  tokenPan: String
+  authStatus: String
+  createdAt: String
+  updatedAt: String
+}
+
+type SubscriptionTypeResponseDto @join__type(graph: MERCHANTS_APP_API)  {
+  frequencyValue: Int!
+  frequencyName: String
+  name: String
+  parentName: String
+  label: String
+  frequency: String
+  isIntegration: Boolean!
+  isPromotion: Boolean!
+  integrationName: String
+  currency: String
+  price: Float!
+  parentPrice: Int!
+  default: Boolean!
+  texts: TextsDto
+}
+
+type ActivityLogDto @join__type(graph: MERCHANTS_APP_API)  {
+  date: Int!
+  log: String
+}
+
+type TextsDto @join__type(graph: MERCHANTS_APP_API)  {
+  title: String
+  subtitle: String
+}
+
+type NavigationDto @join__type(graph: MERCHANTS_APP_API)  {
+  destinationType: DestinationTypeValue!
+  destinationId: String
+  isServerSide: Boolean!
+  path: String
+}
+
+type SectionBehaviorDto @join__type(graph: MERCHANTS_APP_API)  {
+  usePaging: Boolean!
+}
+
+type FilterDto @join__type(graph: MERCHANTS_APP_API)  {
+  identifiers: [String]
+}
+
+type PromotionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  title: String
+  description: String
+  imageUrl: String
+  startDate: DateTime!
+  endDate: DateTime!
+  businessCategoriesIds: [String]
+}
+
+type CartItemDetailModifierOptionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  amount: Decimal!
+}
+
+type HugoShipmentPaymentInfo @join__type(graph: MERCHANTS_APP_API)  {
+  type: String
+  currency: String
+  hugoShipmentCost: Float!
+}
+
+type RefundDto @join__type(graph: MERCHANTS_APP_API)  {
+  refundId: Int!
+  chargeId: Int!
+  refundReferenceId: String
+  reason: String
+  type: String
+  amount: Decimal!
+}
+
+type KeyValuePairOfStringAndObject @join__type(graph: MERCHANTS_APP_API)  {
+  key: String!
+}
+
+interface GeoJSONInterface @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType!
+  """
+  The minimum bounding box around the geometry object
+  """
+  bbox: [Float]
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+enum GeoJSONGeometryType @join__type(graph: MERCHANTS_APP_API)  {
+  Point @join__enumValue(graph: MERCHANTS_APP_API) 
+  MultiPoint @join__enumValue(graph: MERCHANTS_APP_API) 
+  LineString @join__enumValue(graph: MERCHANTS_APP_API) 
+  MultiLineString @join__enumValue(graph: MERCHANTS_APP_API) 
+  Polygon @join__enumValue(graph: MERCHANTS_APP_API) 
+  MultiPolygon @join__enumValue(graph: MERCHANTS_APP_API) 
+  GeometryCollection @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum CouponStatus @join__type(graph: MERCHANTS_APP_API)  {
+  UNREDEEMED @join__enumValue(graph: MERCHANTS_APP_API) 
+  REDEEMED @join__enumValue(graph: MERCHANTS_APP_API) 
+  EXPIRED @join__enumValue(graph: MERCHANTS_APP_API) 
+  SCHEDULED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OrderStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAID @join__enumValue(graph: MERCHANTS_APP_API) 
+  CANCELLED @join__enumValue(graph: MERCHANTS_APP_API) 
+  FINALIZED @join__enumValue(graph: MERCHANTS_APP_API) 
+  FRAUD_PREVENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  IN_DISPUTE @join__enumValue(graph: MERCHANTS_APP_API) 
+  UNDER_REVIEW @join__enumValue(graph: MERCHANTS_APP_API) 
+  UNPAYABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  RESERVED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ShipmentStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  ACCEPTED @join__enumValue(graph: MERCHANTS_APP_API) 
+  READY @join__enumValue(graph: MERCHANTS_APP_API) 
+  DISPATCHED @join__enumValue(graph: MERCHANTS_APP_API) 
+  ON_ITS_WAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  DELIVERED @join__enumValue(graph: MERCHANTS_APP_API) 
+  SCHEDULED @join__enumValue(graph: MERCHANTS_APP_API) 
+  REJECTED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OrderTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  DEFAULT_TYPE @join__enumValue(graph: MERCHANTS_APP_API) 
+  FAST_LINK @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUBSCRIPTION @join__enumValue(graph: MERCHANTS_APP_API) 
+  MENU_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  E_PAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUPER_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  COURIER @join__enumValue(graph: MERCHANTS_APP_API) 
+  COUPON_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ShipmentTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  HUGO @join__enumValue(graph: MERCHANTS_APP_API) 
+  CUSTOM @join__enumValue(graph: MERCHANTS_APP_API) 
+  PICKUP @join__enumValue(graph: MERCHANTS_APP_API) 
+  WAITER @join__enumValue(graph: MERCHANTS_APP_API) 
+  CORE_LOGISTICS @join__enumValue(graph: MERCHANTS_APP_API) 
+  FLOTI @join__enumValue(graph: MERCHANTS_APP_API) 
+  BOXFUL @join__enumValue(graph: MERCHANTS_APP_API) 
+  C807XPRESS @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ApplyPolicy @join__type(graph: MERCHANTS_APP_API)  {
+  BEFORE_RESOLVER @join__enumValue(graph: MERCHANTS_APP_API) 
+  AFTER_RESOLVER @join__enumValue(graph: MERCHANTS_APP_API) 
+  VALIDATION @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum SortEnumType @join__type(graph: MERCHANTS_APP_API)  {
+  ASC @join__enumValue(graph: MERCHANTS_APP_API) 
+  DESC @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum AppViewTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  MARKET @join__enumValue(graph: MERCHANTS_APP_API) 
+  RESTAURANT @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum DayValue @join__type(graph: MERCHANTS_APP_API)  {
+  MONDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  TUESDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  WEDNESDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  THURSDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  FRIDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  SATURDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUNDAY @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum GeolocationTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  UNDEFINED @join__enumValue(graph: MERCHANTS_APP_API) 
+  COUNTRY @join__enumValue(graph: MERCHANTS_APP_API) 
+  TERRITORY @join__enumValue(graph: MERCHANTS_APP_API) 
+  ADDRESS @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum CountryValue @join__type(graph: MERCHANTS_APP_API)  {
+  GUATEMALA @join__enumValue(graph: MERCHANTS_APP_API) 
+  EL_SALVADOR @join__enumValue(graph: MERCHANTS_APP_API) 
+  HONDURAS @join__enumValue(graph: MERCHANTS_APP_API) 
+  NICARAGUA @join__enumValue(graph: MERCHANTS_APP_API) 
+  REPUBLICA_DOMINICANA @join__enumValue(graph: MERCHANTS_APP_API) 
+  VENEZUELA @join__enumValue(graph: MERCHANTS_APP_API) 
+  PERU @join__enumValue(graph: MERCHANTS_APP_API) 
+  PANAMA @join__enumValue(graph: MERCHANTS_APP_API) 
+  EL_SALVADOR_CO1N @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum PurchaseFrequencyValue @join__type(graph: MERCHANTS_APP_API)  {
+  NONE @join__enumValue(graph: MERCHANTS_APP_API) 
+  LOW @join__enumValue(graph: MERCHANTS_APP_API) 
+  MEDIUM @join__enumValue(graph: MERCHANTS_APP_API) 
+  HIGH @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ShippingAddressTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  HOME @join__enumValue(graph: MERCHANTS_APP_API) 
+  OFFICE @join__enumValue(graph: MERCHANTS_APP_API) 
+  OTHER @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum HoldingTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUPER_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  MENU_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  COUPON_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ProcessOrderResultStatus @join__type(graph: MERCHANTS_APP_API)  {
+  SUCCEEDED @join__enumValue(graph: MERCHANTS_APP_API) 
+  FAILED @join__enumValue(graph: MERCHANTS_APP_API) 
+  AUTHENTICATION_REQUIRED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OtpChannelValue @join__type(graph: MERCHANTS_APP_API)  {
+  SMS @join__enumValue(graph: MERCHANTS_APP_API) 
+  WHATS_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OrderRatingStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  COMPLETED @join__enumValue(graph: MERCHANTS_APP_API) 
+  SKIPPED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum SectionTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  YUMMY_BANNER_CAROUSEL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_COLLECTIONS @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_PRODUCTS_CAROUSEL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_PRODUCTS_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_STORES @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_TOP_BANNER @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_DISCOVER @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_RECENTLY_VIEWED @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_PRODUCT_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_COLLECTION_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_STORE_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_PROMOTION_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_COLLECTIONS_TAB @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_PRODUCTS_LIST @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_BUSINESS_CATEGORIES_CAROUSEL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_PROMOTION @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_MODAL_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_SEARCH_BAR @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_HERO @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_COLLECTIONS_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_PRODUCTS_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_PRODUCTS_FILTER @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_PRODUCT_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_BREADCRUMB @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_NAVBAR @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_FOOTER @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_QUICK_LINK @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_BANNER_CAROUSEL @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_COLLECTIONS @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_STORES @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHOP_PRODUCTS_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_FEATURED_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_ITEMS_GRID @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_CAROUSEL @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_STORE_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_DAILY_ORDERS @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_ORDER_DETAIL @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_CHIP_FILTERS @join__enumValue(graph: MERCHANTS_APP_API) 
+  YUMMY_FAVORITE_STORES @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum DestinationTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  PRODUCT @join__enumValue(graph: MERCHANTS_APP_API) 
+  COLLECTION @join__enumValue(graph: MERCHANTS_APP_API) 
+  PROMOTION @join__enumValue(graph: MERCHANTS_APP_API) 
+  STORE @join__enumValue(graph: MERCHANTS_APP_API) 
+  SECTION @join__enumValue(graph: MERCHANTS_APP_API) 
+  EXTERNAL_URL @join__enumValue(graph: MERCHANTS_APP_API) 
+  BUSINESS_CATEGORY @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAGE @join__enumValue(graph: MERCHANTS_APP_API) 
+  FILTER @join__enumValue(graph: MERCHANTS_APP_API) 
+  EXTERNAL_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  ORDER @join__enumValue(graph: MERCHANTS_APP_API) 
+  INTERNAL_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum PaymentOptionTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  CREDIT_CARD @join__enumValue(graph: MERCHANTS_APP_API) 
+  CASH @join__enumValue(graph: MERCHANTS_APP_API) 
+  CUSTOM @join__enumValue(graph: MERCHANTS_APP_API) 
+  MERCHANT_CASH @join__enumValue(graph: MERCHANTS_APP_API) 
+  PROOF_OF_PAYMENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  CREDITS @join__enumValue(graph: MERCHANTS_APP_API) 
+  VOUCHER_PROOF @join__enumValue(graph: MERCHANTS_APP_API) 
+  CRYPTO @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum TipOptionTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  PERCENTAGE @join__enumValue(graph: MERCHANTS_APP_API) 
+  FIXED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum CustomerExperienceStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  ASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+  RESOLVED @join__enumValue(graph: MERCHANTS_APP_API) 
+  UNASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum CustomerExperiencePriorityValue @join__type(graph: MERCHANTS_APP_API)  {
+  NO_ACTION_REQUIRED @join__enumValue(graph: MERCHANTS_APP_API) 
+  STUCK_ON_SHIPMENT_STATUS @join__enumValue(graph: MERCHANTS_APP_API) 
+  STUCK_ON_PARTNER_ACCEPTANCE @join__enumValue(graph: MERCHANTS_APP_API) 
+  STUCK_ON_DRIVER_ACCEPTANCE @join__enumValue(graph: MERCHANTS_APP_API) 
+  NEEDS_HELP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum LayoutTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_DEFAULT @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT_FOOD @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OnboardingStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_NEEDED @join__enumValue(graph: MERCHANTS_APP_API) 
+  NOT_STARTED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  READY_FOR_REVIEW @join__enumValue(graph: MERCHANTS_APP_API) 
+  REQUIRES_CHANGES @join__enumValue(graph: MERCHANTS_APP_API) 
+  APPROVED @join__enumValue(graph: MERCHANTS_APP_API) 
+  REJECTED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum RuleEngineSessionStateValue @join__type(graph: MERCHANTS_APP_API)  {
+  OPEN @join__enumValue(graph: MERCHANTS_APP_API) 
+  CLOSED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CANCELLED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PARTIALLY_RETURNED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OrderUpdateStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  PREVIEWED @join__enumValue(graph: MERCHANTS_APP_API) 
+  COMMITTED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum LogLevel @join__type(graph: MERCHANTS_APP_API)  {
+  NONE @join__enumValue(graph: MERCHANTS_APP_API) 
+  INFO @join__enumValue(graph: MERCHANTS_APP_API) 
+  WARNING @join__enumValue(graph: MERCHANTS_APP_API) 
+  ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum OrderEventType @join__type(graph: MERCHANTS_APP_API)  {
+  CREATED @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUCCESS_PAYMENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  FINALIZED @join__enumValue(graph: MERCHANTS_APP_API) 
+  UPDATED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CANCELLED @join__enumValue(graph: MERCHANTS_APP_API) 
+  DELETED @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUCCESS_REVERSE @join__enumValue(graph: MERCHANTS_APP_API) 
+  REVERSE_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  RECURRING_PAYMENT_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  SHIPMENT_STATUS_CHANGED @join__enumValue(graph: MERCHANTS_APP_API) 
+  DRIVER_STATUS_CHANGED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CX_EVENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  DELIVERY_REQUEST_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  DRIVER_ACCEPTED @join__enumValue(graph: MERCHANTS_APP_API) 
+  DELIVERY_REQUEST_CANCELLED @join__enumValue(graph: MERCHANTS_APP_API) 
+  DELIVERY_REQUEST_CREATED @join__enumValue(graph: MERCHANTS_APP_API) 
+  DRIVER_AUTO_ASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CX_ASSIGNATION_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  CX_MANUAL_ASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CX_COMMENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  NEEDS_HELP @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_ERROR_WITH_BACKUP_METHOD @join__enumValue(graph: MERCHANTS_APP_API) 
+  RECURRING_PAYMENT_ERROR_WITH_BACKUP_METHOD @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_CHARGES_ALLOWED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_CHARGES_ALLOW_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  CHARGEBACK_STATUS_CHANGED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_CHARGES_VALIDATE_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_CHARGES_VALIDATE_ALLOWED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_CHARGES_VALIDATE_NOT_ALLOWED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CUSTOMER_SESSION_CLOSE_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  ORDER_VERSION_COMMITTED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CUSTOM_DRIVER_ASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CUSTOMER_SESSION_CANCEL_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAYMENT_REVIEW_REQUIRED @join__enumValue(graph: MERCHANTS_APP_API) 
+  CX_AUTO_ASSIGNED @join__enumValue(graph: MERCHANTS_APP_API) 
+  REQUIRES3DS @join__enumValue(graph: MERCHANTS_APP_API) 
+  ORDER_UPDATED @join__enumValue(graph: MERCHANTS_APP_API) 
+  THREE_D_SECURE_AUTH_SUCCEEDED @join__enumValue(graph: MERCHANTS_APP_API) 
+  THREE_D_SECURE_AUTH_ERROR @join__enumValue(graph: MERCHANTS_APP_API) 
+  THREE_D_SECURE_AUTH_EXPIRED @join__enumValue(graph: MERCHANTS_APP_API) 
+  THREE_D_SECURE_AUTH_FAILED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum SalesChannelValue @join__type(graph: MERCHANTS_APP_API)  {
+  PAYMENT_LINK @join__enumValue(graph: MERCHANTS_APP_API) 
+  STOREFRONT @join__enumValue(graph: MERCHANTS_APP_API) 
+  MENU_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  SUPER_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+  E_PAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  OTTO @join__enumValue(graph: MERCHANTS_APP_API) 
+  N1CO_TAP @join__enumValue(graph: MERCHANTS_APP_API) 
+  COUPON_APP @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum PaymentStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  NOT_AVAILABLE @join__enumValue(graph: MERCHANTS_APP_API) 
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  PAID @join__enumValue(graph: MERCHANTS_APP_API) 
+  CANCELLED @join__enumValue(graph: MERCHANTS_APP_API) 
+  FRAUD_PREVENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  UNDER_REVIEW @join__enumValue(graph: MERCHANTS_APP_API) 
+  RESERVED @join__enumValue(graph: MERCHANTS_APP_API) 
+  PROCESSING @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum HistoryEntryStatus @join__type(graph: MERCHANTS_APP_API)  {
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  IN_PROGRESS @join__enumValue(graph: MERCHANTS_APP_API) 
+  COMPLETED @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum MetafieldValueType @join__type(graph: MERCHANTS_APP_API)  {
+  STRING @join__enumValue(graph: MERCHANTS_APP_API) 
+  NUMBER @join__enumValue(graph: MERCHANTS_APP_API) 
+  JSON_STRING @join__enumValue(graph: MERCHANTS_APP_API) 
+  BOOL @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum RuleEngineEffectTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  DISCOUNT @join__enumValue(graph: MERCHANTS_APP_API) 
+  SURCHARGE @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ChargebackStatusValue @join__type(graph: MERCHANTS_APP_API)  {
+  PENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  MERCHANT_WON @join__enumValue(graph: MERCHANTS_APP_API) 
+  MERCHANT_LOST @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum ChargeTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  CREDIT_CARD @join__enumValue(graph: MERCHANTS_APP_API) 
+  CREDITS @join__enumValue(graph: MERCHANTS_APP_API) 
+  CASH @join__enumValue(graph: MERCHANTS_APP_API) 
+  PROOF_OF_PAYMENT @join__enumValue(graph: MERCHANTS_APP_API) 
+  CRYPTO @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum CourierDeliveryTypeValue @join__type(graph: MERCHANTS_APP_API)  {
+  UNKNOWN @join__enumValue(graph: MERCHANTS_APP_API) 
+  SAME_DAY @join__enumValue(graph: MERCHANTS_APP_API) 
+  NEXT_DAY @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+enum PageSortType @join__type(graph: MERCHANTS_APP_API)  {
+  ASCENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+  DESCENDING @join__enumValue(graph: MERCHANTS_APP_API) 
+}
+
+input GeoJSONPointInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field is a single position.
+  """
+  coordinates: Position
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiPointInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field is an array of positions.
+  """
+  coordinates: [Position]
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONLineStringInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field is an array of two or more positions.
+  """
+  coordinates: [Position]
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiLineStringInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field is an array of LineString coordinate arrays.
+  """
+  coordinates: [[Position]]
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONPolygonInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field MUST be an array of linear ring coordinate arrays. For Polygons with more than one of these rings, the first MUST be the exterior ring, and any others MUST be interior rings. The exterior ring bounds the surface, and the interior rings (if present) bound holes within the surface.
+  """
+  coordinates: [[Position]]
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input GeoJSONMultiPolygonInput @join__type(graph: MERCHANTS_APP_API)  {
+  """
+  The geometry type of the GeoJson object
+  """
+  type: GeoJSONGeometryType
+  """
+  The "coordinates" field is an array of Polygon coordinate arrays.
+  """
+  coordinates: Coordinates
+  """
+  The coordinate reference system integer identifier
+  """
+  crs: Int
+}
+
+input BuyerOrderFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [BuyerOrderFilterInput!]
+  or: [BuyerOrderFilterInput!]
+  orderId: IntOperationFilterInput
+  storeName: StringOperationFilterInput
+  orderDate: DateTimeOperationFilterInput
+  paymentDate: DateTimeOperationFilterInput
+  name: StringOperationFilterInput
+  paymentOption: StringOperationFilterInput
+  shipmentOption: StringOperationFilterInput
+  linkUrl: StringOperationFilterInput
+  subTotal: DecimalOperationFilterInput
+  deliveryCost: DecimalOperationFilterInput
+  totalDiscount: DecimalOperationFilterInput
+  totalSurcharge: DecimalOperationFilterInput
+  total: DecimalOperationFilterInput
+  totalFormatted: StringOperationFilterInput
+  timezone: StringOperationFilterInput
+  currencyCode: StringOperationFilterInput
+  currencySymbol: StringOperationFilterInput
+  locale: StringOperationFilterInput
+  orderStatus: OrderStatusValueOperationFilterInput
+  shipmentStatus: ShipmentStatusValueOperationFilterInput
+  storeId: IntOperationFilterInput
+  orderType: OrderTypeValueOperationFilterInput
+  shipmentType: ShipmentTypeValueOperationFilterInput
+  storeImageUrl: StringOperationFilterInput
+  storeBannerUrl: StringOperationFilterInput
+  storeBannerColor: StringOperationFilterInput
+  requiresShipping: BooleanOperationFilterInput
+  customerSessionId: IntOperationFilterInput
+  orderDetails: ListFilterInputTypeOfOrderDetailBaseDtoFilterInput
+  couponStatus: NullableOfCouponStatusOperationFilterInput
+}
+
+input BuyerOrderSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  orderId: SortEnumType
+  storeName: SortEnumType
+  orderDate: SortEnumType
+  paymentDate: SortEnumType
+  name: SortEnumType
+  paymentOption: SortEnumType
+  shipmentOption: SortEnumType
+  linkUrl: SortEnumType
+  subTotal: SortEnumType
+  deliveryCost: SortEnumType
+  totalDiscount: SortEnumType
+  totalSurcharge: SortEnumType
+  total: SortEnumType
+  totalFormatted: SortEnumType
+  timezone: SortEnumType
+  currencyCode: SortEnumType
+  currencySymbol: SortEnumType
+  locale: SortEnumType
+  orderStatus: SortEnumType
+  shipmentStatus: SortEnumType
+  storeId: SortEnumType
+  orderType: SortEnumType
+  shipmentType: SortEnumType
+  storeImageUrl: SortEnumType
+  storeBannerUrl: SortEnumType
+  storeBannerColor: SortEnumType
+  requiresShipping: SortEnumType
+  customerSessionId: SortEnumType
+  couponStatus: SortEnumType
+}
+
+input OrderToRateDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [OrderToRateDtoFilterInput!]
+  or: [OrderToRateDtoFilterInput!]
+  orderId: IntOperationFilterInput
+  storeId: IntOperationFilterInput
+  storeName: StringOperationFilterInput
+  storeImageUrl: StringOperationFilterInput
+  driverName: StringOperationFilterInput
+  driverImageUrl: StringOperationFilterInput
+  shipmentType: ShipmentTypeValueOperationFilterInput
+  orderType: OrderTypeValueOperationFilterInput
+  orderDate: DateTimeOperationFilterInput
+  timezone: StringOperationFilterInput
+}
+
+input CountryDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [CountryDtoFilterInput!]
+  or: [CountryDtoFilterInput!]
+  countryId: IntOperationFilterInput
+  name: StringOperationFilterInput
+  currencySymbol: StringOperationFilterInput
+  currencyCode: StringOperationFilterInput
+  countryCode: StringOperationFilterInput
+  timezone: StringOperationFilterInput
+  isActive: BooleanOperationFilterInput
+  inactiveStoreSalesLimitAmount: DecimalOperationFilterInput
+  locale: StringOperationFilterInput
+  threeDSecureFlatFee: DecimalOperationFilterInput
+  states: ListFilterInputTypeOfStateDtoFilterInput
+  processingFeeRate: DecimalOperationFilterInput
+}
+
+input CountryDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  countryId: SortEnumType
+  name: SortEnumType
+  currencySymbol: SortEnumType
+  currencyCode: SortEnumType
+  countryCode: SortEnumType
+  timezone: SortEnumType
+  isActive: SortEnumType
+  inactiveStoreSalesLimitAmount: SortEnumType
+  locale: SortEnumType
+  threeDSecureFlatFee: SortEnumType
+  processingFeeRate: SortEnumType
+}
+
+input StateDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StateDtoFilterInput!]
+  or: [StateDtoFilterInput!]
+  stateId: IntOperationFilterInput
+  name: StringOperationFilterInput
+  cities: ListFilterInputTypeOfCityDtoFilterInput
+}
+
+input StateDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  stateId: SortEnumType
+  name: SortEnumType
+}
+
+input CountryTerritoryBaseDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [CountryTerritoryBaseDtoFilterInput!]
+  or: [CountryTerritoryBaseDtoFilterInput!]
+  name: StringOperationFilterInput
+  territoryCode: StringOperationFilterInput
+  currencySymbol: StringOperationFilterInput
+  currencyCode: StringOperationFilterInput
+  countryCode: StringOperationFilterInput
+  countryName: StringOperationFilterInput
+  timezone: StringOperationFilterInput
+}
+
+input CountryTerritoryBaseDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  name: SortEnumType
+  territoryCode: SortEnumType
+  currencySymbol: SortEnumType
+  currencyCode: SortEnumType
+  countryCode: SortEnumType
+  countryName: SortEnumType
+  timezone: SortEnumType
+}
+
+input ProductFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [ProductFilterInput!]
+  or: [ProductFilterInput!]
+  id: IntOperationFilterInput
+  sku: StringOperationFilterInput
+  name: StringOperationFilterInput
+  vendorName: StringOperationFilterInput
+  keywords: StringOperationFilterInput
+  description: StringOperationFilterInput
+  quantityAvailable: IntOperationFilterInput
+  collectionId: IntOperationFilterInput
+  collection: StringOperationFilterInput
+  price: DecimalOperationFilterInput
+  promoId: IntOperationFilterInput
+  promoPrice: DecimalOperationFilterInput
+  productImageUrl: StringOperationFilterInput
+  images: ListFilterInputTypeOfImageFilterInput
+  slug: StringOperationFilterInput
+  salePrice: DecimalOperationFilterInput
+  modifiers: ListFilterInputTypeOfStorefrontProductModifierDtoFilterInput
+  hasModifiers: BooleanOperationFilterInput
+  storeId: IntOperationFilterInput
+  collectionHasAgeRestriction: BooleanOperationFilterInput
+  upc: StringOperationFilterInput
+  requiresShipping: BooleanOperationFilterInput
+  created: DateTimeOperationFilterInput
+  metadata: ListFilterInputTypeOfKeyValuePairOfStringAndStringFilterInput
+}
+
+input ProductSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: SortEnumType
+  sku: SortEnumType
+  name: SortEnumType
+  vendorName: SortEnumType
+  keywords: SortEnumType
+  description: SortEnumType
+  quantityAvailable: SortEnumType
+  collectionId: SortEnumType
+  collection: SortEnumType
+  price: SortEnumType
+  promoId: SortEnumType
+  promoPrice: SortEnumType
+  productImageUrl: SortEnumType
+  slug: SortEnumType
+  salePrice: SortEnumType
+  hasModifiers: SortEnumType
+  storeId: SortEnumType
+  collectionHasAgeRestriction: SortEnumType
+  upc: SortEnumType
+  requiresShipping: SortEnumType
+  created: SortEnumType
+}
+
+input CollectionFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [CollectionFilterInput!]
+  or: [CollectionFilterInput!]
+  id: IntOperationFilterInput
+  code: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  keywords: StringOperationFilterInput
+  bannerImageUrl: StringOperationFilterInput
+  smallBannerImageUrl: StringOperationFilterInput
+  productCount: IntOperationFilterInput
+  slug: StringOperationFilterInput
+  parentId: IntOperationFilterInput
+  parentName: StringOperationFilterInput
+  storeName: StringOperationFilterInput
+  hasSubCollections: BooleanOperationFilterInput
+  hasAgeRestriction: BooleanOperationFilterInput
+  storeId: IntOperationFilterInput
+  order: IntOperationFilterInput
+}
+
+input CollectionSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: SortEnumType
+  code: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  keywords: SortEnumType
+  bannerImageUrl: SortEnumType
+  smallBannerImageUrl: SortEnumType
+  productCount: SortEnumType
+  slug: SortEnumType
+  parentId: SortEnumType
+  parentName: SortEnumType
+  storeName: SortEnumType
+  hasSubCollections: SortEnumType
+  hasAgeRestriction: SortEnumType
+  storeId: SortEnumType
+  order: SortEnumType
+}
+
+input StoreDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StoreDtoFilterInput!]
+  or: [StoreDtoFilterInput!]
+  isActive: BooleanOperationFilterInput
+  businessCategoriesIds: ListStringOperationFilterInput
+  address: StringOperationFilterInput
+  email: StringOperationFilterInput
+  phone: StringOperationFilterInput
+  location: CoordinateFilterInput
+  appViewType: AppViewTypeValueOperationFilterInput
+  isOpen: BooleanOperationFilterInput
+  canScheduleOrders: BooleanOperationFilterInput
+  schedules: ListFilterInputTypeOfScheduleDtoFilterInput
+  preparationTime: IntOperationFilterInput
+  nearestLocationId: IntOperationFilterInput
+  isFavorite: BooleanOperationFilterInput
+  distance: FloatOperationFilterInput
+  shipmentOptions: ListShipmentTypeValueOperationFilterInput
+  rating: DecimalOperationFilterInput
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  storeImageUrl: StringOperationFilterInput
+  storeBannerUrl: StringOperationFilterInput
+  storeBannerColor: StringOperationFilterInput
+}
+
+input StoreDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  isActive: SortEnumType
+  address: SortEnumType
+  email: SortEnumType
+  phone: SortEnumType
+  location: CoordinateSortInput
+  appViewType: SortEnumType
+  isOpen: SortEnumType
+  canScheduleOrders: SortEnumType
+  preparationTime: SortEnumType
+  nearestLocationId: SortEnumType
+  isFavorite: SortEnumType
+  distance: SortEnumType
+  rating: SortEnumType
+  id: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  storeImageUrl: SortEnumType
+  storeBannerUrl: SortEnumType
+  storeBannerColor: SortEnumType
+}
+
+input BusinessCategoryDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [BusinessCategoryDtoFilterInput!]
+  or: [BusinessCategoryDtoFilterInput!]
+  id: IntOperationFilterInput
+  parentBusinessCategoryId: IntOperationFilterInput
+  parentBusinessCategoryName: StringOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  storeCount: IntOperationFilterInput
+  jsonDynamicFilters: StringOperationFilterInput
+  keywords: StringOperationFilterInput
+  visible: BooleanOperationFilterInput
+  bannerImageUrl: StringOperationFilterInput
+  smallBannerImageUrl: StringOperationFilterInput
+  holdingId: IntOperationFilterInput
+}
+
+input BusinessCategoryDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: SortEnumType
+  parentBusinessCategoryId: SortEnumType
+  parentBusinessCategoryName: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  storeCount: SortEnumType
+  jsonDynamicFilters: SortEnumType
+  keywords: SortEnumType
+  visible: SortEnumType
+  bannerImageUrl: SortEnumType
+  smallBannerImageUrl: SortEnumType
+  holdingId: SortEnumType
+}
+
+input IntOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input StringOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input DateTimeOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input DecimalOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+input OrderStatusValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: OrderStatusValue
+  neq: OrderStatusValue
+  in: [OrderStatusValue!]
+  nin: [OrderStatusValue!]
+}
+
+input ShipmentStatusValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: ShipmentStatusValue
+  neq: ShipmentStatusValue
+  in: [ShipmentStatusValue!]
+  nin: [ShipmentStatusValue!]
+}
+
+input OrderTypeValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: OrderTypeValue
+  neq: OrderTypeValue
+  in: [OrderTypeValue!]
+  nin: [OrderTypeValue!]
+}
+
+input ShipmentTypeValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: ShipmentTypeValue
+  neq: ShipmentTypeValue
+  in: [ShipmentTypeValue!]
+  nin: [ShipmentTypeValue!]
+}
+
+input BooleanOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ListFilterInputTypeOfOrderDetailBaseDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: OrderDetailBaseDtoFilterInput
+  none: OrderDetailBaseDtoFilterInput
+  some: OrderDetailBaseDtoFilterInput
+  any: Boolean
+}
+
+input NullableOfCouponStatusOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: CouponStatus
+  neq: CouponStatus
+  in: [CouponStatus]
+  nin: [CouponStatus]
+}
+
+input ListFilterInputTypeOfStateDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: StateDtoFilterInput
+  none: StateDtoFilterInput
+  some: StateDtoFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfCityDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: CityDtoFilterInput
+  none: CityDtoFilterInput
+  some: CityDtoFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfImageFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: ImageFilterInput
+  none: ImageFilterInput
+  some: ImageFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfStorefrontProductModifierDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: StorefrontProductModifierDtoFilterInput
+  none: StorefrontProductModifierDtoFilterInput
+  some: StorefrontProductModifierDtoFilterInput
+  any: Boolean
+}
+
+input ListFilterInputTypeOfKeyValuePairOfStringAndStringFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: KeyValuePairOfStringAndStringFilterInput
+  none: KeyValuePairOfStringAndStringFilterInput
+  some: KeyValuePairOfStringAndStringFilterInput
+  any: Boolean
+}
+
+input ListStringOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+input CoordinateFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [CoordinateFilterInput!]
+  or: [CoordinateFilterInput!]
+  latitude: FloatOperationFilterInput
+  longitude: FloatOperationFilterInput
+}
+
+input AppViewTypeValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: AppViewTypeValue
+  neq: AppViewTypeValue
+  in: [AppViewTypeValue!]
+  nin: [AppViewTypeValue!]
+}
+
+input ListFilterInputTypeOfScheduleDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: ScheduleDtoFilterInput
+  none: ScheduleDtoFilterInput
+  some: ScheduleDtoFilterInput
+  any: Boolean
+}
+
+input FloatOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: Float
+  neq: Float
+  in: [Float]
+  nin: [Float]
+  gt: Float
+  ngt: Float
+  gte: Float
+  ngte: Float
+  lt: Float
+  nlt: Float
+  lte: Float
+  nlte: Float
+}
+
+input ListShipmentTypeValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: ShipmentTypeValueOperationFilterInput
+  none: ShipmentTypeValueOperationFilterInput
+  some: ShipmentTypeValueOperationFilterInput
+  any: Boolean
+}
+
+input CoordinateSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  latitude: SortEnumType
+  longitude: SortEnumType
+}
+
+input OrderDetailBaseDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [OrderDetailBaseDtoFilterInput!]
+  or: [OrderDetailBaseDtoFilterInput!]
+  itemId: IntOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  price: DecimalOperationFilterInput
+  promoPrice: DecimalOperationFilterInput
+  productImageUrl: StringOperationFilterInput
+  requiresShipping: BooleanOperationFilterInput
+  productMetadata: ListFilterInputTypeOfKeyValuePairOfStringAndStringFilterInput
+  quantity: IntOperationFilterInput
+  subTotal: DecimalOperationFilterInput
+}
+
+input CityDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [CityDtoFilterInput!]
+  or: [CityDtoFilterInput!]
+  cityId: IntOperationFilterInput
+  name: StringOperationFilterInput
+}
+
+input ImageFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [ImageFilterInput!]
+  or: [ImageFilterInput!]
+  sequence: IntOperationFilterInput
+  url: StringOperationFilterInput
+}
+
+input StorefrontProductModifierDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StorefrontProductModifierDtoFilterInput!]
+  or: [StorefrontProductModifierDtoFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  minOptions: IntOperationFilterInput
+  maxOptions: IntOperationFilterInput
+  options: ListFilterInputTypeOfStorefrontProductModifierOptionDtoFilterInput
+}
+
+input KeyValuePairOfStringAndStringFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [KeyValuePairOfStringAndStringFilterInput!]
+  or: [KeyValuePairOfStringAndStringFilterInput!]
+  key: StringOperationFilterInput
+  value: StringOperationFilterInput
+}
+
+input ScheduleDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [ScheduleDtoFilterInput!]
+  or: [ScheduleDtoFilterInput!]
+  isActive: BooleanOperationFilterInput
+  day: DayValueOperationFilterInput
+  hours: ListFilterInputTypeOfHoursOpenFilterInput
+}
+
+input ListFilterInputTypeOfStorefrontProductModifierOptionDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: StorefrontProductModifierOptionDtoFilterInput
+  none: StorefrontProductModifierOptionDtoFilterInput
+  some: StorefrontProductModifierOptionDtoFilterInput
+  any: Boolean
+}
+
+input DayValueOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  eq: DayValue
+  neq: DayValue
+  in: [DayValue!]
+  nin: [DayValue!]
+}
+
+input ListFilterInputTypeOfHoursOpenFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: HoursOpenFilterInput
+  none: HoursOpenFilterInput
+  some: HoursOpenFilterInput
+  any: Boolean
+}
+
+input StorefrontProductModifierOptionDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StorefrontProductModifierOptionDtoFilterInput!]
+  or: [StorefrontProductModifierOptionDtoFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  amount: DecimalOperationFilterInput
+}
+
+input HoursOpenFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [HoursOpenFilterInput!]
+  or: [HoursOpenFilterInput!]
+  startTime: StringOperationFilterInput
+  endTime: StringOperationFilterInput
+}
+
+input GetGeolocationInfoQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  coordinates: GeoCoordinateDtoInput
+  type: GeolocationTypeValue
+}
+
+input GetTerritoryByCodeQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  code: String
+}
+
+input GetTerritoryByGeolocationQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  coordinates: CoordinateInput
+}
+
+input GetCountryTerritoriesQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  countryCode: String
+}
+
+input GetStatesQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  country: CountryValue!
+}
+
+input GetAppBuyerOrderQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+}
+
+input GetOrderQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+}
+
+input GetCartDetailQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int
+  locationId: Int
+  cart: [ProductQuantityDtoInput]
+}
+
+input GetAppCheckoutSessionQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  customerSessionId: Int
+  storeId: Int
+  locationId: Int
+  cart: [ProductQuantityDtoInput]
+  couponCodes: [String]
+  paymentDetail: CheckoutPaymentDetailInput
+  shipmentDetail: CheckoutShipmentDetailInput
+  referralCode: String
+  tip: Decimal
+  courierId: String
+}
+
+input GetCourierCheckoutInfoQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  customerSessionId: Int
+  originAddressId: Int!
+  destinationAddressId: Int!
+  paymentDetail: CheckoutPaymentDetailInput
+  couponCodes: [String]
+  referralCode: String
+}
+
+input GetAppCheckoutInfoQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int!
+  cart: [ProductQuantityDtoInput]
+}
+
+input GetAppPageQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  navigation: NavigationPayloadDtoInput
+  filter: PageFilterDtoInput
+  sort: PageSortDtoInput
+}
+
+input GetSubscriptionOnBoardingDetailsByLangQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  lang: String
+}
+
+input GetSubscriptionQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  lang: String
+}
+
+input GetSubscriptionBenefitsQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  lang: String
+}
+
+input GetSubscriptionsAvailableForUserQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  lang: String
+}
+
+input GetUserSubscriptionDetailsQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+}
+
+input GetIsUserSubscribedQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+}
+
+input GetIsMainSubscriptionAvailableQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  lang: String
+}
+
+input GetAppStoreLocationsQueryInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int!
+}
+
+input CreatePaymentMethodCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  number: String
+  expirationDate: DateTime!
+  cardCustomization: CardCustomizationDtoInput
+  verificationCode: String
+  billingInfo: BillingInfoDtoInput
+}
+
+input CreatePaymentMethodByCardIdCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  cardId: String
+}
+
+input UpdatePaymentMethodCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  cardCustomization: CardCustomizationDtoInput
+  billingInfo: BillingInfoDtoInput
+}
+
+input DeletePaymentMethodCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+}
+
+input CreateShippingAddressCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  addressName: String
+  addressDescription: String
+  addressLine2: String
+  phone: String
+  note: String
+  location: CoordinateInput
+  shippingAddressType: ShippingAddressTypeValue
+  isDefault: Boolean
+  reference: String
+  singleUse: Boolean
+  city: String
+  depto: String
+}
+
+input UpdateShippingAddressCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  addressName: String
+  addressDescription: String
+  addressLine2: String
+  phone: String
+  note: String
+  location: CoordinateInput
+  shippingAddressType: ShippingAddressTypeValue
+  isDefault: Boolean
+  reference: String
+  singleUse: Boolean
+  city: String
+  depto: String
+}
+
+input DeleteShippingAddressCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+}
+
+input UpdateAppBuyerInfoCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  pictureImageBase64: String
+  birthdate: DateTime
+}
+
+input UpdateBuyerDeviceTokenCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  deviceToken: String
+}
+
+input UpdateBuyerFavoriteStoreCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int!
+  isFavorite: Boolean!
+}
+
+input CreateBuyerInvoiceInfoCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  nit: String
+  address: String
+}
+
+input UpdateBuyerInvoiceInfoCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  nit: String
+  address: String
+}
+
+input DeleteBuyerInvoiceInfoCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+}
+
+input ProcessAppCheckoutCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int!
+  locationId: Int!
+  buyerEmail: String
+  buyerName: String
+  paymentOptionId: Int!
+  paymentMethodId: Int
+  shipmentOptionId: Int
+  shippingAddressId: Int
+  checkoutNote: String
+  orderId: Int
+  cartDetail: CheckoutCartDetailDtoInput
+  orderName: String
+  orderReservationDateTime: DateTime
+  verificationCode: String
+  cashToCollect: Decimal
+  deviceId: String
+  deliveryQuoteId: Int
+  customerSessionId: Int
+  driverTip: Decimal
+  proofOfPaymentBase64Attachment: String
+  proofOfPaymentProviderCode: String
+  tip: Decimal
+  invoiceName: String
+  nit: String
+  invoiceAddress: String
+  invoiceInfoId: Int
+  deliveryLocationId: Int
+  authenticationId: String
+  billingInfo: BillingInfoDtoInput
+}
+
+input CreateDeliveryQuoteCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentOptionId: Int!
+  shippingAddressId: Int!
+  locationId: Int!
+}
+
+input ProcessCourierCheckoutCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  storeId: Int!
+  orderName: String
+  buyerEmail: String
+  buyerName: String
+  paymentOptionId: Int!
+  paymentMethodId: Int
+  shipmentOptionId: Int!
+  checkoutNote: String
+  originAddressId: Int!
+  destinationAddressId: Int!
+  deliveryQuoteId: Int!
+  customerSessionId: Int
+  cashToCollect: Decimal
+  deviceId: String
+  verificationCode: String
+  driverTip: Decimal
+  proofOfPaymentBase64Attachment: String
+  proofOfPaymentProviderCode: String
+  invoiceInfoId: Int
+  authenticationId: String
+  billingInfo: BillingInfoDtoInput
+}
+
+input CreateCourierDeliveryQuoteCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  originAddressId: Int!
+  destinationAddressId: Int!
+}
+
+input CreateOrUpdateCourierAddressCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int
+  addressDescription: String
+  note: String
+  reference: String
+  phone: String
+  location: CoordinateInput
+}
+
+input GenerateValidationCodeCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  identifier: String
+  otpChannel: OtpChannelValue
+}
+
+input CheckValidationCodeCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  validationCode: String
+}
+
+input CreateOrderRatingCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  orderId: Int!
+  storeRating: Decimal
+  serviceRating: Decimal
+  deliveryRating: Decimal
+  status: OrderRatingStatusValue!
+}
+
+input UpdateUserSubscriptionStatusCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  active: Boolean!
+}
+
+input DeleteUserSubscriptionCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+}
+
+input UpdateUserSubscriptionPaymentMethodCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  paymentMethodId: Int!
+}
+
+input SendPaymentSubscriptionEmailCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  lang: String
+}
+
+input PayAndSubscribeUserCommandInput @join__type(graph: MERCHANTS_APP_API)  {
+  subscriptionSlug: String
+  subscriptionType: String
+  paymentMethodId: Int!
+}
+
+input CheckoutCartDetailDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  cart: [ProductQuantityDtoInput]
+  expectedSavedTotal: Decimal!
+  expectedTotal: Decimal!
+}
+
+input BillingInfoDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  countryCode: String
+  stateCode: String
+  zipCode: String
+}
+
+input CardCustomizationDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  name: String
+  color: String
+}
+
+input PageSortDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  store: PageStoreSortDtoInput
+}
+
+input PageFilterDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  store: PageStoreFilterDtoInput
+}
+
+input NavigationPayloadDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  destinationType: DestinationTypeValue
+  destinationId: String
+  path: String
+}
+
+input CheckoutShipmentDetailInput @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentOptionId: Int
+  shipmentOptionType: ShipmentTypeValue
+  shippingAddressId: Int
+}
+
+input CheckoutPaymentDetailInput @join__type(graph: MERCHANTS_APP_API)  {
+  paymentOptionId: Int
+  paymentOptionType: PaymentOptionTypeValue
+  paymentMethodId: Int
+  proofOfPaymentProviderCode: String
+}
+
+input ProductQuantityDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  productId: Int!
+  quantity: Int!
+  modifiers: [ModifierInput]
+  note: String
+}
+
+input CoordinateInput @join__type(graph: MERCHANTS_APP_API)  {
+  latitude: Float!
+  longitude: Float!
+}
+
+input GeoCoordinateDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  latitude: Float
+  longitude: Float
+}
+
+input ModifierInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  selectedOptionsIds: [Int!]
+}
+
+input PageStoreFilterDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  shipmentType: ShipmentTypeValue
+  canScheduleOrders: Boolean
+}
+
+input PageStoreSortDtoInput @join__type(graph: MERCHANTS_APP_API)  {
+  rating: PageSortType
+  preparationTime: PageSortType
+  distance: PageSortType
+}
+    
