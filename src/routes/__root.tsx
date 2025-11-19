@@ -12,7 +12,9 @@ export interface RouterContext {
 const RootComponent = () => {
   const location = useLocation()
   const pathname = location.pathname
-  const publicPaths = ['/', '/login', '/products']
+  // Paths that use PublicLayout (simple navbar layout)
+  // Note: /my-coupons still requires auth via route's beforeLoad
+  const publicPaths = ['/', '/login', '/products', '/my-coupons']
   const isPublic = publicPaths.includes(pathname) || publicPaths.some((p) => p !== '/' && pathname.startsWith(`${p}/`))
 
   return (
