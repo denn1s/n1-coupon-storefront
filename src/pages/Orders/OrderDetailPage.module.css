@@ -1,0 +1,247 @@
+@reference "tailwindcss";
+
+.container {
+  @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+}
+
+.loading,
+.error {
+  @apply flex flex-col items-center justify-center py-20 text-center;
+}
+
+.loading p {
+  @apply mt-4 text-gray-600 text-lg;
+}
+
+.error h2 {
+  @apply text-2xl font-bold text-gray-900 mb-2;
+}
+
+.error p {
+  @apply text-gray-600 mb-6;
+}
+
+.backLink {
+  @apply px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 no-underline;
+}
+
+.header {
+  @apply flex justify-between items-center mb-6;
+}
+
+.backButton {
+  @apply flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium no-underline transition-colors;
+}
+
+.backIcon {
+  @apply w-5 h-5;
+}
+
+.refreshButton {
+  @apply flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-400 transition-colors disabled:opacity-50;
+}
+
+.refreshIcon {
+  @apply w-5 h-5;
+}
+
+.spinning {
+  @apply animate-spin;
+}
+
+.summaryCard,
+.couponCard,
+.itemsCard,
+.paymentCard,
+.shipmentCard {
+  @apply bg-white rounded-xl border border-gray-200 p-6 mb-6;
+}
+
+.summaryHeader {
+  @apply flex justify-between items-start mb-6;
+}
+
+.title {
+  @apply text-2xl font-bold text-gray-900 m-0;
+}
+
+.date {
+  @apply text-gray-600 mt-1 m-0;
+}
+
+.statusBadge {
+  @apply px-4 py-2 rounded-full text-sm font-semibold uppercase tracking-wide;
+}
+
+.statusPAID,
+.statusDELIVERED,
+.statusFINALIZED {
+  @apply bg-green-100 text-green-800;
+}
+
+.statusPENDING,
+.statusPROCESSING,
+.statusSHIPPED {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.statusCANCELLED,
+.statusREFUNDED {
+  @apply bg-red-100 text-red-800;
+}
+
+.storeSection {
+  @apply flex items-center gap-4 pt-6 border-t border-gray-100;
+}
+
+.storeLogo {
+  @apply w-16 h-16 rounded-lg object-cover border border-gray-100;
+}
+
+.storeName {
+  @apply text-lg font-semibold text-gray-900 m-0;
+}
+
+.storeInfo {
+  @apply text-sm text-gray-600 m-0;
+}
+
+.sectionTitle {
+  @apply text-xl font-bold text-gray-900 mb-4;
+}
+
+.couponContent {
+  @apply flex flex-col md:flex-row gap-6 items-start md:items-center;
+}
+
+.qrCode {
+  @apply flex-shrink-0;
+}
+
+.qrImage {
+  @apply w-48 h-48 border-2 border-gray-200 rounded-lg p-2 bg-white;
+}
+
+.couponDetails {
+  @apply flex-1;
+}
+
+.couponCode {
+  @apply flex flex-col gap-1 mb-3;
+}
+
+.couponExpiry {
+  @apply flex flex-col gap-1 mb-4;
+}
+
+.label {
+  @apply text-sm font-medium text-gray-600 uppercase tracking-wide;
+}
+
+.code {
+  @apply text-2xl font-bold text-purple-600 font-mono;
+}
+
+.couponInstructions {
+  @apply text-sm text-gray-600 bg-purple-50 border border-purple-200 rounded-lg p-3;
+}
+
+.itemsList {
+  @apply flex flex-col gap-4;
+}
+
+.item {
+  @apply flex gap-4 pb-4 border-b border-gray-100 last:border-b-0 last:pb-0;
+}
+
+.itemImage {
+  @apply w-20 h-20 rounded-lg object-cover border border-gray-100 flex-shrink-0;
+}
+
+.itemDetails {
+  @apply flex-1 min-w-0;
+}
+
+.itemName {
+  @apply text-base font-semibold text-gray-900 m-0;
+}
+
+.itemNote {
+  @apply text-sm text-gray-600 italic mt-1;
+}
+
+.modifiers {
+  @apply mt-2 space-y-1;
+}
+
+.modifier {
+  @apply text-sm text-gray-600;
+}
+
+.modifierName {
+  @apply font-medium;
+}
+
+.modifierOptions {
+  @apply ml-1;
+}
+
+.itemMeta {
+  @apply text-sm text-gray-500 mt-2 m-0;
+}
+
+.itemPrice {
+  @apply text-lg font-bold text-gray-900 flex-shrink-0;
+}
+
+.paymentDetails {
+  @apply space-y-3 mb-6;
+}
+
+.paymentRow {
+  @apply flex justify-between text-base;
+}
+
+.discount {
+  @apply text-green-600;
+}
+
+.totalRow {
+  @apply pt-3 border-t border-gray-200 text-lg font-bold text-gray-900;
+}
+
+.paymentMethod {
+  @apply pt-6 border-t border-gray-100;
+}
+
+.paymentMethodLabel {
+  @apply text-sm font-medium text-gray-600 uppercase tracking-wide mb-1;
+}
+
+.paymentMethodInfo {
+  @apply text-base text-gray-900;
+}
+
+.shipmentType {
+  @apply text-base font-medium text-gray-900 mb-4 uppercase tracking-wide;
+}
+
+.address {
+  @apply mb-4 last:mb-0;
+}
+
+.addressLabel {
+  @apply text-sm font-medium text-gray-600 uppercase tracking-wide mb-1;
+}
+
+.addressName {
+  @apply text-base font-semibold text-gray-900 m-0;
+}
+
+.addressText {
+  @apply text-base text-gray-700 m-0;
+}
+
+.addressPhone {
+  @apply text-sm text-gray-600 mt-1;
+}
