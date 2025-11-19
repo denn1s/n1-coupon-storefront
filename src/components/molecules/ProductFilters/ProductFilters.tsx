@@ -67,7 +67,7 @@ const ProductFilters = ({
           <option value="">All Categories</option>
           {categories.map((category) => (
             <option key={category.id} value={category.id}>
-              {category.name} {category.storeCount > 0 && `(${category.storeCount})`}
+              {category.name} {category.storeCount && category.storeCount > 0 && `(${category.storeCount})`}
             </option>
           ))}
         </select>

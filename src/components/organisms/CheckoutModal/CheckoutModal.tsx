@@ -47,12 +47,12 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
     // Create a dummy coupon
     const coupon: Coupon = {
       id: `CPO-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      productId: product.id,
+      productId: Number(product.id),
       productName: product.name,
-      productImage: product.productImageUrl,
+      productImage: product.productImageUrl || product.imageUrl || '',
       purchaseDate: new Date().toISOString(),
       qrCode: `COUPON-${product.id}-${Date.now()}`, // In real app, this would be a unique code from backend
-      price: product.salePrice,
+      price: product.salePrice ?? product.price ?? 0,
       status: 'active'
     }
 
@@ -88,10 +88,14 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
             <div className={styles.content}>
               {/* Product Summary */}
               <div className={styles.productSummary}>
-                <img src={product.productImageUrl} alt={product.name} className={styles.productImage} />
+                <img
+                  src={product.productImageUrl || product.imageUrl || ''}
+                  alt={product.name}
+                  className={styles.productImage}
+                />
                 <div className={styles.productDetails}>
                   <h3 className={styles.productName}>{product.name}</h3>
-                  <p className={styles.productPrice}>${product.salePrice.toFixed(2)}</p>
+                  <p className={styles.productPrice}>${(product.salePrice ?? product.price ?? 0).toFixed(2)}</p>
                 </div>
               </div>
 
@@ -183,7 +187,7 @@ const CheckoutModal = ({ product, isOpen, onClose }: CheckoutModalProps) => {
                       Processing...
                     </>
                   ) : (
-                    `Pay $${product.salePrice.toFixed(2)}`
+                    `Pay $${(product.salePrice ?? product.price ?? 0).toFixed(2)}`
                   )}
                 </button>
               </form>

@@ -115,17 +115,33 @@ export interface ValidationError extends ApiError {
  */
 export interface PageInfo {
   hasNextPage: boolean
-  hasPreviousPage: boolean
-  startCursor: string | null
+  hasPreviousPage?: boolean
+  startCursor?: string | null
   endCursor: string | null
 }
 
 /**
- * Generic GraphQL connection response
+ * GraphQL edge wrapper
+ */
+export interface GraphQLEdge<T> {
+  node: T
+  cursor: string
+}
+
+/**
+ * Generic GraphQL connection response with edges
  */
 export interface GraphQLConnection<T> {
+  edges: GraphQLEdge<T>[]
+  pageInfo: PageInfo
+}
+
+/**
+ * Legacy GraphQL connection with nodes (for backward compatibility)
+ */
+export interface GraphQLConnectionWithNodes<T> {
   nodes: T[]
-  totalCount: number
+  totalCount?: number
   pageInfo: PageInfo
 }
 
@@ -137,55 +153,79 @@ export interface GraphQLConnection<T> {
  * Product image
  */
 export interface ProductImage {
-  sequence: number
   url: string
+  altText?: string | null
+  // Legacy field for backward compatibility
+  sequence?: number
+}
+
+/**
+ * Product variant
+ */
+export interface ProductVariant {
+  id: string
+  name: string
+  price: number
+  sku: string
 }
 
 /**
  * Holding Product (Coupon/Deal)
  */
 export interface HoldingProduct {
-  id: number
+  id: number | string
   name: string
-  description: string
-  salePrice: number
-  productImageUrl: string
-  quantityAvailable: number
+  slug?: string
+  description: string | null
+  price?: number
+  salePrice?: number // Legacy field, maps to price
+  compareAtPrice?: number | null
+  imageUrl?: string | null
+  productImageUrl?: string | null // Legacy field, maps to imageUrl
+  quantityAvailable?: number // Legacy field
   images: ProductImage[]
+  variants?: ProductVariant[]
 }
 
 /**
  * Holding Business Category
  */
 export interface HoldingBusinessCategory {
-  id: number
+  id: number | string
   name: string
-  description: string
-  bannerImageUrl: string | null
-  smallBannerImageUrl: string | null
-  storeCount: number
+  slug?: string
+  imageUrl?: string | null
+  description?: string // Legacy field
+  bannerImageUrl?: string | null // Legacy field
+  smallBannerImageUrl?: string | null // Legacy field
+  storeCount?: number // Legacy field
 }
 
 /**
  * Holding Store
  */
 export interface HoldingStore {
-  id: number
+  id: number | string
   name: string
-  description: string
-  storeImageUrl: string
+  slug?: string
+  description: string | null
+  logoUrl?: string | null
+  bannerUrl?: string | null
+  storeImageUrl?: string | null // Legacy field
 }
 
 /**
  * Holding Collection
  */
 export interface HoldingCollection {
-  id: number
+  id: number | string
   name: string
-  description: string
-  bannerImageUrl: string | null
-  smallBannerImageUrl: string | null
-  productCount: number
+  slug?: string
+  description: string | null
+  imageUrl?: string | null
+  bannerImageUrl?: string | null // Legacy field
+  smallBannerImageUrl?: string | null // Legacy field
+  productCount?: number // Legacy field
 }
 
 // ============================================================================
@@ -217,6 +257,135 @@ export interface PaginationVariables {
   after?: string
   last?: number
   before?: string
+}
+
+// ============================================================================
+// Checkout & Cart Types
+// ============================================================================
+
+/**
+ * Cart item
+ */
+export interface CartItem {
+  id: string
+  productId: string
+  variantId?: string
+  quantity: number
+  price: number
+  subtotal: number
+}
+
+/**
+ * Shopping cart
+ */
+export interface Cart {
+  id: string
+  items: CartItem[]
+  subtotal: number
+  tax: number
+  shipping: number
+  total: number
+}
+
+/**
+ * Buyer information
+ */
+export interface Buyer {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  phone: string
+}
+
+/**
+ * Address (shipping or billing)
+ */
+export interface Address {
+  street: string
+  city: string
+  state: string
+  postalCode: string
+  country: string
+}
+
+/**
+ * Payment method
+ */
+export interface PaymentMethod {
+  type: string
+  last4: string
+}
+
+/**
+ * Shipment option
+ */
+export interface ShipmentOption {
+  id: string
+  name: string
+  price: number
+  estimatedDays: number
+}
+
+/**
+ * Checkout session
+ */
+export interface CheckoutSession {
+  id: string
+  status: string
+  cart: Cart
+  buyer?: Buyer | null
+  shippingAddress?: Address | null
+  billingAddress?: Address | null
+  paymentMethod?: PaymentMethod | null
+  shipmentOptions: ShipmentOption[]
+}
+
+/**
+ * Checkout session response
+ */
+export interface CheckoutSessionResponse {
+  checkoutSession: CheckoutSession
+}
+
+/**
+ * Order
+ */
+export interface Order {
+  id: string
+  orderNumber: string
+  status: string
+  total: number
+  createdAt: string
+}
+
+/**
+ * Checkout error
+ */
+export interface CheckoutError {
+  field: string
+  message: string
+}
+
+/**
+ * Checkout input
+ */
+export interface CheckoutInput {
+  checkoutSessionId: string
+  paymentMethodId: string
+  shippingAddressId: string
+  billingAddressId: string
+  shipmentOptionId: string
+}
+
+/**
+ * Checkout mutation response
+ */
+export interface CheckoutResponse {
+  checkout: {
+    order: Order | null
+    errors: CheckoutError[]
+  }
 }
 
 // ============================================================================

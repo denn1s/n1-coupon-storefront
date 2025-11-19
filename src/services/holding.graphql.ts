@@ -24,23 +24,30 @@ import { useState } from 'react'
 const HOLDING_PRODUCTS_QUERY = `
   query HoldingProducts($first: Int, $after: String, $before: String, $last: Int) {
     holdingProducts(first: $first, after: $after, before: $before, last: $last) {
-      nodes {
-        id
-        name
-        description
-        salePrice
-        productImageUrl
-        quantityAvailable
-        images {
-          sequence
-          url
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          price
+          compareAtPrice
+          imageUrl
+          images {
+            url
+            altText
+          }
+          variants {
+            id
+            name
+            price
+            sku
+          }
         }
+        cursor
       }
-      totalCount
       pageInfo {
         hasNextPage
-        hasPreviousPage
-        startCursor
         endCursor
       }
     }
@@ -50,19 +57,17 @@ const HOLDING_PRODUCTS_QUERY = `
 const HOLDING_BUSINESS_CATEGORIES_QUERY = `
   query HoldingBusinessCategories($first: Int, $after: String) {
     holdingBusinessCategories(first: $first, after: $after) {
-      nodes {
-        id
-        name
-        description
-        bannerImageUrl
-        smallBannerImageUrl
-        storeCount
+      edges {
+        node {
+          id
+          name
+          slug
+          imageUrl
+        }
+        cursor
       }
-      totalCount
       pageInfo {
         hasNextPage
-        hasPreviousPage
-        startCursor
         endCursor
       }
     }
@@ -72,17 +77,19 @@ const HOLDING_BUSINESS_CATEGORIES_QUERY = `
 const HOLDING_STORES_QUERY = `
   query HoldingStores($first: Int, $after: String) {
     holdingStores(first: $first, after: $after) {
-      nodes {
-        id
-        name
-        description
-        storeImageUrl
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          logoUrl
+          bannerUrl
+        }
+        cursor
       }
-      totalCount
       pageInfo {
         hasNextPage
-        hasPreviousPage
-        startCursor
         endCursor
       }
     }
@@ -92,24 +99,52 @@ const HOLDING_STORES_QUERY = `
 const HOLDING_COLLECTIONS_QUERY = `
   query HoldingCollections($first: Int, $after: String) {
     holdingCollections(first: $first, after: $after) {
-      nodes {
-        id
-        name
-        description
-        bannerImageUrl
-        smallBannerImageUrl
-        productCount
+      edges {
+        node {
+          id
+          name
+          slug
+          description
+          imageUrl
+        }
+        cursor
       }
-      totalCount
       pageInfo {
         hasNextPage
-        hasPreviousPage
-        startCursor
         endCursor
       }
     }
   }
 `
+
+// ============================================================================
+// HELPER FUNCTIONS - Transform edges to nodes for backward compatibility
+// ============================================================================
+
+/**
+ * Transform GraphQL edges structure to nodes array
+ * Maintains backward compatibility with existing code
+ */
+function edgesToNodes<T>(edges: Array<{ node: T; cursor: string }>): T[] {
+  return edges.map((edge) => edge.node)
+}
+
+/**
+ * Transform API product to include legacy fields
+ */
+function transformProduct(product: Partial<HoldingProduct>): HoldingProduct {
+  return {
+    ...product,
+    id: product.id!,
+    name: product.name!,
+    description: product.description ?? '',
+    images: product.images || [],
+    // Map new fields to legacy fields for backward compatibility
+    salePrice: product.price || product.salePrice || 0,
+    productImageUrl: product.imageUrl || product.productImageUrl || '',
+    quantityAvailable: product.quantityAvailable || 0
+  } as HoldingProduct
+}
 
 // ============================================================================
 // QUERY FUNCTIONS (Internal)
@@ -195,8 +230,10 @@ export const useProductsPagination = (
   })
 
   const pageInfo = query.data?.holdingProducts.pageInfo
-  const allProducts = query.data?.holdingProducts.nodes ?? []
-  const totalCount = query.data?.holdingProducts.totalCount ?? 0
+  // Transform edges to nodes for backward compatibility
+  const edges = query.data?.holdingProducts.edges ?? []
+  const allProducts = edgesToNodes(edges).map(transformProduct)
+  const totalCount = allProducts.length // totalCount not available in new API
 
   // Client-side filtering (since API doesn't support filters yet)
   const filteredProducts = allProducts.filter((product) => {
@@ -204,7 +241,8 @@ export const useProductsPagination = (
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
       const matchesSearch =
-        product.name.toLowerCase().includes(searchLower) || product.description.toLowerCase().includes(searchLower)
+        product.name.toLowerCase().includes(searchLower) ||
+        (product.description ?? '').toLowerCase().includes(searchLower)
       if (!matchesSearch) return false
     }
 
@@ -311,9 +349,11 @@ export const useGetCategories = (
   return useQuery({
     queryKey: ['holding', 'categories', 'list', variables],
     queryFn: getCategories(variables),
-    // If initialData is provided, it's the full response, so we need to select from it
-    // TanStack Query will apply select to initialData automatically
-    select: (data) => data.holdingBusinessCategories,
+    // Transform edges to nodes for backward compatibility
+    select: (data) => ({
+      nodes: edgesToNodes(data.holdingBusinessCategories.edges),
+      pageInfo: data.holdingBusinessCategories.pageInfo
+    }),
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
@@ -346,9 +386,11 @@ export const useGetStores = (
   return useQuery({
     queryKey: ['holding', 'stores', 'list', variables],
     queryFn: getStores(variables),
-    // If initialData is provided, it's the full response, so we need to select from it
-    // TanStack Query will apply select to initialData automatically
-    select: (data) => data.holdingStores,
+    // Transform edges to nodes for backward compatibility
+    select: (data) => ({
+      nodes: edgesToNodes(data.holdingStores.edges),
+      pageInfo: data.holdingStores.pageInfo
+    }),
     initialData: options?.initialData,
     staleTime: options?.staleTime ?? 5 * 60 * 1000
   })
@@ -378,7 +420,11 @@ export const useGetCollections = (variables: PaginationVariables = { first: 50 }
   return useQuery({
     queryKey: ['holding', 'collections', 'list', variables],
     queryFn: getCollections(variables),
-    select: (data) => data.holdingCollections
+    // Transform edges to nodes for backward compatibility
+    select: (data) => ({
+      nodes: edgesToNodes(data.holdingCollections.edges),
+      pageInfo: data.holdingCollections.pageInfo
+    })
   })
 }
 
