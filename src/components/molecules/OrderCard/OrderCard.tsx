@@ -49,7 +49,7 @@ const OrderCard = ({ order }: OrderCardProps) => {
   const additionalItemsCount = order.orderDetails.length - 1
 
   return (
-    <Link to="/orders/$orderId" params={{ orderId: order.orderId }} className={styles.cardLink}>
+    <Link to="/orders/$orderId" params={{ orderId: order.orderId }} className={styles.cardLink} preload={500}>
       <div className={styles.card}>
         <div className={styles.header}>
           <div className={styles.storeInfo}>
