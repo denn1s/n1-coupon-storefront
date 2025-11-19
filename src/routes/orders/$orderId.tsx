@@ -10,7 +10,6 @@ import { orderOptions } from '@services/orders.graphql'
 export const Route = createFileRoute('/orders/$orderId')({
   component: OrderDetailPage,
   // Prefetch order detail before rendering the page
-  // Will use cached data from list if available
   loader: ({ context, params }) => {
     return context.queryClient.ensureQueryData(orderOptions(params.orderId))
   }

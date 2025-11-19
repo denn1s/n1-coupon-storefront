@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useSearch } from '@tanstack/react-router'
+import { useNavigate } from '@tanstack/react-router'
 import { useAuthStore } from '@stores/authStore'
 import { startOTP, verifyOTP } from '@lib/auth/authService'
 import { getEnv } from '@helpers/env'
@@ -17,7 +17,6 @@ import styles from './Login.module.css'
  */
 export default function Login() {
   const navigate = useNavigate()
-  const search = useSearch({ from: '/login' })
   const { setAuthState } = useAuthStore()
 
   // Form state
@@ -27,8 +26,8 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Get redirect path from query params or default to /orders
-  const redirectTo = (search as { redirect?: string })?.redirect || '/orders'
+  // Default redirect path
+  const redirectTo = '/orders'
 
   /**
    * Step 1: Send OTP to phone
