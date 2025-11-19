@@ -2,6 +2,7 @@ import { createRootRouteWithContext, Outlet, useLocation } from '@tanstack/react
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import MainLayout from '@layouts/Main'
 import PublicLayout from '@layouts/Public'
+import { ErrorPage } from '@pages/ErrorPage'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -38,20 +39,9 @@ export const Route = createRootRouteWithContext<RouterContext>()({
     console.error('[Router] error', error)
   },
   errorComponent: ({ error, reset }) => {
-    // Render an error message
-    return (
-      <div>
-        Error
-        {error.message}
-        <button
-          onClick={() => {
-            // Reset the router error boundary
-            reset()
-          }}
-        >
-          retry
-        </button>
-      </div>
-    )
+    // Show detailed error information in development mode
+    const showDetails = import.meta.env.DEV
+
+    return <ErrorPage error={error} reset={reset} showDetails={showDetails} />
   }
 })

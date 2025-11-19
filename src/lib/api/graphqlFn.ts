@@ -2,6 +2,7 @@ import { QueryFunctionContext } from '@tanstack/react-query'
 import { GraphQLClient } from 'graphql-request'
 import { authStore } from '@stores/authStore'
 import { getEnv } from '@lib/helpers/env'
+import { parseGraphQLError } from './graphqlErrors'
 
 /**
  * GraphQL client instance (singleton pattern)
@@ -96,18 +97,9 @@ export function graphqlQueryFn<TVariables = undefined, TData = unknown>(
     } catch (error) {
       console.error('[GRAPHQL ERROR]', error)
 
-      // Enhance error with additional context
-      if (error instanceof Error) {
-        const enhancedError = new Error(`GraphQL Error: ${error.message}`)
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        ;(enhancedError as any).originalError = error
-        ;(enhancedError as any).query = query
-        ;(enhancedError as any).variables = variables
-        /* eslint-enable @typescript-eslint/no-explicit-any */
-        throw enhancedError
-      }
-
-      throw error
+      // Parse and enhance error with better categorization and user-friendly messages
+      const parsedError = parseGraphQLError(error, query, variables as unknown)
+      throw parsedError
     }
   }
 }
@@ -172,18 +164,9 @@ export function graphqlMutationFn<TVariables = undefined, TData = unknown>(
     } catch (error) {
       console.error('[GRAPHQL MUTATION ERROR]', error)
 
-      // Enhance error with additional context
-      if (error instanceof Error) {
-        const enhancedError = new Error(`GraphQL Mutation Error: ${error.message}`)
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        ;(enhancedError as any).originalError = error
-        ;(enhancedError as any).mutation = mutation
-        ;(enhancedError as any).variables = variables
-        /* eslint-enable @typescript-eslint/no-explicit-any */
-        throw enhancedError
-      }
-
-      throw error
+      // Parse and enhance error with better categorization and user-friendly messages
+      const parsedError = parseGraphQLError(error, mutation, variables as unknown)
+      throw parsedError
     }
   }
 }
