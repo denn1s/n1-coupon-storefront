@@ -46,7 +46,8 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      await startOTP(phone)
+      const origin = getEnv('AUTH_ORIGIN')
+      await startOTP(phone, 'sms', origin)
       setStep('otp')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to send OTP')
@@ -104,7 +105,8 @@ export default function Login() {
     setIsLoading(true)
 
     try {
-      await startOTP(phone)
+      const origin = getEnv('AUTH_ORIGIN')
+      await startOTP(phone, 'sms', origin)
       setError(null)
       // Show success message briefly
       setError('OTP sent! Check your phone.')
