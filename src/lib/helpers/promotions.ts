@@ -100,12 +100,23 @@ export function formatPrice(price: number, currency: string = '$'): string {
  */
 export function isPromotionActive(startDate: string | null, endDate: string | null): boolean {
   const now = new Date()
+  let isActive = true
 
-  // If no end date, assume it's active (backend filters by startDate)
-  if (!endDate) return true
+  if (startDate) {
+    const start = new Date(startDate)
+    if (now < start) {
+      isActive = false // Current date is before start date
+    }
+  }
 
-  const end = new Date(endDate)
-  return now < end
+  if (endDate) {
+    const end = new Date(endDate)
+    if (now > end) {
+      isActive = false // Current date is after end date
+    }
+  }
+
+  return isActive
 }
 
 /**
