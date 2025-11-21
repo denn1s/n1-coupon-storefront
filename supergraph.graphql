@@ -321,8 +321,8 @@ type Query @extraSchemaDefinitionDirective(
     Returns the elements in the list that come before the specified cursor.
     """
     before: String
-    where: CollectionFilterInput
-    order: [CollectionSortInput!]
+    where: HoldingCollectionDtoFilterInput
+    order: [HoldingCollectionDtoSortInput!]
   ): HoldingCollectionsConnection @join__field(graph: MERCHANTS_APP_API) 
   holdingStores(
     """
@@ -691,7 +691,7 @@ type HoldingCollectionsConnection @join__type(graph: MERCHANTS_APP_API)  {
   """
   A flattened list of the nodes.
   """
-  nodes: [Collection]
+  nodes: [HoldingCollectionDto]
   """
   Identifies the total count of items in the connection.
   """
@@ -803,6 +803,8 @@ type Product @join__type(graph: MERCHANTS_APP_API, key: "id")  {
   requiresShipping: Boolean!
   created: DateTime!
   metadata: [KeyValuePairOfStringAndString!]
+  holdingCollections: [HoldingCollectionItemDto]
+  store: StoreBaseDto
 }
 
 """
@@ -866,6 +868,16 @@ type HoldingProductsEdge @join__type(graph: MERCHANTS_APP_API)  {
   node: Product
 }
 
+type HoldingCollectionDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  description: String
+  imageUrl: String
+  productCount: Int!
+  holdingId: Int!
+  order: Int
+}
+
 """
 An edge in a connection.
 """
@@ -877,7 +889,7 @@ type HoldingCollectionsEdge @join__type(graph: MERCHANTS_APP_API)  {
   """
   The item at the end of the edge.
   """
-  node: Collection
+  node: HoldingCollectionDto
 }
 
 type StoreDto @join__type(graph: MERCHANTS_APP_API)  {
@@ -1322,6 +1334,20 @@ type SelectedOptionDto @join__type(graph: MERCHANTS_APP_API)  {
   selectedOptionId: Int!
   name: String
   amount: Decimal!
+}
+
+type HoldingCollectionItemDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+}
+
+type StoreBaseDto @join__type(graph: MERCHANTS_APP_API)  {
+  id: Int!
+  name: String
+  description: String
+  storeImageUrl: String
+  storeBannerUrl: String
+  storeBannerColor: String
 }
 
 type Coordinate @join__type(graph: MERCHANTS_APP_API)  {
@@ -2886,6 +2912,8 @@ input ProductFilterInput @join__type(graph: MERCHANTS_APP_API)  {
   requiresShipping: BooleanOperationFilterInput
   created: DateTimeOperationFilterInput
   metadata: ListFilterInputTypeOfKeyValuePairOfStringAndStringFilterInput
+  holdingCollections: ListFilterInputTypeOfHoldingCollectionItemDtoFilterInput
+  store: StoreBaseDtoFilterInput
 }
 
 input ProductSortInput @join__type(graph: MERCHANTS_APP_API)  {
@@ -2910,6 +2938,7 @@ input ProductSortInput @join__type(graph: MERCHANTS_APP_API)  {
   upc: SortEnumType
   requiresShipping: SortEnumType
   created: SortEnumType
+  store: StoreBaseDtoSortInput
 }
 
 input CollectionFilterInput @join__type(graph: MERCHANTS_APP_API)  {
@@ -2949,6 +2978,28 @@ input CollectionSortInput @join__type(graph: MERCHANTS_APP_API)  {
   hasSubCollections: SortEnumType
   hasAgeRestriction: SortEnumType
   storeId: SortEnumType
+  order: SortEnumType
+}
+
+input HoldingCollectionDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [HoldingCollectionDtoFilterInput!]
+  or: [HoldingCollectionDtoFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  imageUrl: StringOperationFilterInput
+  productCount: IntOperationFilterInput
+  holdingId: IntOperationFilterInput
+  order: IntOperationFilterInput
+}
+
+input HoldingCollectionDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  imageUrl: SortEnumType
+  productCount: SortEnumType
+  holdingId: SortEnumType
   order: SortEnumType
 }
 
@@ -3175,6 +3226,33 @@ input ListFilterInputTypeOfKeyValuePairOfStringAndStringFilterInput @join__type(
   any: Boolean
 }
 
+input ListFilterInputTypeOfHoldingCollectionItemDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  all: HoldingCollectionItemDtoFilterInput
+  none: HoldingCollectionItemDtoFilterInput
+  some: HoldingCollectionItemDtoFilterInput
+  any: Boolean
+}
+
+input StoreBaseDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [StoreBaseDtoFilterInput!]
+  or: [StoreBaseDtoFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  storeImageUrl: StringOperationFilterInput
+  storeBannerUrl: StringOperationFilterInput
+  storeBannerColor: StringOperationFilterInput
+}
+
+input StoreBaseDtoSortInput @join__type(graph: MERCHANTS_APP_API)  {
+  id: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  storeImageUrl: SortEnumType
+  storeBannerUrl: SortEnumType
+  storeBannerColor: SortEnumType
+}
+
 input ListStringOperationFilterInput @join__type(graph: MERCHANTS_APP_API)  {
   all: StringOperationFilterInput
   none: StringOperationFilterInput
@@ -3274,6 +3352,13 @@ input KeyValuePairOfStringAndStringFilterInput @join__type(graph: MERCHANTS_APP_
   or: [KeyValuePairOfStringAndStringFilterInput!]
   key: StringOperationFilterInput
   value: StringOperationFilterInput
+}
+
+input HoldingCollectionItemDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
+  and: [HoldingCollectionItemDtoFilterInput!]
+  or: [HoldingCollectionItemDtoFilterInput!]
+  id: IntOperationFilterInput
+  name: StringOperationFilterInput
 }
 
 input ScheduleDtoFilterInput @join__type(graph: MERCHANTS_APP_API)  {
