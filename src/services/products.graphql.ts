@@ -20,6 +20,17 @@ export interface ProductImage {
   url: string
 }
 
+export interface HoldingCollectionItem {
+  id: number
+  name: string | null
+}
+
+export interface Store {
+  id: number
+  name: string | null
+  storeImageUrl: string | null
+}
+
 export interface Product {
   id: number
   name: string
@@ -28,6 +39,8 @@ export interface Product {
   productImageUrl: string | null
   quantityAvailable: number
   images: ProductImage[]
+  store: Store | null
+  holdingCollections: HoldingCollectionItem[]
 }
 
 export interface PageInfo {
@@ -80,6 +93,21 @@ const HOLDING_PRODUCTS_QUERY = `
           sequence
           url
         }
+        store {
+          id
+          name
+          storeImageUrl
+        }
+        holdingCollections {
+          id
+          name
+        }
+        couponSetting {
+          originalPrice
+          startDate
+          endDate
+          redemptionLimit
+        }
       }
       totalCount
       pageInfo {
@@ -104,6 +132,21 @@ const PRODUCT_DETAIL_QUERY = `
       images {
         sequence
         url
+      }
+      store {
+        id
+        name
+        storeImageUrl
+      }
+      holdingCollections {
+        id
+        name
+      }
+      couponSetting {
+        originalPrice
+        startDate
+        endDate
+        redemptionLimit
       }
     }
   }

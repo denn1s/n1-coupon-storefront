@@ -6,6 +6,7 @@ import ProductCard from '@components/molecules/ProductCard'
 import ProductCardSkeleton from '@components/molecules/ProductCardSkeleton'
 import ProductFilters from '@components/molecules/ProductFilters'
 import CheckoutModal from '@components/organisms/CheckoutModal'
+import FeaturedProducts from '@components/organisms/FeaturedProducts'
 import { Route } from '@routes/index'
 import styles from './ProductsPage.module.css'
 
@@ -129,6 +130,15 @@ export default function ProductsPage() {
           {totalCount} amazing {totalCount === 1 ? 'deal' : 'deals'} available
         </p>
       </div>
+
+      {/* Featured Products */}
+      <FeaturedProducts
+        collectionId={29}
+        title="🌟 Featured Deals"
+        subtitle="Hand-picked deals just for you"
+        maxProducts={10}
+        onBuyClick={handleBuyClick}
+      />
 
       {/* Search and Filters */}
       <div className={styles.controlsContainer}>

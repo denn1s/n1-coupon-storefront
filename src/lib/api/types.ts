@@ -155,6 +155,33 @@ export interface ProductVariant {
 }
 
 /**
+ * Holding Collection Item (simple reference)
+ */
+export interface HoldingCollectionItem {
+  id: number
+  name: string | null
+}
+
+/**
+ * Store information (from product)
+ */
+export interface StoreBase {
+  id: number
+  name: string | null
+  storeImageUrl: string | null
+}
+
+/**
+ * Coupon setting information (promotion details)
+ */
+export interface CouponSetting {
+  originalPrice: number
+  startDate: string | null
+  endDate: string | null
+  redemptionLimit: number
+}
+
+/**
  * Holding Product (Coupon/Deal)
  * Matches APIDOCS.md structure exactly
  */
@@ -168,6 +195,9 @@ export interface HoldingProduct {
   imageUrl?: string | null
   quantityAvailable: number
   images: ProductImage[]
+  store?: StoreBase | null
+  holdingCollections?: HoldingCollectionItem[]
+  couponSetting?: CouponSetting | null
 }
 
 /**
@@ -202,8 +232,7 @@ export interface HoldingCollection {
   id: number
   name: string
   description: string
-  bannerImageUrl: string | null
-  smallBannerImageUrl: string | null
+  imageUrl: string | null
   productCount: number
 }
 

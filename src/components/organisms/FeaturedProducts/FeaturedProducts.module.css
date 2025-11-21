@@ -1,0 +1,104 @@
+@reference 'tailwindcss';
+
+.container {
+  @apply w-full mb-8;
+}
+
+.header {
+  @apply mb-6 px-4 md:px-0;
+}
+
+.title {
+  @apply text-3xl font-bold text-gray-900 mb-2;
+}
+
+.subtitle {
+  @apply text-lg text-gray-600;
+}
+
+.scrollContainer {
+  @apply relative w-full overflow-x-auto;
+  /* Hide scrollbar but keep functionality */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
+
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+
+  /* Add padding for edge spacing */
+  @apply px-4 md:px-0;
+}
+
+/* Webkit scrollbar styling (Chrome, Safari, Edge) */
+.scrollContainer::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollContainer::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+.scrollContainer::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+.productsGrid {
+  @apply flex gap-4 pb-4;
+  /* Prevent flex items from shrinking */
+  flex-wrap: nowrap;
+
+  /* Add smooth scroll snapping */
+  scroll-snap-type: x mandatory;
+}
+
+.productCardWrapper {
+  /* Fixed width for consistent card sizes */
+  @apply flex-shrink-0;
+  width: 280px;
+
+  /* Scroll snap alignment */
+  scroll-snap-align: start;
+
+  /* Smooth transitions */
+  @apply transition-transform duration-200;
+}
+
+.productCardWrapper:hover {
+  @apply scale-105;
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+  .productCardWrapper {
+    width: 260px;
+  }
+
+  .title {
+    @apply text-2xl;
+  }
+}
+
+/* Skeleton loading states */
+.skeletonCard {
+  @apply flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden;
+  width: 280px;
+  height: 380px;
+  @apply animate-pulse;
+}
+
+.skeletonImage {
+  @apply w-full bg-gray-200;
+  height: 200px;
+}
+
+.skeletonText {
+  @apply mx-4 mt-4 h-4 bg-gray-200 rounded;
+}
+
+.skeletonText:last-child {
+  @apply w-3/4;
+}

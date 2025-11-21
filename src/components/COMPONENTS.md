@@ -583,6 +583,44 @@ import CheckoutModal from '@components/organisms/CheckoutModal'
 
 ---
 
+### FeaturedProducts
+
+**Location:** `src/components/organisms/FeaturedProducts/FeaturedProducts.tsx`
+**Purpose:** Display featured products from a specific collection in a horizontal scrolling layout
+**When to use:** Homepage, category pages, or any page where you want to showcase curated products
+**Props:**
+
+- `collectionId: number` - Collection ID to filter products by
+- `title?: string` - Section title (default: "Featured Deals")
+- `subtitle?: string` - Section subtitle/description
+- `maxProducts?: number` - Maximum number of products to display (default: 10)
+- `onBuyClick?: (product: HoldingProduct) => void` - Callback when buy button is clicked
+
+**Features:**
+
+- Horizontal scrolling with modern CSS
+- Smooth scroll snapping
+- Client-side filtering by collection ID
+- Skeleton loading states
+- Responsive design (mobile & desktop)
+- Auto-hides if no featured products found
+- Uses existing ProductCard component
+
+**Example:**
+
+```tsx
+import FeaturedProducts from '@components/organisms/FeaturedProducts'
+;<FeaturedProducts
+  collectionId={29}
+  title="🌟 Featured Deals"
+  subtitle="Hand-picked deals just for you"
+  maxProducts={10}
+  onBuyClick={handleBuyClick}
+/>
+```
+
+---
+
 ## Need Help?
 
 - Read: `CLAUDE.md` for component patterns
