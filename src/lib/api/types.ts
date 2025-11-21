@@ -172,6 +172,16 @@ export interface StoreBase {
 }
 
 /**
+ * Coupon setting information (promotion details)
+ */
+export interface CouponSetting {
+  originalPrice: number
+  startDate: string | null
+  endDate: string | null
+  redemptionLimit: number
+}
+
+/**
  * Holding Product (Coupon/Deal)
  * Matches APIDOCS.md structure exactly
  */
@@ -187,6 +197,7 @@ export interface HoldingProduct {
   images: ProductImage[]
   store?: StoreBase | null
   holdingCollections?: HoldingCollectionItem[]
+  couponSetting?: CouponSetting | null
 }
 
 /**

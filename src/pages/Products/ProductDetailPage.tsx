@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Route } from '@routes/products/$productId'
 import { Link, useParams } from '@tanstack/react-router'
 import CheckoutModal from '@components/organisms/CheckoutModal'
+import { calculateDiscountPercentage, formatCountdown, formatPrice } from '@lib/helpers/promotions'
 import type { ProductImage } from '@lib/api/types'
 import styles from './ProductDetailPage.module.css'
 
@@ -50,6 +51,14 @@ export default function ProductDetailPage() {
 
   const displayImage = selectedImage || product.productImageUrl || product.imageUrl || ''
 
+  // Promotion data
+  const couponSetting = product.couponSetting
+  const salePrice = product.salePrice ?? product.price ?? 0
+  const originalPrice = couponSetting?.originalPrice
+  const hasDiscount = originalPrice && originalPrice > salePrice
+  const discountPercentage = hasDiscount ? calculateDiscountPercentage(originalPrice, salePrice) : 0
+  const countdown = formatCountdown(couponSetting?.endDate ?? null)
+
   return (
     <div className={styles.container}>
       {/* Breadcrumb */}
@@ -89,11 +98,52 @@ export default function ProductDetailPage() {
         <div className={styles.infoSection}>
           <h1 className={styles.title}>{product.name}</h1>
 
+          {/* Discount Badge */}
+          {discountPercentage > 0 && (
+            <div className={styles.discountBadge}>
+              <span className={styles.discountText}>{discountPercentage}% OFF</span>
+            </div>
+          )}
+
           {/* Price */}
           <div className={styles.priceSection}>
-            <span className={styles.priceLabel}>Deal Price</span>
-            <span className={styles.price}>${(product.salePrice ?? product.price ?? 0).toFixed(2)}</span>
+            <div className={styles.priceContainer}>
+              {hasDiscount && (
+                <div className={styles.originalPriceContainer}>
+                  <span className={styles.originalPriceLabel}>Original Price:</span>
+                  <span className={styles.originalPrice}>{formatPrice(originalPrice)}</span>
+                </div>
+              )}
+              <div className={styles.salePriceContainer}>
+                <span className={styles.priceLabel}>Deal Price</span>
+                <span className={styles.price}>{formatPrice(salePrice)}</span>
+              </div>
+              {hasDiscount && (
+                <div className={styles.savings}>You save: {formatPrice(originalPrice - salePrice)}</div>
+              )}
+            </div>
           </div>
+
+          {/* Countdown Timer */}
+          {countdown && (
+            <div className={styles.countdownBanner}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className={styles.countdownIcon}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span className={styles.countdownText}>⏰ Hurry! {countdown}</span>
+            </div>
+          )}
 
           {/* Stock Status */}
           <div className={styles.stockSection}>

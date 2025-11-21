@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router'
 import { HoldingProduct } from '@lib/api/types'
+import { calculateDiscountPercentage, formatCountdown, formatPrice } from '@lib/helpers/promotions'
 import styles from './ProductCard.module.css'
 
 export interface ProductCardProps {
@@ -30,7 +31,14 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
   const isOutOfStock = quantityAvailable <= 0
   const imageUrl = product.productImageUrl || product.imageUrl || ''
   const description = product.description || ''
-  const price = product.salePrice ?? product.price ?? 0
+  const salePrice = product.salePrice ?? product.price ?? 0
+
+  // Promotion data
+  const couponSetting = product.couponSetting
+  const originalPrice = couponSetting?.originalPrice
+  const hasDiscount = originalPrice && originalPrice > salePrice
+  const discountPercentage = hasDiscount ? calculateDiscountPercentage(originalPrice, salePrice) : 0
+  const countdown = formatCountdown(couponSetting?.endDate ?? null)
 
   return (
     <Link to="/products/$productId" params={{ productId: String(product.id) }} className={styles.cardLink}>
@@ -39,6 +47,7 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
         <div className={styles.imageContainer}>
           <img src={imageUrl} alt={product.name} className={styles.image} loading="lazy" />
           {isOutOfStock && <div className={styles.outOfStockBadge}>Out of Stock</div>}
+          {discountPercentage > 0 && <div className={styles.discountBadge}>{discountPercentage}% OFF</div>}
         </div>
 
         {/* Product Info */}
@@ -51,8 +60,8 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
           {/* Price and Buy Section */}
           <div className={styles.footer}>
             <div className={styles.priceContainer}>
-              <span className={styles.priceLabel}>Price</span>
-              <span className={styles.price}>${price.toFixed(2)}</span>
+              {hasDiscount && <span className={styles.originalPrice}>{formatPrice(originalPrice)}</span>}
+              <span className={styles.price}>{formatPrice(salePrice)}</span>
             </div>
 
             <button
@@ -64,6 +73,9 @@ const ProductCard = ({ product, onBuyClick }: ProductCardProps) => {
               {isOutOfStock ? 'Out of Stock' : 'Buy Now'}
             </button>
           </div>
+
+          {/* Countdown Timer */}
+          {countdown && <div className={styles.countdown}>⏰ {countdown}</div>}
 
           {/* Stock Info */}
           {!isOutOfStock && quantityAvailable < 10 && (

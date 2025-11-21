@@ -102,6 +102,12 @@ const HOLDING_PRODUCTS_QUERY = `
           id
           name
         }
+        couponSetting {
+          originalPrice
+          startDate
+          endDate
+          redemptionLimit
+        }
       }
       totalCount
       pageInfo {
@@ -135,6 +141,12 @@ const PRODUCT_DETAIL_QUERY = `
       holdingCollections {
         id
         name
+      }
+      couponSetting {
+        originalPrice
+        startDate
+        endDate
+        redemptionLimit
       }
     }
   }
