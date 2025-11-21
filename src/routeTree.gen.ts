@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as LogoutRouteImport } from './routes/logout'
 import { Route as LoginRouteImport } from './routes/login'
@@ -20,10 +21,16 @@ import { Route as OrdersIndexRouteImport } from './routes/orders/index'
 import { Route as ProductsProductIdRouteImport } from './routes/products/$productId'
 import { Route as OrdersOrderIdRouteImport } from './routes/orders/$orderId'
 import { Route as ItemsItemIdRouteImport } from './routes/items/$itemId'
+import { Route as CategoriesCategoryIdRouteImport } from './routes/categories/$categoryId'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport
+} as any)
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => rootRouteImport
 } as any)
 const OrdersRoute = OrdersRouteImport.update({
@@ -76,6 +83,11 @@ const ItemsItemIdRoute = ItemsItemIdRouteImport.update({
   path: '/$itemId',
   getParentRoute: () => ItemsRoute
 } as any)
+const CategoriesCategoryIdRoute = CategoriesCategoryIdRouteImport.update({
+  id: '/categories/$categoryId',
+  path: '/categories/$categoryId',
+  getParentRoute: () => rootRouteImport
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -84,7 +96,9 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/orders': typeof OrdersRouteWithChildren
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -96,7 +110,9 @@ export interface FileRoutesByTo {
   '/items': typeof ItemsRouteWithChildren
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -110,7 +126,9 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/logout': typeof LogoutRoute
   '/orders': typeof OrdersRouteWithChildren
+  '/search': typeof SearchRoute
   '/settings': typeof SettingsRoute
+  '/categories/$categoryId': typeof CategoriesCategoryIdRoute
   '/items/$itemId': typeof ItemsItemIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
@@ -125,7 +143,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/orders'
+    | '/search'
     | '/settings'
+    | '/categories/$categoryId'
     | '/items/$itemId'
     | '/orders/$orderId'
     | '/products/$productId'
@@ -137,7 +157,9 @@ export interface FileRouteTypes {
     | '/items'
     | '/login'
     | '/logout'
+    | '/search'
     | '/settings'
+    | '/categories/$categoryId'
     | '/items/$itemId'
     | '/orders/$orderId'
     | '/products/$productId'
@@ -150,7 +172,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/logout'
     | '/orders'
+    | '/search'
     | '/settings'
+    | '/categories/$categoryId'
     | '/items/$itemId'
     | '/orders/$orderId'
     | '/products/$productId'
@@ -164,7 +188,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   LogoutRoute: typeof LogoutRoute
   OrdersRoute: typeof OrdersRouteWithChildren
+  SearchRoute: typeof SearchRoute
   SettingsRoute: typeof SettingsRoute
+  CategoriesCategoryIdRoute: typeof CategoriesCategoryIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
 }
 
@@ -175,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/orders': {
@@ -247,6 +280,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ItemsItemIdRouteImport
       parentRoute: typeof ItemsRoute
     }
+    '/categories/$categoryId': {
+      id: '/categories/$categoryId'
+      path: '/categories/$categoryId'
+      fullPath: '/categories/$categoryId'
+      preLoaderRoute: typeof CategoriesCategoryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -279,7 +319,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   LogoutRoute: LogoutRoute,
   OrdersRoute: OrdersRouteWithChildren,
+  SearchRoute: SearchRoute,
   SettingsRoute: SettingsRoute,
+  CategoriesCategoryIdRoute: CategoriesCategoryIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute
 }
 export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()

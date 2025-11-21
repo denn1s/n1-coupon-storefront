@@ -1,13 +1,13 @@
 @reference "tailwindcss";
 
 .navbar {
-  @apply w-full bg-white shadow-sm border-b border-gray-200;
+  @apply w-full bg-white shadow-sm border-b border-gray-100;
 }
 
 .container {
   @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   @apply flex items-center justify-between;
-  @apply h-16;
+  @apply h-20; /* Increased height */
 }
 
 /* Brand/Logo */
@@ -16,27 +16,35 @@
 }
 
 .logoLink {
-  @apply flex items-center gap-2 text-gray-900 hover:text-blue-600 transition-colors;
+  @apply flex items-center gap-2 text-gray-900;
   @apply no-underline;
 }
 
-.logoIcon {
-  @apply w-8 h-8;
+.logoImage {
+  @apply h-8 w-auto;
 }
 
 .logoText {
-  @apply text-xl font-bold;
+  @apply text-2xl font-bold tracking-tight;
+}
+
+/* Search */
+.searchContainer {
+  @apply flex-1 max-w-2xl mx-12 hidden md:block;
+}
+
+.searchBox {
+  @apply w-full;
 }
 
 /* Navigation */
 .nav {
-  @apply flex items-center gap-4;
+  @apply flex items-center gap-6;
 }
 
 .navLink {
-  @apply flex items-center gap-2 px-4 py-2 rounded-lg;
-  @apply text-gray-700 font-medium hover:text-blue-600 hover:bg-blue-50;
-  @apply transition-all duration-200;
+  @apply flex items-center gap-2 text-sm font-bold text-gray-900;
+  @apply hover:text-[var(--color-primary-black)] transition-colors;
   @apply no-underline;
 }
 
@@ -45,19 +53,49 @@
 }
 
 .userInfo {
-  @apply text-sm text-gray-600 px-3;
+  @apply text-sm font-medium text-gray-900;
 }
 
 .loginLink {
-  @apply px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg;
-  @apply hover:bg-blue-700 active:bg-blue-800;
-  @apply transition-colors duration-200;
+  @apply text-sm font-bold text-gray-900;
+  @apply hover:text-gray-700 transition-colors;
   @apply no-underline;
 }
 
 .logoutButton {
-  @apply px-4 py-2 text-gray-600 font-medium rounded-lg;
-  @apply hover:text-red-600 hover:bg-red-50;
-  @apply transition-all duration-200;
+  @apply text-sm font-medium text-gray-500;
+  @apply hover:text-red-600 transition-colors;
   @apply cursor-pointer;
+}
+
+.wrapper {
+  @apply flex flex-col w-full sticky top-0 z-50 bg-white;
+}
+
+.categoriesBar {
+  @apply bg-white border-b border-gray-100 py-4 hidden md:block;
+}
+
+.categoriesContainer {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  @apply flex items-center justify-center gap-12;
+}
+
+.categoryLink {
+  @apply flex items-center gap-2 text-gray-500 font-medium text-sm;
+  @apply hover:text-[var(--color-primary-black)] transition-colors;
+  @apply no-underline;
+}
+
+/* Mobile specific */
+.mobileHeader {
+  @apply flex md:hidden items-center justify-between p-4 border-b border-gray-100;
+}
+
+.mobileMenuBtn {
+  @apply p-2 -ml-2 text-gray-600;
+}
+
+.mobileActions {
+  @apply flex items-center gap-4;
 }

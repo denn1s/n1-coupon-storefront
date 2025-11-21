@@ -95,6 +95,11 @@ export function graphqlQueryFn<TVariables = undefined, TData = unknown>(
 
       return data
     } catch (error) {
+      // Ignore abort errors (cancellation)
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw error
+      }
+
       console.error('[GRAPHQL ERROR]', error)
 
       // Parse and enhance error with better categorization and user-friendly messages

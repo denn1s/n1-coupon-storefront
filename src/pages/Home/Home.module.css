@@ -99,3 +99,7 @@
 .btnLg {
   @apply btn btn-lg;
 }
+
+.footer {
+  @apply bg-black h-24 mt-8;
+}

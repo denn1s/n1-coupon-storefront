@@ -8,7 +8,7 @@ import {
   HoldingCollectionsResponse,
   PaginationVariables
 } from '@lib/api/types'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 /**
  * Holding GraphQL Service
@@ -24,8 +24,8 @@ import { useState } from 'react'
 // ============================================================================
 
 const HOLDING_PRODUCTS_QUERY = `
-  query HoldingProducts($first: Int, $after: String, $before: String, $last: Int) {
-    holdingProducts(first: $first, after: $after, before: $before, last: $last) {
+  query HoldingProducts($first: Int, $after: String, $before: String, $last: Int, $where: ProductFilterInput) {
+    holdingProducts(first: $first, after: $after, before: $before, last: $last, where: $where) {
       nodes {
         id
         name
@@ -256,19 +256,38 @@ export const useProductsPagination = (
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null)
   const [selectedStore, setSelectedStore] = useState<number | null>(null)
 
+  // Track current page (1-based index)
+  const [currentPage, setCurrentPage] = useState(1)
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchTerm, selectedCategory, selectedStore])
+
   // Only use initialData if variables match the initial page (no pagination cursors)
   const isInitialPage = !variables.after && !variables.before && variables.first === pageSize
 
   const query = useQuery({
-    queryKey: ['holding', 'products', 'list', variables],
-    queryFn: getProducts(variables),
+    queryKey: [
+      'holding',
+      'products',
+      'list',
+      { ...variables, search: searchTerm, categoryId: selectedCategory, storeId: selectedStore }
+    ],
+    queryFn: getProducts({
+      ...variables
+      // Add search/filter params if your API supports them in variables
+      // Note: The current GraphQL query might need adjustment to support these if they aren't already
+    }),
+    placeholderData: (previousData) => previousData,
     initialData: isInitialPage ? queryOptions?.initialData : undefined,
     staleTime: queryOptions?.staleTime ?? 5 * 60 * 1000
   })
 
-  const pageInfo = query.data?.holdingProducts.pageInfo
-  const allProducts = query.data?.holdingProducts.nodes ?? []
-  const totalCount = query.data?.holdingProducts.totalCount ?? 0
+  const allProducts = query.data?.holdingProducts?.nodes ?? []
+  const pageInfo = query.data?.holdingProducts?.pageInfo
+  const totalCount = query.data?.holdingProducts?.totalCount ?? 0
+  const totalPages = Math.ceil(totalCount / pageSize)
 
   // Client-side filtering (since API doesn't support filters yet)
   const filteredProducts = allProducts.filter((product) => {
@@ -294,6 +313,7 @@ export const useProductsPagination = (
         first: pageSize,
         after: pageInfo.endCursor
       })
+      setCurrentPage((prev) => prev + 1)
     }
   }
 
@@ -319,11 +339,13 @@ export const useProductsPagination = (
         last: pageSize,
         before: pageInfo.startCursor
       })
+      setCurrentPage((prev) => Math.max(1, prev - 1))
     }
   }
 
   const resetPagination = () => {
     setVariables({ first: pageSize })
+    setCurrentPage(1)
   }
 
   const resetFilters = () => {
@@ -338,6 +360,8 @@ export const useProductsPagination = (
     data: filteredProducts,
     allData: allProducts,
     totalCount,
+    totalPages,
+    currentPage,
     isLoading: query.isLoading,
     isFetching: query.isFetching,
     error: query.error,

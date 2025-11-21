@@ -1,29 +1,13 @@
 import { useGetProducts } from '@services/holding.graphql'
-import { HoldingProduct } from '@lib/api/types'
 import ProductCard from '@components/molecules/ProductCard'
 import styles from './FeaturedProducts.module.css'
 
-/**
- * FeaturedProducts Component
- *
- * Displays products from a specific collection in a horizontal scrolling layout.
- * Perfect for showcasing featured/curated products at the top of a page.
- *
- * @example
- * <FeaturedProducts collectionId={29} title="Featured Deals" />
- */
-
 interface FeaturedProductsProps {
-  /** Collection ID to filter products by */
   collectionId: number
-  /** Title for the featured section */
   title?: string
-  /** Subtitle/description for the section */
   subtitle?: string
-  /** Maximum number of products to display */
   maxProducts?: number
-  /** Callback when buy button is clicked */
-  onBuyClick?: (product: HoldingProduct) => void
+  variant?: 'default' | 'dark'
 }
 
 export default function FeaturedProducts({
@@ -31,14 +15,25 @@ export default function FeaturedProducts({
   title = 'Featured Deals',
   subtitle,
   maxProducts = 10,
-  onBuyClick
+  variant = 'default'
 }: FeaturedProductsProps) {
-  // Fetch products (we'll filter client-side since API doesn't support collection filtering yet)
-  const { data, isLoading, error } = useGetProducts({ first: 50 })
+  // Fetch products with collection filter
+  const { data, isLoading, error } = useGetProducts({
+    first: 20,
+    where: {
+      holdingCollections: {
+        some: {
+          id: { in: [collectionId] }
+        }
+      }
+    }
+  })
+
+  const containerClass = `${styles.container} ${variant === 'dark' ? styles.dark : ''}`
 
   if (isLoading) {
     return (
-      <div className={styles.container}>
+      <div className={containerClass}>
         <div className={styles.header}>
           <h2 className={styles.title}>{title}</h2>
           {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
@@ -62,11 +57,9 @@ export default function FeaturedProducts({
     return null // Silently fail - don't break the page if featured products fail to load
   }
 
-  // Filter products by collection ID
+  // Get filtered products directly from API response
   const allProducts = data?.holdingProducts.nodes ?? []
-  const featuredProducts = allProducts
-    .filter((product) => product.holdingCollections?.some((collection) => collection.id === collectionId))
-    .slice(0, maxProducts)
+  const featuredProducts = allProducts.slice(0, maxProducts)
 
   // Don't render if no featured products found
   if (featuredProducts.length === 0) {
@@ -74,7 +67,7 @@ export default function FeaturedProducts({
   }
 
   return (
-    <div className={styles.container}>
+    <div className={containerClass}>
       <div className={styles.header}>
         <h2 className={styles.title}>{title}</h2>
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
@@ -84,7 +77,7 @@ export default function FeaturedProducts({
         <div className={styles.productsGrid}>
           {featuredProducts.map((product) => (
             <div key={product.id} className={styles.productCardWrapper}>
-              <ProductCard product={product} onBuyClick={onBuyClick} />
+              <ProductCard product={product} />
             </div>
           ))}
         </div>

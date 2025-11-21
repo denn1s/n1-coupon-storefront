@@ -33,7 +33,7 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
   const path = window.location.pathname
 
   // Define public paths that don't require authentication
-  const PUBLIC_PATHS = ['/', '/login']
+  const PUBLIC_PATHS = ['/', '/login', '/products', '/search']
   const isPublicPath = PUBLIC_PATHS.some((p) => path === p || path.startsWith(p + '/'))
 
   // Auto-refresh token if expired

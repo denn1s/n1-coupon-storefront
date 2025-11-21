@@ -1,132 +1,93 @@
 @reference "tailwindcss";
 
 .container {
-  @apply p-6 max-w-7xl mx-auto;
+  @apply w-full;
 }
 
-/* Loading & Error States */
+/* Hero Section */
+.heroSection {
+  @apply bg-black text-white overflow-hidden;
+}
+
+.heroContainer {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Banner Section */
+.bannerSection {
+  @apply py-12 bg-gray-50 flex items-center justify-center overflow-hidden;
+}
+
+.bannerContainer {
+  @apply max-w-5xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+/* Products Section */
+.productsSection {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16;
+}
+
+.sectionHeader {
+  @apply flex items-center justify-between mb-8;
+}
+
+.sectionTitle {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+.grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12;
+}
+
+/* How It Works Section */
+.howItWorksSection {
+  @apply bg-white py-16 border-t border-gray-100;
+}
+
+.howItWorksContainer {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+}
+
+.howItWorksTitle {
+  @apply text-3xl font-bold text-center mb-12;
+}
+
+.stepsContainer {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-8;
+}
+
+.step {
+  @apply flex flex-col items-center text-center p-6;
+}
+
+.stepIconContainer {
+  @apply w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6 text-2xl;
+}
+
+.stepTitle {
+  @apply text-xl font-bold mb-3;
+}
+
+.stepText {
+  @apply text-gray-600;
+}
+
+/* Loading & Error */
 .loading,
 .error,
 .empty {
   @apply flex flex-col items-center justify-center min-h-[400px] gap-4;
 }
 
-.error {
-  @apply text-red-600;
-}
-
-.error h2 {
-  @apply text-2xl font-bold;
-}
-
-.empty {
-  @apply text-gray-600;
-}
-
-.empty h2 {
-  @apply text-2xl font-semibold;
-}
-
-/* Header */
-.header {
-  @apply mb-8;
-}
-
-.title {
-  @apply text-4xl font-bold text-gray-900 mb-2;
-}
-
-.subtitle {
-  @apply text-lg text-gray-700;
-}
-
-/* Search and Filters */
-.controlsContainer {
-  @apply mb-8 grid grid-cols-1 lg:grid-cols-4 gap-6;
-}
-
-.searchContainer {
-  @apply lg:col-span-3;
-}
-
-.filtersContainer {
-  @apply lg:col-span-1;
-}
-
-/* Products Grid */
-.grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8;
-}
-
-/* Product Card */
-.card {
-  @apply bg-white shadow-lg hover:shadow-xl transition-shadow duration-200 cursor-pointer rounded-2xl overflow-hidden;
-}
-
-.cardImage {
-  @apply relative w-full h-64 overflow-hidden;
-}
-
-.image {
-  @apply w-full h-full object-cover;
-}
-
-.cardBody {
-  @apply p-4 flex flex-col;
-}
-
-.productName {
-  @apply text-lg font-bold text-gray-900 mb-2 line-clamp-2;
-}
-
-.description {
-  @apply text-sm text-gray-700 mb-4 line-clamp-3;
-}
-
-.cardFooter {
-  @apply flex justify-between items-center mt-auto;
-}
-
-.price {
-  @apply text-2xl font-bold text-blue-600;
-}
-
-.stockAvailable {
-  @apply inline-flex items-center justify-center px-3 py-1 text-xs font-semibold border-2 border-green-600 text-green-600 rounded-full;
-}
-
-.stockUnavailable {
-  @apply inline-flex items-center justify-center px-3 py-1 text-xs font-semibold border-2 border-red-600 text-red-600 rounded-full;
-}
-
-/* Pagination */
 .pagination {
-  @apply flex items-center justify-between gap-4 mt-8 pt-6 border-t border-gray-300;
+  @apply flex items-center justify-center gap-4 mt-8;
 }
 
 .paginationButton {
-  @apply px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center gap-2 cursor-pointer;
+  @apply px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white;
+  @apply hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
 }
 
-.paginationButton:disabled {
-  @apply bg-gray-400 cursor-not-allowed opacity-50;
-}
-
-.paginationInfo {
-  @apply text-gray-700 font-medium;
-}
-
-.icon {
-  @apply w-5 h-5;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .pagination {
-    @apply flex-col gap-2;
-  }
-
-  .paginationButton {
-    @apply w-full;
-  }
+.footer {
+  @apply bg-black h-24 w-full;
 }

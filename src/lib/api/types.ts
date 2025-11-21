@@ -265,6 +265,7 @@ export interface PaginationVariables {
   after?: string
   last?: number
   before?: string
+  where?: unknown
 }
 
 // ============================================================================

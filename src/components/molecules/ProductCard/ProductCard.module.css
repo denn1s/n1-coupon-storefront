@@ -1,78 +1,67 @@
 @reference "tailwindcss";
 
 .cardLink {
-  @apply block no-underline;
+  @apply block no-underline h-full;
 }
 
 .card {
-  @apply bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300;
-  @apply hover:shadow-xl hover:-translate-y-1 cursor-pointer;
-  @apply border border-gray-200;
+  @apply bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300;
+  @apply hover:shadow-md cursor-pointer;
+  @apply border border-gray-100;
   @apply h-full flex flex-col;
 }
 
 .imageContainer {
-  @apply relative w-full h-48 bg-gray-100 overflow-hidden;
+  @apply relative w-full aspect-[4/3] bg-gray-100 overflow-hidden;
 }
 
 .image {
-  @apply w-full h-full object-cover transition-transform duration-300;
+  @apply w-full h-full object-cover transition-transform duration-500;
   @apply hover:scale-105;
 }
 
-.outOfStockBadge {
-  @apply absolute top-2 right-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold;
-  @apply shadow-lg;
-}
-
 .discountBadge {
-  @apply absolute top-2 left-2 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-bold;
-  @apply shadow-lg;
+  @apply absolute top-3 right-3 bg-[var(--color-primary-green)] text-white px-2 py-1 rounded text-xs font-bold;
+  @apply shadow-sm;
 }
 
 .content {
-  @apply p-4 flex-1 flex flex-col;
+  @apply p-4 flex-1 flex flex-col gap-3;
+}
+
+.vendorInfo {
+  @apply flex items-center gap-2;
+}
+
+.vendorLogo,
+.vendorLogoImage {
+  @apply w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600 object-cover;
+}
+
+.vendorName {
+  @apply text-xs font-bold text-black;
 }
 
 .title {
-  @apply text-lg font-bold text-gray-900 mb-2;
-  @apply line-clamp-2;
-}
-
-.description {
-  @apply text-sm text-gray-600 mb-4 flex-1;
-  @apply line-clamp-3;
-}
-
-.footer {
-  @apply flex items-center justify-between mt-auto;
+  @apply text-sm font-normal text-gray-900 line-clamp-2 flex-1;
 }
 
 .priceContainer {
-  @apply flex flex-col gap-1;
+  @apply flex items-baseline gap-2 mt-1;
 }
 
 .originalPrice {
-  @apply text-sm text-gray-500 line-through;
+  @apply text-xs text-gray-400 line-through;
 }
 
 .price {
-  @apply text-2xl font-bold text-green-600;
+  @apply text-lg font-bold text-[var(--color-primary-green)];
 }
 
-.buyButton {
-  @apply px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg;
-  @apply transition-all duration-200 cursor-pointer;
-  @apply hover:bg-blue-700 active:bg-blue-800;
-  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
-  @apply disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:bg-gray-400;
+.footer {
+  @apply mt-auto pt-3 border-t border-gray-50 flex items-center gap-2;
 }
 
-.countdown {
-  @apply mt-2 text-sm text-red-600 font-semibold;
-  @apply flex items-center gap-1;
-}
-
-.stockWarning {
-  @apply mt-2 text-sm text-orange-600 font-medium;
+.timer {
+  @apply flex items-center gap-1 text-[10px] text-gray-500 bg-gray-50 px-2 py-1 rounded-full;
 }

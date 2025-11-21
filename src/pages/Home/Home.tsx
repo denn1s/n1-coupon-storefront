@@ -54,6 +54,8 @@ export default function Index() {
           </div>
         </div>
       </div>
+
+      <footer className={styles.footer}></footer>
     </div>
   )
 }

@@ -1,104 +1,52 @@
 @reference 'tailwindcss';
 
 .container {
-  @apply w-full mb-8;
+  @apply w-full py-8 bg-white;
+}
+
+.container.dark {
+  @apply bg-black text-white;
 }
 
 .header {
-  @apply mb-6 px-4 md:px-0;
+  @apply max-w-7xl mx-auto px-4 md:px-8 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4;
 }
 
 .title {
-  @apply text-3xl font-bold text-gray-900 mb-2;
+  @apply text-2xl md:text-3xl font-bold;
 }
 
 .subtitle {
-  @apply text-lg text-gray-600;
+  @apply text-gray-500 dark:text-gray-400 mt-2 md:mt-0 md:ml-4 text-sm md:text-base;
 }
 
 .scrollContainer {
-  @apply relative w-full overflow-x-auto;
-  /* Hide scrollbar but keep functionality */
-  scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
-
-  /* Smooth scrolling */
-  scroll-behavior: smooth;
-
-  /* Add padding for edge spacing */
-  @apply px-4 md:px-0;
-}
-
-/* Webkit scrollbar styling (Chrome, Safari, Edge) */
-.scrollContainer::-webkit-scrollbar {
-  height: 6px;
-}
-
-.scrollContainer::-webkit-scrollbar-track {
-  @apply bg-transparent;
-}
-
-.scrollContainer::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
-}
-
-.scrollContainer::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
-}
-
-.productsGrid {
-  @apply flex gap-4 pb-4;
-  /* Prevent flex items from shrinking */
-  flex-wrap: nowrap;
-
-  /* Add smooth scroll snapping */
+  @apply w-full overflow-x-auto pb-8 px-4 md:px-8;
   scroll-snap-type: x mandatory;
 }
 
+.productsGrid {
+  @apply flex gap-4 md:gap-6 min-w-max;
+}
+
 .productCardWrapper {
-  /* Fixed width for consistent card sizes */
-  @apply flex-shrink-0;
-  width: 280px;
-
-  /* Scroll snap alignment */
+  @apply w-[280px] md:w-[320px] flex-shrink-0;
   scroll-snap-align: start;
-
-  /* Smooth transitions */
-  @apply transition-transform duration-200;
 }
 
-.productCardWrapper:hover {
-  @apply scale-105;
-}
-
-/* Mobile adjustments */
-@media (max-width: 640px) {
-  .productCardWrapper {
-    width: 260px;
-  }
-
-  .title {
-    @apply text-2xl;
-  }
-}
-
-/* Skeleton loading states */
+/* Skeleton Loading */
 .skeletonCard {
-  @apply flex-shrink-0 bg-white rounded-xl shadow-md overflow-hidden;
-  width: 280px;
-  height: 380px;
-  @apply animate-pulse;
+  @apply w-[280px] md:w-[320px] h-[400px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0 animate-pulse;
 }
 
 .skeletonImage {
-  @apply w-full bg-gray-200;
-  height: 200px;
+  @apply w-full h-48 bg-gray-200 dark:bg-gray-700;
 }
 
 .skeletonText {
-  @apply mx-4 mt-4 h-4 bg-gray-200 rounded;
+  @apply h-4 bg-gray-200 dark:bg-gray-700 rounded mt-4 mx-4;
 }
 
 .skeletonText:last-child {
-  @apply w-3/4;
+  @apply w-2/3;
 }
