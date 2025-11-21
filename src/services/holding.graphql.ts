@@ -37,6 +37,15 @@ const HOLDING_PRODUCTS_QUERY = `
           sequence
           url
         }
+        store {
+          id
+          name
+          storeImageUrl
+        }
+        holdingCollections {
+          id
+          name
+        }
       }
       totalCount
       pageInfo {
@@ -98,8 +107,7 @@ const HOLDING_COLLECTIONS_QUERY = `
         id
         name
         description
-        bannerImageUrl
-        smallBannerImageUrl
+        imageUrl
         productCount
       }
       totalCount
@@ -126,6 +134,15 @@ const PRODUCT_QUERY = `
       images {
         sequence
         url
+      }
+      store {
+        id
+        name
+        storeImageUrl
+      }
+      holdingCollections {
+        id
+        name
       }
     }
   }
