@@ -77,7 +77,7 @@ export interface PasswordlessVerifyResponse {
 
 /**
  * Authenticate Request
- * POST /api/Authenticate
+ * POST /api/authenticate
  */
 export interface AuthenticateRequest {
   id_token?: string | null
@@ -254,7 +254,7 @@ export async function logout(_accessToken: string): Promise<void> {
 
 /**
  * Refresh access token
- * POST /api/Authenticate
+ * POST /api/authenticate
  *
  * Uses the refresh token to obtain new access and ID tokens
  */
@@ -263,7 +263,7 @@ export async function refreshAccessToken(
   idToken?: string,
   accessToken?: string
 ): Promise<RefreshResponse> {
-  const url = getAuthApiUrl('/Authenticate')
+  const url = getAuthApiUrl('/authenticate')
 
   if (import.meta.env.DEV) {
     console.log('[AUTH] Refreshing access token')

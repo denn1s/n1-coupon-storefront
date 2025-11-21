@@ -28,7 +28,7 @@ interface AuthHandlerProps {
  */
 export default function AuthHandler({ children }: AuthHandlerProps) {
   const { isAuthenticated, isLoading: authLoading } = useAuth()
-  const { accessToken, idToken, refreshToken: storedRefreshToken, setTokens } = useAuthStore()
+  const { accessToken, idToken, refreshToken: storedRefreshToken, setTokens, clearAuthState } = useAuthStore()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const path = window.location.pathname
 
@@ -49,6 +49,7 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
           } catch (error) {
             console.error('Token refresh failed:', error)
             // If refresh fails, user will be logged out by the auth store
+            clearAuthState()
           } finally {
             setIsRefreshing(false)
           }
@@ -57,7 +58,7 @@ export default function AuthHandler({ children }: AuthHandlerProps) {
     }
 
     checkAndRefreshToken()
-  }, [isAuthenticated, accessToken, idToken, storedRefreshToken, isRefreshing, setTokens])
+  }, [isAuthenticated, accessToken, idToken, storedRefreshToken, isRefreshing, setTokens, clearAuthState])
 
   // Allow public routes without auth checks/loading gate
   if (isPublicPath) {
