@@ -15,7 +15,7 @@ type Story = StoryObj<typeof FeaturedProducts>
 
 export const Default: Story = {
   args: {
-    title: 'Descubre lo más nuevo',
+    collectionId: 29,
     maxProducts: 5
   },
   parameters: {

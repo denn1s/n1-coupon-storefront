@@ -1,52 +1,81 @@
 @reference 'tailwindcss';
 
 .container {
-  @apply w-full py-8 bg-white;
+  @apply w-full py-12 bg-black text-white relative overflow-hidden rounded-2xl my-8;
 }
 
-.container.dark {
-  @apply bg-black text-white;
+.contentWrapper {
+  @apply max-w-7xl mx-auto px-4 md:px-12 flex flex-col-reverse md:flex-row items-center gap-8 md:gap-16;
+  @apply cursor-pointer no-underline;
+  min-height: 400px;
 }
 
-.header {
-  @apply max-w-7xl mx-auto px-4 md:px-8 mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4;
+.textContent {
+  @apply flex-1 flex flex-col items-start z-10 w-full md:w-1/2;
+}
+
+.brandBadge {
+  @apply flex items-center gap-2 mb-4 text-sm font-medium text-gray-300;
 }
 
 .title {
-  @apply text-2xl md:text-3xl font-bold;
+  @apply text-3xl md:text-5xl font-bold mb-4 leading-tight text-white;
 }
 
-.subtitle {
-  @apply text-gray-500 dark:text-gray-400 mt-2 md:mt-0 md:ml-4 text-sm md:text-base;
+.priceContainer {
+  @apply flex items-center gap-3 mb-8;
 }
 
-.scrollContainer {
-  @apply w-full overflow-x-auto pb-8 px-4 md:px-8;
-  scroll-snap-type: x mandatory;
+.originalPrice {
+  @apply text-gray-500 text-xl line-through decoration-gray-500;
 }
 
-.productsGrid {
-  @apply flex gap-4 md:gap-6 min-w-max;
+.currentPrice {
+  @apply text-[var(--color-primary-green)] text-4xl font-bold;
 }
 
-.productCardWrapper {
-  @apply w-[280px] md:w-[320px] flex-shrink-0;
-  scroll-snap-align: start;
+.discountBadge {
+  @apply bg-[var(--color-primary-green)] text-white px-2 py-0.5 rounded text-xs font-bold ml-2;
 }
 
-/* Skeleton Loading */
-.skeletonCard {
-  @apply w-[280px] md:w-[320px] h-[400px] bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden flex-shrink-0 animate-pulse;
+.actionButton {
+  @apply px-6 py-3 bg-[#6366F1] hover:bg-[#4F46E5] text-white font-semibold rounded-lg transition-colors text-base flex items-center shadow-lg shadow-indigo-900/20;
 }
 
-.skeletonImage {
-  @apply w-full h-48 bg-gray-200 dark:bg-gray-700;
+.imageContent {
+  @apply flex-1 relative w-full md:w-1/2 h-64 md:h-[400px] flex items-center justify-center;
 }
 
-.skeletonText {
-  @apply h-4 bg-gray-200 dark:bg-gray-700 rounded mt-4 mx-4;
+.productImage {
+  @apply w-full h-full object-cover rounded-2xl shadow-2xl;
+  mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
 }
 
-.skeletonText:last-child {
-  @apply w-2/3;
+/* Navigation Arrows */
+.navButton {
+  @apply absolute top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all backdrop-blur-sm z-20 cursor-pointer border border-white/10;
+}
+
+.navButtonLeft {
+  @apply left-2 md:left-4;
+}
+
+.navButtonRight {
+  @apply right-2 md:right-4;
+}
+
+/* Animations */
+.fadeIn {
+  @apply animate-[fadeIn_0.5s_ease-out];
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

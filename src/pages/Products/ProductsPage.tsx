@@ -42,6 +42,7 @@ export default function ProductsPage() {
     hasPreviousPage,
     goToNextPage,
     goToPreviousPage,
+    resetPagination,
     currentPage,
     totalPages
   } = useProductsPagination(20, {
@@ -93,6 +94,28 @@ export default function ProductsPage() {
         </div>
       </div>
     )
+  }
+
+  // Handle page change from pagination numbers
+  const handlePageChange = (page: number) => {
+    if (page === currentPage) return
+
+    if (page === 1) {
+      // Reset to first page
+      // We need to expose resetPagination from useProductsPagination
+      // It is already exposed as resetPagination
+      resetPagination()
+    } else if (page === currentPage + 1) {
+      goToNextPage()
+    } else if (page === currentPage - 1) {
+      goToPreviousPage()
+    } else {
+      // For now, we can't easily jump to arbitrary pages with cursor pagination
+      // unless we have the cursors.
+      // We could implement a "fetch loop" but that's risky.
+      // Let's just support 1, Next, Prev for now.
+      console.warn('Jumping to arbitrary pages not fully supported yet')
+    }
   }
 
   return (
@@ -154,6 +177,7 @@ export default function ProductsPage() {
                 totalPages={totalPages}
                 onNext={goToNextPage}
                 onPrev={goToPreviousPage}
+                onPageChange={handlePageChange}
                 hasNext={hasNextPage}
                 hasPrev={hasPreviousPage}
               />

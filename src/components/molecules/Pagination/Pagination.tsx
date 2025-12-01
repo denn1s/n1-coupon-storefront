@@ -6,11 +6,20 @@ interface PaginationProps {
   totalPages: number
   onNext: () => void
   onPrev: () => void
+  onPageChange: (page: number) => void
   hasNext: boolean
   hasPrev: boolean
 }
 
-export default function Pagination({ currentPage, totalPages, onNext, onPrev, hasNext, hasPrev }: PaginationProps) {
+export default function Pagination({
+  currentPage,
+  totalPages,
+  onNext,
+  onPrev,
+  onPageChange,
+  hasNext,
+  hasPrev
+}: PaginationProps) {
   // Simplified logic based on user request: "just show the first two and the last two pages"
   // and "if there are more than 5 pages put some ... in the middle"
   const getSimplePageNumbers = () => {
@@ -27,7 +36,7 @@ export default function Pagination({ currentPage, totalPages, onNext, onPrev, ha
       <button
         onClick={onPrev}
         disabled={!hasPrev}
-        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         aria-label="Previous page"
       >
         <FiChevronLeft className="w-5 h-5" />
@@ -39,15 +48,12 @@ export default function Pagination({ currentPage, totalPages, onNext, onPrev, ha
             <span className="w-10 h-10 flex items-center justify-center text-gray-500">...</span>
           ) : (
             <button
-              className={`w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-colors ${
+              onClick={() => typeof page === 'number' && onPageChange(page)}
+              className={`w-10 h-10 flex items-center justify-center rounded-lg border text-sm font-medium transition-colors cursor-pointer ${
                 currentPage === page
-                  ? 'bg-black text-white border-black'
+                  ? 'bg-black text-white border-black cursor-default'
                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
               }`}
-              // Note: Clicking numbers isn't fully supported by cursor pagination,
-              // so we disable clicks on non-current pages for now, or make them just indicators.
-              // The user asked to "put little numbers", not necessarily full random access navigation.
-              // However, if we want to support jumping to page 1, we could.
               disabled={currentPage === page}
             >
               {page}
@@ -59,7 +65,7 @@ export default function Pagination({ currentPage, totalPages, onNext, onPrev, ha
       <button
         onClick={onNext}
         disabled={!hasNext}
-        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         aria-label="Next page"
       >
         <FiChevronRight className="w-5 h-5" />
